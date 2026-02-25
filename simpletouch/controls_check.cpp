@@ -1,49 +1,50 @@
 #include <daisy_seed.h>
 
-#include "touch.h"
+#include "simpletouch/touch.h"
 
 using namespace daisy;
-using namespace synthux::simpletouch;
+using namespace simpletouch;
 
-static constexpr auto kSampleRate = SaiHandle::Config::SampleRate::SAI_48KHZ;
-static constexpr size_t kBlockSize = 4;
+constexpr auto kSampleRate = SaiHandle::Config::SampleRate::SAI_48KHZ;
+constexpr size_t kBlockSize = 4;
 
-/** Global Hardware access */
-static DaisySeed hw;
+DaisySeed hw;
+Touch touch;
 
-static Touch touch;
-
-void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out, size_t size) {
-    for (auto &knob : touch.knobs().knobs()) {
-        knob.Process();
-    }
+void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out,
+                   size_t size) {
+  for (auto &knob : touch.knobs().knobs()) {
+    knob.Process();
+  }
 }
 
 int main() {
-    hw.Init();
-    hw.SetAudioSampleRate(kSampleRate);
-    hw.SetAudioBlockSize(kBlockSize);
+  hw.Init();
+  hw.SetAudioSampleRate(kSampleRate);
+  hw.SetAudioBlockSize(kBlockSize);
 
-    touch.Init(hw);
+  touch.Init(hw);
 
-    hw.StartLog();
+  DaisySeed::StartLog();
 
-    hw.StartAudio(AudioCallback);
+  hw.StartAudio(AudioCallback);
 
-    while (true) {
-        for (auto &knob : touch.knobs().knobs()) {
-            hw.Print(FLT_FMT(5) " ", FLT_VAR(5, knob.Value()));
-        }
-
-        touch.pads().Process();
-
-        hw.Print("%d ", touch.pads().Touched());
-
-        for (uint8_t i = 0; i < 12; i++) {
-            hw.Print("%d %d ", touch.pads().GetBaseline(i), touch.pads().GetValue(i));
-        }
-
-        hw.PrintLine("%d %d", touch.switches().s7s8(), touch.switches().s9s10());
-        System::Delay(10);
+  while (true) {
+    for (auto &knob : touch.knobs().knobs()) {
+      DaisySeed::Print(FLT_FMT(5) " ", FLT_VAR(5, knob.Value()));
     }
+
+    touch.pads().Process();
+
+    DaisySeed::Print("%d ", touch.pads().Touched());
+
+    for (uint8_t i = 0; i < 12; i++) {
+      DaisySeed::Print("%d %d ", touch.pads().GetBaseline(i),
+                       touch.pads().GetValue(i));
+    }
+
+    DaisySeed::PrintLine("%d %d", touch.switches().s7s8(),
+                         touch.switches().s9s10());
+    System::Delay(10);
+  }
 }

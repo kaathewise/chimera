@@ -1,71 +1,50 @@
-#pragma once
-#ifndef SYNTHUX_SIMPLETOUCH_PADS_H
-#define SYNTHUX_SIMPLETOUCH_PADS_H
+#ifndef SIMPLETOUCH_PADS_H
+#define SIMPLETOUCH_PADS_H
 
-#include "daisy_seed.h"
-#include "dev/mpr121.h"
+#include <daisy_seed.h>
 
-#ifdef __cplusplus
+#include "eurorack/stmlib/stmlib.h"
 
+namespace simpletouch {
 using namespace daisy;
 
-namespace synthux {
-namespace simpletouch {
 class Pads {
-public:
-    Pads() = default;
+ public:
+  Pads() = default;
 
-    ~Pads() = default;
+  ~Pads() = default;
 
-    void Init() {
-        mpr_.Init(Mpr121I2C::Config());
+  void Init() { mpr_.Init(Mpr121I2C::Config()); }
 
-        System::Delay(500);
-        mpr_.WriteRegister(0x5E, 0);
+  void Process() {
+    prev_state_ = state_;
+    state_ = mpr_.Touched();
+  }
 
-        System::Delay(500);
-        mpr_.WriteRegister(0x5E, 0b01001111);
-    }
+  bool IsTouched(uint8_t pad) const { return state_ & (1 << pad); }
 
-    void Process() {
-        prev_state_ = state_;
-        state_ = mpr_.Touched();
-    }
+  uint16_t GetValue(uint8_t pad) { return mpr_.FilteredData(pad); }
 
-    bool IsTouched(uint8_t pad) const {
-        return state_ & (1 << pad);
-    }
+  uint16_t GetBaseline(uint8_t pad) { return mpr_.BaselineData(pad); }
 
-    uint16_t GetValue(uint8_t pad) {
-        return mpr_.FilteredData(pad);
-    }
+  bool HasTouch() const { return state_ > 0; }
 
-    uint16_t GetBaseline(uint8_t pad) {
-        return mpr_.BaselineData(pad);
-    }
+  bool IsRisingEdge(uint8_t pad) const {
+    return state_ & ~prev_state_ & (1 << pad);
+  }
 
-    bool HasTouch() const {
-        return state_ > 0;
-    }
+  bool IsFallingEdge(uint8_t pad) const {
+    return ~state_ & prev_state_ & (1 << pad);
+  }
 
-    bool IsRisingEdge(uint8_t pad) const {
-        return state_ & ~prev_state_ & (1 << pad);
-    }
+  uint16_t Touched() const { return state_; }
 
-    bool IsFallingEdge(uint8_t pad) const {
-        return ~state_ & prev_state_ & (1 << pad);
-    }
+ private:
+  uint16_t state_{0}, prev_state_{0};
+  Mpr121I2C mpr_;
 
-    uint16_t Touched() const {
-        return state_;
-    }
-
-private:
-    uint16_t state_, prev_state_;
-    Mpr121I2C mpr_;
+  DISALLOW_COPY_AND_ASSIGN(Pads);
 };
-}
-}
+}  // namespace simpletouch
 
-#endif
 #endif

@@ -6,6 +6,8 @@ PACKAGES = .
 
 CPP_SOURCES = $(notdir $(wildcard $(patsubst %,%/*.cpp,$(PACKAGES))))
 
+C_INCLUDES = -I../
+
 # Library Locations
 LIBDAISY_DIR = ../libDaisy
 

@@ -1,33 +1,31 @@
-#pragma once
-#ifndef SYNTHUX_SIMPLETOUCH_SWITCHES_H
-#define SYNTHUX_SIMPLETOUCH_SWITCHES_H
+#ifndef SIMPLETOUCH_SWITCHES_H
+#define SIMPLETOUCH_SWITCHES_H
 
-#include "daisy_seed.h"
+#include <daisy_seed.h>
 
-#ifdef __cplusplus
+#include "eurorack/stmlib/stmlib.h"
 
+namespace simpletouch {
 using namespace daisy;
 
-namespace synthux {
-namespace simpletouch {
 class Switches {
-public:
-    Switches() = default;
+ public:
+  Switches() = default;
 
-    ~Switches() = default;
+  ~Switches() = default;
 
-    void Init();
+  void Init();
 
-    int s7s8();
+  int s7s8();
 
-    int s9s10();
+  int s9s10();
 
-private:
-    Switch3 switch_7_8_;
-    Switch3 switch_9_10_;
+ private:
+  Switch3 switch_7_8_;
+  Switch3 switch_9_10_;
+
+  DISALLOW_COPY_AND_ASSIGN(Switches);
 };
-}
-}
+}  // namespace simpletouch
 
-#endif
 #endif
