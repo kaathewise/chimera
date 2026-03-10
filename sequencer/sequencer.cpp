@@ -14,7 +14,7 @@ void Sequencer::Init(float sampleRate) {
     ramps_.slave[1] = &ramp_buffer_[3];
 }
 
-void Sequencer::Process(bool useExternalClock, bool reset, float dejaVu, float rate, float bias, float jitter, int loopLength, bool* gate) {
+void Sequencer::Process(bool useExternalClock, float dejaVu, float rate, float bias, float jitter, int loopLength, bool* gate) {
     t_generator_.set_deja_vu(dejaVu);
     t_generator_.set_rate(rate);
     t_generator_.set_bias(bias);
@@ -22,7 +22,7 @@ void Sequencer::Process(bool useExternalClock, bool reset, float dejaVu, float r
     t_generator_.set_length(loopLength);
 
     // Assuming block size of 1 for per-sample processing
-    t_generator_.Process(useExternalClock, &reset, nullptr, ramps_, gate, 1);
+    t_generator_.Process(useExternalClock, nullptr, ramps_, gate, 4);
 }
 
 }

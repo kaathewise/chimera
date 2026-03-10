@@ -10,7 +10,7 @@ class Sequencer {
 public:
     Sequencer() = default;
     void Init(float sampleRate);
-    void Process(bool useExternalClock, bool reset, float dejaVu, float rate, float bias, float jitter, int loopLength, bool* gate);
+    void Process(bool useExternalClock, float dejaVu, float rate, float bias, float jitter, int loopLength, bool* gate);
     const marbles::Ramps& Ramps() const { return ramps_; }
 
 private:

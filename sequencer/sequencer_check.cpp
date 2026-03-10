@@ -19,7 +19,7 @@ void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out,
 
   bool gate[2];
   controls.Process();
-  seq.Process(false, false, controls.deja_vu(), controls.rate(), controls.bias(), controls.jitter(), controls.loop_length(), gate);
+  seq.Process(false, controls.deja_vu(), controls.rate(), controls.bias(), controls.jitter(), controls.loop_length(), gate);
 }
 
 int main() {
