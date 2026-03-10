@@ -76,7 +76,6 @@ struct DividerPattern {
 };
 
 struct Ramps {
-  float* external;
   float* master;
   float* slave[kNumTChannels];
 };

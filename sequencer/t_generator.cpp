@@ -349,7 +349,6 @@ void TGenerator::Process(
     ConfigureSlaveRamps(random_vector);
   }
   
-  *ramps.external = master_phase_;
   *ramps.master = master_phase_;
   for (size_t j = 0; j < kNumTChannels; ++j) {
     slave_ramp_[j].Process(

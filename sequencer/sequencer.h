@@ -19,7 +19,7 @@ private:
     marbles::RandomStream random_stream_;
     marbles::RandomGenerator random_generator_;
     Ramps ramps_;
-    float ramp_buffer_[4];
+    float ramp_buffer_[3];
 };
 
 }

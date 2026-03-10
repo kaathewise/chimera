@@ -10,8 +10,7 @@ CPP_SOURCES = sequencer_check.cpp \
               ../simpletouch/switches.cpp
 
 # Add .cc files as .cpp to trick libDaisy core into adding them to OBJECTS
-CC_SOURCES = ../eurorack/marbles/ramp/ramp_extractor.cc \
-             ../eurorack/marbles/resources.cc \
+CC_SOURCES = ../eurorack/marbles/resources.cc \
              ../eurorack/stmlib/dsp/units.cc
 
 CPP_SOURCES += $(CC_SOURCES:.cc=.cpp)

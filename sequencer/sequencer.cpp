@@ -9,9 +9,8 @@ void Sequencer::Init(float sampleRate) {
 
     // Initialize ramps pointers
     ramps_.master = &ramp_buffer_[0];
-    ramps_.external = &ramp_buffer_[1];
-    ramps_.slave[0] = &ramp_buffer_[2];
-    ramps_.slave[1] = &ramp_buffer_[3];
+    ramps_.slave[0] = &ramp_buffer_[1];
+    ramps_.slave[1] = &ramp_buffer_[2];
 }
 
 void Sequencer::Process(float dejaVu, float frequency, float bias, float jitter, int loopLength, bool* gate) {
