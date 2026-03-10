@@ -26,8 +26,8 @@ CFLAGS = C_INCLUDES
 LIBDAISY_DIR = ../libDaisy
 DAISYSP_DIR = ../DaisySP
 
-# Use QSPI flash since internal flash is too small for Marbles resources
-APP_TYPE = BOOT_QSPI
+# Use SRAM since internal flash is too small for Marbles resources
+APP_TYPE = BOOT_SRAM
 
 # Core location, and generic Makefile.
 SYSTEM_FILES_DIR = $(LIBDAISY_DIR)/core
