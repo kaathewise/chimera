@@ -9,10 +9,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -20,7 +20,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-// 
+//
 // See http://creativecommons.org/licenses/MIT/ for more information.
 //
 // -----------------------------------------------------------------------------
@@ -30,21 +30,20 @@
 #ifndef SEQUENCER_T_GENERATOR_H_
 #define SEQUENCER_T_GENERATOR_H_
 
-#include "../eurorack/stmlib/stmlib.h"
-
-#include "../eurorack/marbles/ramp/ramp_divider.h"
-#include "../eurorack/marbles/ramp/ramp_generator.h"
-#include "../eurorack/marbles/ramp/slave_ramp.h"
-#include "../eurorack/marbles/random/distributions.h"
-#include "../eurorack/marbles/random/random_sequence.h"
-#include "../eurorack/stmlib/dsp/hysteresis_quantizer.h"
+#include "eurorack/marbles/ramp/ramp_divider.h"
+#include "eurorack/marbles/ramp/ramp_generator.h"
+#include "eurorack/marbles/ramp/slave_ramp.h"
+#include "eurorack/marbles/random/distributions.h"
+#include "eurorack/marbles/random/random_sequence.h"
+#include "eurorack/stmlib/dsp/hysteresis_quantizer.h"
+#include "eurorack/stmlib/stmlib.h"
 
 namespace sequencer {
 
-using marbles::Ratio;
-using marbles::RandomStream;
-using marbles::RandomSequence;
 using marbles::RampGenerator;
+using marbles::RandomSequence;
+using marbles::RandomStream;
+using marbles::Ratio;
 using marbles::SlaveRamp;
 
 enum TGeneratorModel {
@@ -55,7 +54,7 @@ enum TGeneratorModel {
   T_GENERATOR_MODEL_INDEPENDENT_BERNOULLI,
   T_GENERATOR_MODEL_DIVIDER,
   T_GENERATOR_MODEL_THREE_STATES,
-  
+
   T_GENERATOR_MODEL_MARKOV,
 };
 
@@ -85,51 +84,35 @@ const size_t kNumInputDividerRatios = 9;
 
 class TGenerator {
  public:
-  TGenerator() { }
-  ~TGenerator() { }
-  
+  TGenerator() {}
+  ~TGenerator() {}
+
   void Init(RandomStream* random_stream, float sr);
 
-  void Process(
-      Ramps ramps,
-      bool* gate);
-  
-  inline void set_model(TGeneratorModel model) {
-    model_ = model;
-  }
-  
-  inline void set_range(TGeneratorRange range) {
-    range_ = range;
-  }
-  
-  inline void set_frequency(float frequency) {
-    frequency_ = frequency;
-  }
-  
-  inline void set_bias(float bias) {
-    bias_ = bias;
-  }
-  
-  inline void set_jitter(float jitter) {
-    jitter_ = jitter;
-  }
-  
-  inline void set_deja_vu(float deja_vu) {
-    sequence_.set_deja_vu(deja_vu);
-  }
+  void Process(Ramps ramps, bool* gate);
 
-  inline void set_length(int length) {
-    sequence_.set_length(length);
-  }
+  inline void set_model(TGeneratorModel model) { model_ = model; }
+
+  inline void set_range(TGeneratorRange range) { range_ = range; }
+
+  inline void set_frequency(float frequency) { frequency_ = frequency; }
+
+  inline void set_bias(float bias) { bias_ = bias; }
+
+  inline void set_jitter(float jitter) { jitter_ = jitter; }
+
+  inline void set_deja_vu(float deja_vu) { sequence_.set_deja_vu(deja_vu); }
+
+  inline void set_length(int length) { sequence_.set_length(length); }
 
   inline void set_pulse_width_mean(float pulse_width_mean) {
     pulse_width_mean_ = pulse_width_mean;
   }
-  
+
   inline void set_pulse_width_std(float pulse_width_std) {
     pulse_width_std_ = pulse_width_std;
   }
-  
+
  private:
   union RandomVector {
     struct {
@@ -140,7 +123,7 @@ class TGenerator {
     } variables;
     float x[2 * kNumTChannels + 2];
   };
-  
+
   void ConfigureSlaveRamps(const RandomVector& v);
   int GenerateComplementaryBernoulli(const RandomVector& v);
   int GenerateIndependentBernoulli(const RandomVector& v);
@@ -154,28 +137,27 @@ class TGenerator {
       return 0.05f + 0.9f * pulse_width_mean_;
     } else {
       return 0.05f + 0.9f * marbles::BetaDistributionSample(
-          u,
-          pulse_width_std_,
-          pulse_width_mean_);  // Jon Brooks
-          // i & 1 ? 1.0f - pulse_width_mean_);
+                                u, pulse_width_std_,
+                                pulse_width_mean_);  // Jon Brooks
+      // i & 1 ? 1.0f - pulse_width_mean_);
     }
   }
-  
+
   float one_hertz_;
-  
+
   TGeneratorModel model_;
   TGeneratorRange range_;
-  
+
   float frequency_;
   float bias_;
   float jitter_;
   float pulse_width_mean_;
   float pulse_width_std_;
-  
+
   float master_phase_;
   float jitter_multiplier_;
   float phase_difference_;
-  
+
   int32_t divider_pattern_length_;
   int32_t streak_counter_[kMarkovHistorySize];
   int32_t markov_history_[kMarkovHistorySize];
@@ -187,14 +169,14 @@ class TGenerator {
   RampGenerator ramp_generator_;
 
   SlaveRamp slave_ramp_[kNumTChannels];
-  
+
   stmlib::HysteresisQuantizer2 bias_quantizer_;
-  
+
   static DividerPattern divider_patterns[kNumDividerPatterns];
   static DividerPattern fixed_divider_patterns[kNumDividerPatterns];
   static Ratio input_divider_ratios[kNumInputDividerRatios];
   static uint8_t drum_patterns[kNumDrumPatterns][kDrumPatternSize];
-  
+
   DISALLOW_COPY_AND_ASSIGN(TGenerator);
 };
 

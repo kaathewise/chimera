@@ -1,14 +1,14 @@
 #ifndef SEQUENCER_CONTROLS_H_
 #define SEQUENCER_CONTROLS_H_
 
-#include "../simpletouch/touch.h"
+#include "eurorack/stmlib/stmlib.h"
+#include "simpletouch/touch.h"
 
 namespace sequencer {
 
 class Controls {
  public:
-  Controls(simpletouch::Touch& touch)
-      : touch_(touch) {}
+  Controls(simpletouch::Touch& touch) : touch_(touch) {}
 
   void Process();
 
@@ -25,6 +25,8 @@ class Controls {
   float bias_;
   float jitter_;
   int loop_length_;
+
+  DISALLOW_COPY_AND_ASSIGN(Controls);
 };
 
 }  // namespace sequencer

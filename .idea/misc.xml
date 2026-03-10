@@ -7,17 +7,17 @@
   <component name="MakefileSettings">
     <option name="linkedExternalProjectsSettings">
       <MakefileProjectSettings>
-        <option name="externalProjectPath" value="$PROJECT_DIR$/simpletouch" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/sequencer" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$/simpletouch" />
+            <option value="$PROJECT_DIR$/sequencer" />
           </set>
         </option>
         <option name="version" value="2" />
       </MakefileProjectSettings>
     </option>
   </component>
-  <component name="MakefileWorkspace" PROJECT_DIR="$PROJECT_DIR$/simpletouch">
+  <component name="MakefileWorkspace" PROJECT_DIR="$PROJECT_DIR$/sequencer">
     <contentRoot DIR="$PROJECT_DIR$" />
   </component>
 </project>

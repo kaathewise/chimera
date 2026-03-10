@@ -1,9 +1,8 @@
 #include <daisy_seed.h>
 
-#include "../libDaisy/src/daisy_seed.h"
-#include "../simpletouch/touch.h"
-#include "controls.h"
-#include "sequencer.h"
+#include "sequencer/controls.h"
+#include "sequencer/sequencer.h"
+#include "simpletouch/touch.h"
 
 using namespace daisy;
 using namespace sequencer;
@@ -18,10 +17,10 @@ Controls controls(touch);
 
 void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out,
                    size_t size) {
-
   bool gate[2];
   controls.Process();
-  seq.Process(controls.deja_vu(), controls.rate(), controls.bias(), controls.jitter(), controls.loop_length(), gate);
+  seq.Process(controls.deja_vu(), controls.rate(), controls.bias(),
+              controls.jitter(), controls.loop_length(), gate);
 }
 
 int main() {
@@ -37,7 +36,6 @@ int main() {
   hw.StartAudio(AudioCallback);
 
   while (true) {
-
     DaisySeed::Print(FLT_FMT(5) " ", FLT_VAR(5, controls.deja_vu()));
     DaisySeed::Print(FLT_FMT(5) " ", FLT_VAR(5, controls.rate()));
     DaisySeed::Print(FLT_FMT(5) " ", FLT_VAR(5, controls.bias()));

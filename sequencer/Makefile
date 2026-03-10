@@ -19,6 +19,9 @@ CPP_SOURCES += $(CC_SOURCES:.cc=.cpp)
 C_INCLUDES = -I.. \
 	-I../eurorack
 
+# For CLion
+CFLAGS = C_INCLUDES
+
 # Library Locations
 LIBDAISY_DIR = ../libDaisy
 DAISYSP_DIR = ../DaisySP

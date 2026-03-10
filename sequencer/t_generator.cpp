@@ -9,10 +9,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -20,20 +20,19 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-// 
+//
 // See http://creativecommons.org/licenses/MIT/ for more information.
 //
 // -----------------------------------------------------------------------------
 //
 // Generator for the T outputs.
 
-#include "t_generator.h"
+#include "sequencer/t_generator.h"
 
 #include <algorithm>
 
-#include "../eurorack/stmlib/dsp/units.h"
-
-#include "../eurorack/marbles/resources.h"
+#include "eurorack/marbles/resources.h"
+#include "eurorack/stmlib/dsp/units.h"
 
 namespace sequencer {
 
@@ -43,90 +42,51 @@ using namespace marbles;
 
 /* static */
 DividerPattern TGenerator::divider_patterns[kNumDividerPatterns] = {
-  { { { 1, 1 }, { 1, 1 } }, 1 },
-  { { { 1, 1 }, { 2, 1 } }, 1 },
-  { { { 1, 2 }, { 1, 1 } }, 2 },
-  { { { 1, 1 }, { 4, 1 } }, 1 },
-  { { { 1, 2 }, { 2, 1 } }, 2 },
-  { { { 1, 1 }, { 3, 2 } }, 2 },
-  { { { 1, 4 }, { 4, 1 } }, 4 },
-  { { { 1, 4 }, { 2, 1 } }, 4 },
-  { { { 1, 2 }, { 3, 2 } }, 2 },
-  { { { 1, 1 }, { 8, 1 } }, 1 },
-  { { { 1, 1 }, { 3, 1 } }, 1 },
-  { { { 1, 3 }, { 1, 1 } }, 3 },
-  { { { 1, 1 }, { 5, 4 } }, 4 },
-  { { { 1, 2 }, { 5, 4 } }, 4 },
-  { { { 1, 1 }, { 6, 1 } }, 1 },
-  { { { 1, 3 }, { 2, 1 } }, 3 },
-  { { { 1, 1 }, { 16, 1 } }, 1 },
+    {{{1, 1}, {1, 1}}, 1}, {{{1, 1}, {2, 1}}, 1},  {{{1, 2}, {1, 1}}, 2},
+    {{{1, 1}, {4, 1}}, 1}, {{{1, 2}, {2, 1}}, 2},  {{{1, 1}, {3, 2}}, 2},
+    {{{1, 4}, {4, 1}}, 4}, {{{1, 4}, {2, 1}}, 4},  {{{1, 2}, {3, 2}}, 2},
+    {{{1, 1}, {8, 1}}, 1}, {{{1, 1}, {3, 1}}, 1},  {{{1, 3}, {1, 1}}, 3},
+    {{{1, 1}, {5, 4}}, 4}, {{{1, 2}, {5, 4}}, 4},  {{{1, 1}, {6, 1}}, 1},
+    {{{1, 3}, {2, 1}}, 3}, {{{1, 1}, {16, 1}}, 1},
 };
 
 /* static */
 DividerPattern TGenerator::fixed_divider_patterns[kNumDividerPatterns] = {
-  { { { 8, 1 }, { 1, 8 } }, 8 },
-  { { { 6, 1 }, { 1, 6 } }, 6 },
-  { { { 4, 1 }, { 1, 4 } }, 4 },
-  { { { 3, 1 }, { 1, 3 } }, 3 },
-  { { { 2, 1 }, { 1, 2 } }, 2 },
-  { { { 3, 2 }, { 2, 3 } }, 6 },
-  { { { 4, 3 }, { 3, 4 } }, 12 },
-  { { { 5, 4 }, { 4, 5 } }, 20 },
+    {{{8, 1}, {1, 8}}, 8},  {{{6, 1}, {1, 6}}, 6},  {{{4, 1}, {1, 4}}, 4},
+    {{{3, 1}, {1, 3}}, 3},  {{{2, 1}, {1, 2}}, 2},  {{{3, 2}, {2, 3}}, 6},
+    {{{4, 3}, {3, 4}}, 12}, {{{5, 4}, {4, 5}}, 20},
 
-  { { { 1, 1 }, { 1, 1 } }, 1 },
+    {{{1, 1}, {1, 1}}, 1},
 
-  { { { 4, 5 }, { 5, 4 } }, 20 },
-  { { { 3, 4 }, { 4, 3 } }, 12 },
-  { { { 2, 2 }, { 3, 2 } }, 6 },
-  { { { 1, 2 }, { 2, 1 } }, 2 },
-  { { { 1, 3 }, { 3, 1 } }, 3 },
-  { { { 1, 4 }, { 4, 1 } }, 4 },
-  { { { 1, 6 }, { 6, 1 } }, 6 },
-  { { { 1, 8 }, { 8, 1 } }, 8 },
+    {{{4, 5}, {5, 4}}, 20}, {{{3, 4}, {4, 3}}, 12}, {{{2, 2}, {3, 2}}, 6},
+    {{{1, 2}, {2, 1}}, 2},  {{{1, 3}, {3, 1}}, 3},  {{{1, 4}, {4, 1}}, 4},
+    {{{1, 6}, {6, 1}}, 6},  {{{1, 8}, {8, 1}}, 8},
 };
 
 /* static */
 Ratio TGenerator::input_divider_ratios[kNumInputDividerRatios] = {
-  { 1, 4 },
-  { 1, 3 },
-  { 1, 2 },
-  { 2, 3 },
-  { 1, 1 },
-  { 3, 2 },
-  { 2, 1 },
-  { 3, 1 },
-  { 4, 1 },
+    {1, 4}, {1, 3}, {1, 2}, {2, 3}, {1, 1}, {3, 2}, {2, 1}, {3, 1}, {4, 1},
 };
 
 /* static */
 uint8_t TGenerator::drum_patterns[kNumDrumPatterns][kDrumPatternSize] = {
-  { 1, 0, 0, 0, 2, 0, 0, 0 },
-  { 0, 0, 1, 0, 2, 0, 0, 0 },
+    {1, 0, 0, 0, 2, 0, 0, 0}, {0, 0, 1, 0, 2, 0, 0, 0},
 
-  { 1, 0, 1, 0, 2, 0, 0, 0 },
-  { 0, 0, 1, 0, 2, 0, 0, 2 },
+    {1, 0, 1, 0, 2, 0, 0, 0}, {0, 0, 1, 0, 2, 0, 0, 2},
 
-  { 1, 0, 1, 0, 2, 0, 1, 0 },
-  { 0, 2, 1, 0, 2, 0, 0, 2 },
+    {1, 0, 1, 0, 2, 0, 1, 0}, {0, 2, 1, 0, 2, 0, 0, 2},
 
-  { 1, 0, 0, 0, 2, 0, 1, 0 },
-  { 0, 2, 1, 0, 2, 0, 1, 2 },
+    {1, 0, 0, 0, 2, 0, 1, 0}, {0, 2, 1, 0, 2, 0, 1, 2},
 
-  { 1, 0, 0, 1, 2, 0, 0, 0 },
-  { 0, 2, 1, 1, 2, 0, 1, 2 },
+    {1, 0, 0, 1, 2, 0, 0, 0}, {0, 2, 1, 1, 2, 0, 1, 2},
 
-  { 1, 0, 0, 1, 2, 0, 1, 0 },
-  { 0, 2, 1, 1, 2, 2, 1, 2 },
+    {1, 0, 0, 1, 2, 0, 1, 0}, {0, 2, 1, 1, 2, 2, 1, 2},
 
-  { 1, 0, 0, 1, 2, 0, 1, 2 },
-  { 0, 2, 0, 1, 2, 0, 1, 2 },
+    {1, 0, 0, 1, 2, 0, 1, 2}, {0, 2, 0, 1, 2, 0, 1, 2},
 
-  { 1, 0, 1, 1, 2, 0, 1, 2 },
-  { 2, 0, 1, 2, 0, 1, 2, 0 },
+    {1, 0, 1, 1, 2, 0, 1, 2}, {2, 0, 1, 2, 0, 1, 2, 0},
 
-  { 1, 2, 1, 1, 2, 0, 1, 2 },
-  { 2, 0, 1, 2, 0, 1, 2, 2 }
-};
+    {1, 2, 1, 1, 2, 0, 1, 2}, {2, 0, 1, 2, 0, 1, 2, 2}};
 
 void TGenerator::Init(RandomStream* random_stream, float sr) {
   one_hertz_ = 1.0f / static_cast<float>(sr);
@@ -184,7 +144,7 @@ int TGenerator::GenerateThreeStates(const RandomVector& x) {
   int bitmask = 0;
   float p_none = 0.75f - fabs(bias_ - 0.5f);
   float threshold = p_none + (1.0f - p_none) * (0.25f + (bias_ * 0.5f));
-  
+
   for (size_t i = 0; i < kNumTChannels; ++i) {
     float u = x.variables.u[i >> 1];
     if (u > p_none && ((u > threshold) ^ (i & 1))) {
@@ -234,9 +194,10 @@ int TGenerator::GenerateMarkov(const RandomVector& x) {
     CONSTRAIN(logit, -10.0f, 10.0f);
     float probability = lut_logit[static_cast<int>(logit * 12.8f + 128.0f)];
     bool state = x.variables.u[i] < probability;
-    
+
     if (sequence_.deja_vu() >= x.variables.p) {
-      state = markov_history_[(p + sequence_.length()) % kMarkovHistorySize] & mask;
+      state =
+          markov_history_[(p + sequence_.length()) % kMarkovHistorySize] & mask;
     }
     if (state) {
       bitmask |= mask;
@@ -252,10 +213,8 @@ int TGenerator::GenerateMarkov(const RandomVector& x) {
 
 void TGenerator::ScheduleOutputPulses(const RandomVector& x, int bitmask) {
   for (size_t i = 0; i < kNumTChannels; ++i) {
-    slave_ramp_[i].Init(
-        bitmask & 1,
-        RandomPulseWidth(i, x.variables.pulse_width[i]),
-        0.5f);
+    slave_ramp_[i].Init(bitmask & 1,
+                        RandomPulseWidth(i, x.variables.pulse_width[i]), 0.5f);
     bitmask >>= 1;
   }
 }
@@ -268,7 +227,7 @@ void TGenerator::ConfigureSlaveRamps(const RandomVector& x) {
     case T_GENERATOR_MODEL_COMPLEMENTARY_BERNOULLI:
       ScheduleOutputPulses(x, GenerateComplementaryBernoulli(x));
       break;
-    
+
     case T_GENERATOR_MODEL_INDEPENDENT_BERNOULLI:
       ScheduleOutputPulses(x, GenerateIndependentBernoulli(x));
       break;
@@ -276,22 +235,23 @@ void TGenerator::ConfigureSlaveRamps(const RandomVector& x) {
     case T_GENERATOR_MODEL_THREE_STATES:
       ScheduleOutputPulses(x, GenerateThreeStates(x));
       break;
-    
+
     case T_GENERATOR_MODEL_DRUMS:
       ScheduleOutputPulses(x, GenerateDrums(x));
       break;
-    
+
     case T_GENERATOR_MODEL_MARKOV:
       ScheduleOutputPulses(x, GenerateMarkov(x));
       break;
-    
+
     case T_GENERATOR_MODEL_CLUSTERS:
     case T_GENERATOR_MODEL_DIVIDER:
       --divider_pattern_length_;
       if (divider_pattern_length_ <= 0) {
         DividerPattern pattern;
         if (model_ == T_GENERATOR_MODEL_DIVIDER) {
-          pattern = bias_quantizer_.Lookup(TGenerator::fixed_divider_patterns, bias_);
+          pattern =
+              bias_quantizer_.Lookup(TGenerator::fixed_divider_patterns, bias_);
         } else {
           float strength = fabs(bias_ - 0.5f) * 2.0f;
           float u = x.variables.u[0];
@@ -306,10 +266,8 @@ void TGenerator::ConfigureSlaveRamps(const RandomVector& x) {
           }
         }
         for (size_t i = 0; i < kNumTChannels; ++i) {
-          slave_ramp_[i].Init(
-              pattern.length,
-              pattern.ratios[i],
-              RandomPulseWidth(i, x.variables.pulse_width[i]));
+          slave_ramp_[i].Init(pattern.length, pattern.ratios[i],
+                              RandomPulseWidth(i, x.variables.pulse_width[i]));
         }
         divider_pattern_length_ = pattern.length;
       }
@@ -317,44 +275,38 @@ void TGenerator::ConfigureSlaveRamps(const RandomVector& x) {
   }
 }
 
-void TGenerator::Process(
-    Ramps ramps,
-    bool* gate) {
+void TGenerator::Process(Ramps ramps, bool* gate) {
   float frequency = one_hertz_ * frequency_;
 
   float jittery_frequency = frequency * jitter_multiplier_;
   master_phase_ += jittery_frequency;
   phase_difference_ += frequency - jittery_frequency;
-  
+
   if (master_phase_ > 1.0f) {
     master_phase_ -= 1.0f;
     RandomVector random_vector;
-    sequence_.NextVector(
-        random_vector.x,
-        sizeof(random_vector.x) / sizeof(float));
-    
+    sequence_.NextVector(random_vector.x,
+                         sizeof(random_vector.x) / sizeof(float));
+
     float jitter_amount = jitter_ * jitter_ * jitter_ * jitter_ * 36.0f;
     float x = FastBetaDistributionSample(random_vector.variables.jitter);
     float multiplier = SemitonesToRatio((x * 2.0f - 1.0f) * jitter_amount);
-    
+
     // This step is crucial in making sure that the jittered clock does not
     // deviate too much from the master clock. The larger the phase difference
     // difference between the two, the more likely the jittery clock will
     // speed up or down to catch up with the straight clock.
-    multiplier *= phase_difference_ > 0.0f
-          ? 1.0f + phase_difference_
-          : 1.0f / (1.0f - phase_difference_);
-    
+    multiplier *= phase_difference_ > 0.0f ? 1.0f + phase_difference_
+                                           : 1.0f / (1.0f - phase_difference_);
+
     jitter_multiplier_ = multiplier;
     ConfigureSlaveRamps(random_vector);
   }
-  
+
   *ramps.master = master_phase_;
   for (size_t j = 0; j < kNumTChannels; ++j) {
-    slave_ramp_[j].Process(
-        frequency * jitter_multiplier_,
-        ramps.slave[j],
-        gate);
+    slave_ramp_[j].Process(frequency * jitter_multiplier_, ramps.slave[j],
+                           gate);
     gate++;
   }
 }

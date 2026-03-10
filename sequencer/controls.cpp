@@ -1,4 +1,4 @@
-#include "controls.h"
+#include "sequencer/controls.h"
 
 namespace sequencer {
 
