@@ -1,6 +1,7 @@
-// Copyright 2015 Emilie Gillet.
+// Copyright 2026 Svyatoslav Usachev (kaathewise@gmail.com)
 //
-// Author: Emilie Gillet (emilie.o.gillet@gmail.com)
+// Based on: https://github.com/pichenettes/eurorack/tree/master/marbles
+// Original Copyright 2015 Emilie Gillet (emilie.o.gillet@gmail.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -132,7 +133,7 @@ void TGenerator::Init(RandomStream* random_stream, float sr) {
   model_ = T_GENERATOR_MODEL_COMPLEMENTARY_BERNOULLI;
   range_ = T_GENERATOR_RANGE_1X;
 
-  rate_ = 0.0f;
+  frequency_ = 1.0f;
   bias_ = 0.5f;
   jitter_ = 0.0f;
   pulse_width_mean_ = 0.0f;
@@ -141,7 +142,6 @@ void TGenerator::Init(RandomStream* random_stream, float sr) {
   master_phase_ = 0.0f;
   jitter_multiplier_ = 1.0f;
   phase_difference_ = 0.0f;
-  previous_external_ramp_value_ = 0.0f;
 
   divider_pattern_length_ = 0;
   fill(&streak_counter_[0], &streak_counter_[kMarkovHistorySize], 0);
@@ -151,7 +151,6 @@ void TGenerator::Init(RandomStream* random_stream, float sr) {
   drum_pattern_index_ = 0;
 
   sequence_.Init(random_stream);
-  ramp_extractor_.Init(1000.0f / sr);
   ramp_generator_.Init();
   for (size_t i = 0; i < kNumTChannels; ++i) {
     slave_ramp_[i].Init();
@@ -159,9 +158,6 @@ void TGenerator::Init(RandomStream* random_stream, float sr) {
   // Ideal Hysteresis : voltage error / voltage range * num_values
   // Or: 1 / 2^(adc_reliable_bits) * num_values
   bias_quantizer_.Init(kNumDividerPatterns, 0.1f, false);
-  rate_quantizer_.Init(kNumInputDividerRatios, 0.05f, false);
-  
-  use_external_clock_ = false;
 }
 
 int TGenerator::GenerateComplementaryBernoulli(const RandomVector& x) {
@@ -322,65 +318,13 @@ void TGenerator::ConfigureSlaveRamps(const RandomVector& x) {
 }
 
 void TGenerator::Process(
-    bool use_external_clock,
-    bool* reset,
-    const GateFlags* external_clock,
     Ramps ramps,
     bool* gate,
     size_t size) {
-  float internal_frequency;
-  
-  if (use_external_clock) {
-    if (!use_external_clock_) {
-      ramp_extractor_.Reset();
-    }
-    
-    Ratio ratio = rate_quantizer_.Lookup(
-        TGenerator::input_divider_ratios, 
-        1.05f * rate_ / 96.0f + 0.5f);
-    if (range_ == T_GENERATOR_RANGE_0_25X) {
-      ratio.q *= 4;
-    } else if (range_ == T_GENERATOR_RANGE_4X) {
-      ratio.p *= 4;
-    }
-    ratio.Simplify<2>();
-    ramp_extractor_.Process(
-        ratio, true, reset, external_clock, ramps.external, size);
-    internal_frequency = 0.0f;
-  } else {
-    float rate = 2.0f;
-    if (range_ == T_GENERATOR_RANGE_4X) {
-      rate = 8.0f;
-    } else if (range_ == T_GENERATOR_RANGE_0_25X) {
-      rate = 0.5f;
-    }
-    internal_frequency = rate * one_hertz_ * SemitonesToRatio(rate_);
-  }
-  
-  use_external_clock_ = use_external_clock;
-  
-  if (*reset) {
-    for (size_t i = 0; i < kNumTChannels; ++i) {
-      slave_ramp_[i].Reset();
-    }
-    sequence_.Reset();
-
-    divider_pattern_length_ = 0;
-    drum_pattern_step_ = kDrumPatternSize;
-    if (model_ != T_GENERATOR_MODEL_DIVIDER) {
-      RandomVector random_vector;
-      sequence_.NextVector(
-          random_vector.x,
-          sizeof(random_vector.x) / sizeof(float));
-      ConfigureSlaveRamps(random_vector);
-    }
-  }
+  float internal_frequency = one_hertz_ * frequency_;
   
   while (size--) {
-    float frequency = use_external_clock
-        ? *ramps.external - previous_external_ramp_value_
-        : internal_frequency;
-    frequency += frequency < 0.0f ? 1.0f : 0.0f;
+    float frequency = internal_frequency;
 
     float jittery_frequency = frequency * jitter_multiplier_;
     master_phase_ += jittery_frequency;
@@ -409,11 +353,7 @@ void TGenerator::Process(
       ConfigureSlaveRamps(random_vector);
     }
     
-    if (internal_frequency) {
-      *ramps.external = master_phase_;
-    }
-    
-    previous_external_ramp_value_ = *ramps.external;
+    *ramps.external = master_phase_;
     ramps.external++;
     *ramps.master++ = master_phase_;
     for (size_t j = 0; j < kNumTChannels; ++j) {

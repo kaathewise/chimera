@@ -1,6 +1,7 @@
-// Copyright 2015 Emilie Gillet.
+// Copyright 2026 Svyatoslav Usachev (kaathewise@gmail.com)
 //
-// Author: Emilie Gillet (emilie.o.gillet@gmail.com)
+// Based on: https://github.com/pichenettes/eurorack/tree/master/marbles
+// Original Copyright 2015 Emilie Gillet (emilie.o.gillet@gmail.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +33,6 @@
 #include "../eurorack/stmlib/stmlib.h"
 
 #include "../eurorack/marbles/ramp/ramp_divider.h"
-#include "../eurorack/marbles/ramp/ramp_extractor.h"
 #include "../eurorack/marbles/ramp/ramp_generator.h"
 #include "../eurorack/marbles/ramp/slave_ramp.h"
 #include "../eurorack/marbles/random/distributions.h"
@@ -44,7 +44,6 @@ namespace sequencer {
 using marbles::Ratio;
 using marbles::RandomStream;
 using marbles::RandomSequence;
-using marbles::RampExtractor;
 using marbles::RampGenerator;
 using marbles::SlaveRamp;
 
@@ -93,19 +92,6 @@ class TGenerator {
   void Init(RandomStream* random_stream, float sr);
 
   void Process(
-      bool use_external_clock,
-      const stmlib::GateFlags* external_clock,
-      Ramps ramps,
-      bool* gate,
-      size_t size) {
-    bool reset = false;
-    Process(use_external_clock, &reset, external_clock, ramps, gate, size);
-  }
-
-  void Process(
-      bool use_external_clock,
-      bool* reset,
-      const stmlib::GateFlags* external_clock,
       Ramps ramps,
       bool* gate,
       size_t size);
@@ -118,8 +104,8 @@ class TGenerator {
     range_ = range;
   }
   
-  inline void set_rate(float rate) {
-    rate_ = rate;
+  inline void set_frequency(float frequency) {
+    frequency_ = frequency;
   }
   
   inline void set_bias(float bias) {
@@ -182,7 +168,7 @@ class TGenerator {
   TGeneratorModel model_;
   TGeneratorRange range_;
   
-  float rate_;
+  float frequency_;
   float bias_;
   float jitter_;
   float pulse_width_mean_;
@@ -191,10 +177,7 @@ class TGenerator {
   float master_phase_;
   float jitter_multiplier_;
   float phase_difference_;
-  float previous_external_ramp_value_;
   
-  bool use_external_clock_;
-
   int32_t divider_pattern_length_;
   int32_t streak_counter_[kMarkovHistorySize];
   int32_t markov_history_[kMarkovHistorySize];
@@ -203,13 +186,11 @@ class TGenerator {
   size_t drum_pattern_index_;
 
   RandomSequence sequence_;
-  RampExtractor ramp_extractor_;
   RampGenerator ramp_generator_;
 
   SlaveRamp slave_ramp_[kNumTChannels];
   
   stmlib::HysteresisQuantizer2 bias_quantizer_;
-  stmlib::HysteresisQuantizer2 rate_quantizer_;
   
   static DividerPattern divider_patterns[kNumDividerPatterns];
   static DividerPattern fixed_divider_patterns[kNumDividerPatterns];

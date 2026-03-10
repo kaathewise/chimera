@@ -11,7 +11,7 @@ class Sequencer {
 public:
     Sequencer() = default;
     void Init(float sampleRate);
-    void Process(bool useExternalClock, float dejaVu, float rate, float bias, float jitter, int loopLength, bool* gate);
+    void Process(float dejaVu, float frequency, float bias, float jitter, int loopLength, bool* gate);
     const Ramps& ramps() const { return ramps_; }
 
 private:
