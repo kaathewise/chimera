@@ -5,12 +5,12 @@ TARGET = sequencer_check
 CPP_SOURCES = sequencer_check.cpp \
               sequencer.cpp \
               controls.cpp \
+              t_generator.cpp \
               ../simpletouch/knobs.cpp \
               ../simpletouch/switches.cpp
 
 # Add .cc files as .cpp to trick libDaisy core into adding them to OBJECTS
-CC_SOURCES = ../eurorack/marbles/random/t_generator.cc \
-             ../eurorack/marbles/ramp/ramp_extractor.cc \
+CC_SOURCES = ../eurorack/marbles/ramp/ramp_extractor.cc \
              ../eurorack/marbles/resources.cc \
              ../eurorack/stmlib/dsp/units.cc
 
@@ -24,7 +24,8 @@ C_INCLUDES = -I.. \
 LIBDAISY_DIR = ../libDaisy
 DAISYSP_DIR = ../DaisySP
 
-APP_TYPE = BOOT_SRAM
+# Use QSPI flash since internal flash is too small for Marbles resources
+APP_TYPE = BOOT_QSPI
 
 # Core location, and generic Makefile.
 SYSTEM_FILES_DIR = $(LIBDAISY_DIR)/core

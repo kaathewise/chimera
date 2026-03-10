@@ -8,6 +8,13 @@ void Controls::Process() {
     knob.Process();
   }
 
+  // Map knob values to sequencer parameters
+  // * DejaVu - knob s36
+  // * Rate - knob s30
+  // * Bias - knob s32
+  // * Jitter - knob s31
+  // * Loop Length - knob s37
+
   deja_vu_ = touch_.knobs().s36().Value();
   rate_ = touch_.knobs().s30().Value();
   bias_ = touch_.knobs().s32().Value();

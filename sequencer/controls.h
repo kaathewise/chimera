@@ -1,4 +1,5 @@
-#pragma once
+#ifndef SEQUENCER_CONTROLS_H_
+#define SEQUENCER_CONTROLS_H_
 
 #include "../simpletouch/touch.h"
 
@@ -27,3 +28,5 @@ class Controls {
 };
 
 }  // namespace sequencer
+
+#endif  // SEQUENCER_CONTROLS_H_

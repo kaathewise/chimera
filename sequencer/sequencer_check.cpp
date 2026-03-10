@@ -41,9 +41,9 @@ int main() {
     DaisySeed::Print(FLT_FMT(5) " ", FLT_VAR(5, controls.bias()));
     DaisySeed::Print(FLT_FMT(5) " ", FLT_VAR(5, controls.jitter()));
     DaisySeed::Print("%d ", controls.loop_length());
-    DaisySeed::Print(FLT_FMT(5) " ", FLT_VAR(5, *seq.Ramps().master));
-    DaisySeed::Print(FLT_FMT(5) " ", FLT_VAR(5, *seq.Ramps().slave[0]));
-    DaisySeed::PrintLine(FLT_FMT(5) " ", FLT_VAR(5, *seq.Ramps().slave[1]));
+    DaisySeed::Print(FLT_FMT(5) " ", FLT_VAR(5, *seq.ramps().master));
+    DaisySeed::Print(FLT_FMT(5) " ", FLT_VAR(5, *seq.ramps().slave[0]));
+    DaisySeed::PrintLine(FLT_FMT(5) " ", FLT_VAR(5, *seq.ramps().slave[1]));
 
     System::Delay(10);
   }

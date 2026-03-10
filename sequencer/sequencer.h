@@ -1,6 +1,7 @@
-#pragma once
+#ifndef SEQUENCER_SEQUENCER_H_
+#define SEQUENCER_SEQUENCER_H_
 
-#include "../eurorack/marbles/random/t_generator.h"
+#include "t_generator.h"
 #include "../eurorack/marbles/random/random_stream.h"
 #include "../eurorack/marbles/random/random_generator.h"
 
@@ -11,14 +12,16 @@ public:
     Sequencer() = default;
     void Init(float sampleRate);
     void Process(bool useExternalClock, float dejaVu, float rate, float bias, float jitter, int loopLength, bool* gate);
-    const marbles::Ramps& Ramps() const { return ramps_; }
+    const Ramps& ramps() const { return ramps_; }
 
 private:
-    marbles::TGenerator t_generator_;
+    TGenerator t_generator_;
     marbles::RandomStream random_stream_;
     marbles::RandomGenerator random_generator_;
-    marbles::Ramps ramps_;
+    Ramps ramps_;
     float ramp_buffer_[4];
 };
 
 }
+
+#endif  // SEQUENCER_SEQUENCER_H_
