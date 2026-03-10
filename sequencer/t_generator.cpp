@@ -319,51 +319,44 @@ void TGenerator::ConfigureSlaveRamps(const RandomVector& x) {
 
 void TGenerator::Process(
     Ramps ramps,
-    bool* gate,
-    size_t size) {
-  float internal_frequency = one_hertz_ * frequency_;
-  
-  while (size--) {
-    float frequency = internal_frequency;
+    bool* gate) {
+  float frequency = one_hertz_ * frequency_;
 
-    float jittery_frequency = frequency * jitter_multiplier_;
-    master_phase_ += jittery_frequency;
-    phase_difference_ += frequency - jittery_frequency;
+  float jittery_frequency = frequency * jitter_multiplier_;
+  master_phase_ += jittery_frequency;
+  phase_difference_ += frequency - jittery_frequency;
+  
+  if (master_phase_ > 1.0f) {
+    master_phase_ -= 1.0f;
+    RandomVector random_vector;
+    sequence_.NextVector(
+        random_vector.x,
+        sizeof(random_vector.x) / sizeof(float));
     
-    if (master_phase_ > 1.0f) {
-      master_phase_ -= 1.0f;
-      RandomVector random_vector;
-      sequence_.NextVector(
-          random_vector.x,
-          sizeof(random_vector.x) / sizeof(float));
-      
-      float jitter_amount = jitter_ * jitter_ * jitter_ * jitter_ * 36.0f;
-      float x = FastBetaDistributionSample(random_vector.variables.jitter);
-      float multiplier = SemitonesToRatio((x * 2.0f - 1.0f) * jitter_amount);
-      
-      // This step is crucial in making sure that the jittered clock does not
-      // deviate too much from the master clock. The larger the phase difference
-      // difference between the two, the more likely the jittery clock will
-      // speed up or down to catch up with the straight clock.
-      multiplier *= phase_difference_ > 0.0f
-            ? 1.0f + phase_difference_
-            : 1.0f / (1.0f - phase_difference_);
-      
-      jitter_multiplier_ = multiplier;
-      ConfigureSlaveRamps(random_vector);
-    }
+    float jitter_amount = jitter_ * jitter_ * jitter_ * jitter_ * 36.0f;
+    float x = FastBetaDistributionSample(random_vector.variables.jitter);
+    float multiplier = SemitonesToRatio((x * 2.0f - 1.0f) * jitter_amount);
     
-    *ramps.external = master_phase_;
-    ramps.external++;
-    *ramps.master++ = master_phase_;
-    for (size_t j = 0; j < kNumTChannels; ++j) {
-      slave_ramp_[j].Process(
-          frequency * jitter_multiplier_,
-          ramps.slave[j],
-          gate);
-      ramps.slave[j]++;
-      gate++;
-    }
+    // This step is crucial in making sure that the jittered clock does not
+    // deviate too much from the master clock. The larger the phase difference
+    // difference between the two, the more likely the jittery clock will
+    // speed up or down to catch up with the straight clock.
+    multiplier *= phase_difference_ > 0.0f
+          ? 1.0f + phase_difference_
+          : 1.0f / (1.0f - phase_difference_);
+    
+    jitter_multiplier_ = multiplier;
+    ConfigureSlaveRamps(random_vector);
+  }
+  
+  *ramps.external = master_phase_;
+  *ramps.master = master_phase_;
+  for (size_t j = 0; j < kNumTChannels; ++j) {
+    slave_ramp_[j].Process(
+        frequency * jitter_multiplier_,
+        ramps.slave[j],
+        gate);
+    gate++;
   }
 }
 

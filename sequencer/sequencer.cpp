@@ -21,7 +21,7 @@ void Sequencer::Process(float dejaVu, float frequency, float bias, float jitter,
     t_generator_.set_jitter(jitter);
     t_generator_.set_length(loopLength);
 
-    t_generator_.Process(ramps_, gate, 1);
+    t_generator_.Process(ramps_, gate);
 }
 
 }

@@ -93,8 +93,7 @@ class TGenerator {
 
   void Process(
       Ramps ramps,
-      bool* gate,
-      size_t size);
+      bool* gate);
   
   inline void set_model(TGeneratorModel model) {
     model_ = model;
