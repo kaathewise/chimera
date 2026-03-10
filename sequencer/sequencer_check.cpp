@@ -1,7 +1,9 @@
 #include <daisy_seed.h>
+
+#include "../libDaisy/src/daisy_seed.h"
+#include "../simpletouch/touch.h"
 #include "controls.h"
 #include "sequencer.h"
-#include "../simpletouch/touch.h"
 
 using namespace daisy;
 using namespace sequencer;
@@ -43,7 +45,8 @@ int main() {
     DaisySeed::Print("%d ", controls.loop_length());
     DaisySeed::Print(FLT_FMT(5) " ", FLT_VAR(5, *seq.ramps().master));
     DaisySeed::Print(FLT_FMT(5) " ", FLT_VAR(5, *seq.ramps().slave[0]));
-    DaisySeed::PrintLine(FLT_FMT(5) " ", FLT_VAR(5, *seq.ramps().slave[1]));
+    DaisySeed::Print(FLT_FMT(5) " ", FLT_VAR(5, *seq.ramps().slave[1]));
+    DaisySeed::PrintLine("");
 
     System::Delay(10);
   }

@@ -22,7 +22,7 @@ void Sequencer::Process(bool useExternalClock, float dejaVu, float rate, float b
     t_generator_.set_length(loopLength);
 
     // Assuming block size of 1 for per-sample processing
-    t_generator_.Process(useExternalClock, nullptr, ramps_, gate, 4);
+    t_generator_.Process(useExternalClock, nullptr, ramps_, gate, 1);
 }
 
 }
