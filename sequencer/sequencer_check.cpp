@@ -17,10 +17,9 @@ Controls controls(touch);
 
 void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out,
                    size_t size) {
-  bool gate[2];
   controls.Process();
   seq.Process(controls.deja_vu(), controls.rate(), controls.bias(),
-              controls.jitter(), controls.loop_length(), gate);
+              controls.jitter(), controls.loop_length());
 }
 
 int main() {
@@ -41,9 +40,9 @@ int main() {
     DaisySeed::Print(FLT_FMT(5) " ", FLT_VAR(5, controls.bias()));
     DaisySeed::Print(FLT_FMT(5) " ", FLT_VAR(5, controls.jitter()));
     DaisySeed::Print("%d ", controls.loop_length());
-    DaisySeed::Print(FLT_FMT(5) " ", FLT_VAR(5, *seq.ramps().master));
-    DaisySeed::Print(FLT_FMT(5) " ", FLT_VAR(5, *seq.ramps().slave[0]));
-    DaisySeed::Print(FLT_FMT(5) " ", FLT_VAR(5, *seq.ramps().slave[1]));
+    DaisySeed::Print(FLT_FMT(5) " ", FLT_VAR(5, seq.ramps().master));
+    DaisySeed::Print(FLT_FMT(5) " ", FLT_VAR(5, seq.ramps().slave[0]));
+    DaisySeed::Print(FLT_FMT(5) " ", FLT_VAR(5, seq.ramps().slave[1]));
     DaisySeed::PrintLine("");
 
     System::Delay(10);

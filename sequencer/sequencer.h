@@ -13,15 +13,14 @@ class Sequencer {
   Sequencer() = default;
   void Init(float sampleRate);
   void Process(float dejaVu, float frequency, float bias, float jitter,
-               int loopLength, bool* gate);
-  const Ramps& ramps() const { return ramps_; }
+               int loopLength);
+  const Ramps& ramps() const { return t_generator_.ramps(); }
+  const Triggers& triggers() const { return t_generator_.triggers(); }
 
  private:
   TGenerator t_generator_;
   marbles::RandomStream random_stream_;
   marbles::RandomGenerator random_generator_;
-  Ramps ramps_;
-  float ramp_buffer_[3];
 
   DISALLOW_COPY_AND_ASSIGN(Sequencer);
 };

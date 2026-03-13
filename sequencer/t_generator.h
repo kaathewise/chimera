@@ -30,10 +30,9 @@
 #ifndef SEQUENCER_T_GENERATOR_H_
 #define SEQUENCER_T_GENERATOR_H_
 
+#include "eurorack/marbles/ramp/ramp.h"
 #include "eurorack/marbles/ramp/ramp_divider.h"
 #include "eurorack/marbles/ramp/ramp_generator.h"
-#include "eurorack/marbles/ramp/slave_ramp.h"
-#include "eurorack/marbles/random/distributions.h"
 #include "eurorack/marbles/random/random_sequence.h"
 #include "eurorack/stmlib/dsp/hysteresis_quantizer.h"
 #include "eurorack/stmlib/stmlib.h"
@@ -44,7 +43,88 @@ using marbles::RampGenerator;
 using marbles::RandomSequence;
 using marbles::RandomStream;
 using marbles::Ratio;
-using marbles::SlaveRamp;
+
+class SlaveRamp {
+ public:
+  SlaveRamp() = default;
+  ~SlaveRamp() = default;
+
+  void Init() {
+    phase_ = 0.0f;
+    max_phase_ = marbles::kMaxRampValue;
+    ratio_ = 1.0f;
+    target_ = 1.0f;
+    bernoulli_ = false;
+    must_complete_ = false;
+  }
+
+  void Reset() {
+    Init();
+    phase_ = 1.0f;
+  }
+
+  void Init(int pattern_length, Ratio ratio) {
+    bernoulli_ = false;
+    phase_ = 0.0f;
+    max_phase_ = static_cast<float>(pattern_length) * marbles::kMaxRampValue;
+    ratio_ = ratio.to_float();
+    target_ = 1.0f;
+  }
+
+  void Init(bool must_complete, float expected_value) {
+    bernoulli_ = true;
+    if (must_complete_) {
+      phase_ = 0.0f;
+      ratio_ = 1.0f;
+    }
+
+    if (!must_complete) {
+      ratio_ = (1.0f - phase_) * expected_value;
+    } else {
+      ratio_ = 1.0f - phase_;
+    }
+    must_complete_ = must_complete;
+  }
+
+  void Process(float frequency, float* phase, bool* trigger) {
+    float output_phase;
+    *trigger = false;
+    if (bernoulli_) {
+      float previous_phase = phase_;
+      phase_ += frequency * ratio_;
+      output_phase = phase_;
+      if (output_phase >= 1.0f) {
+        output_phase = 1.0f;
+      }
+      if (previous_phase < 1.0f && phase_ >= 1.0f) {
+        *trigger = true;
+      }
+    } else {
+      phase_ += frequency;
+      if (phase_ >= max_phase_) {
+        phase_ = max_phase_;
+      }
+      output_phase = phase_ * ratio_;
+      if (output_phase > target_) {
+        *trigger = true;
+        target_ += 1.0f;
+      }
+      output_phase -= static_cast<float>(static_cast<int>(output_phase));
+    }
+    *phase = output_phase;
+  }
+
+ private:
+  float phase_;
+  float max_phase_;
+  float ratio_;
+  float target_;
+
+  bool bernoulli_;
+  bool must_complete_;
+
+  DISALLOW_COPY_AND_ASSIGN(SlaveRamp);
+};
 
 enum TGeneratorModel {
   T_GENERATOR_MODEL_COMPLEMENTARY_BERNOULLI,
@@ -75,8 +155,13 @@ struct DividerPattern {
 };
 
 struct Ramps {
-  float* master;
-  float* slave[kNumTChannels];
+  float master;
+  float slave[kNumTChannels];
+};
+
+struct Triggers {
+  bool master;
+  bool slave[kNumTChannels];
 };
 
 const size_t kNumDividerPatterns = 17;
@@ -84,44 +169,40 @@ const size_t kNumInputDividerRatios = 9;
 
 class TGenerator {
  public:
-  TGenerator() {}
-  ~TGenerator() {}
+  TGenerator() = default;
+
+  ~TGenerator() = default;
 
   void Init(RandomStream* random_stream, float sr);
 
-  void Process(Ramps ramps, bool* gate);
+  void Process();
 
-  inline void set_model(TGeneratorModel model) { model_ = model; }
+  void set_model(TGeneratorModel model) { model_ = model; }
 
-  inline void set_range(TGeneratorRange range) { range_ = range; }
+  void set_range(TGeneratorRange range) { range_ = range; }
 
-  inline void set_frequency(float frequency) { frequency_ = frequency; }
+  void set_frequency(float frequency) { frequency_ = frequency; }
 
-  inline void set_bias(float bias) { bias_ = bias; }
+  void set_bias(float bias) { bias_ = bias; }
 
-  inline void set_jitter(float jitter) { jitter_ = jitter; }
+  void set_jitter(float jitter) { jitter_ = jitter; }
 
-  inline void set_deja_vu(float deja_vu) { sequence_.set_deja_vu(deja_vu); }
+  void set_deja_vu(float deja_vu) { sequence_.set_deja_vu(deja_vu); }
 
-  inline void set_length(int length) { sequence_.set_length(length); }
+  void set_length(int length) { sequence_.set_length(length); }
 
-  inline void set_pulse_width_mean(float pulse_width_mean) {
-    pulse_width_mean_ = pulse_width_mean;
-  }
+  const Ramps& ramps() const { return ramps_; }
 
-  inline void set_pulse_width_std(float pulse_width_std) {
-    pulse_width_std_ = pulse_width_std;
-  }
+  const Triggers& triggers() const { return triggers_; }
 
  private:
   union RandomVector {
     struct {
-      float pulse_width[kNumTChannels];
       float u[kNumTChannels];
       float p;
       float jitter;
     } variables;
-    float x[2 * kNumTChannels + 2];
+    float x[kNumTChannels + 2];
   };
 
   void ConfigureSlaveRamps(const RandomVector& v);
@@ -132,17 +213,6 @@ class TGenerator {
   int GenerateMarkov(const RandomVector& v);
   void ScheduleOutputPulses(const RandomVector& v, int bitmask);
 
-  float RandomPulseWidth(int i, float u) {
-    if (pulse_width_std_ == 0.0f) {
-      return 0.05f + 0.9f * pulse_width_mean_;
-    } else {
-      return 0.05f + 0.9f * marbles::BetaDistributionSample(
-                                u, pulse_width_std_,
-                                pulse_width_mean_);  // Jon Brooks
-      // i & 1 ? 1.0f - pulse_width_mean_);
-    }
-  }
-
   float one_hertz_;
 
   TGeneratorModel model_;
@@ -151,8 +221,6 @@ class TGenerator {
   float frequency_;
   float bias_;
   float jitter_;
-  float pulse_width_mean_;
-  float pulse_width_std_;
 
   float master_phase_;
   float jitter_multiplier_;
@@ -167,6 +235,9 @@ class TGenerator {
 
   RandomSequence sequence_;
   RampGenerator ramp_generator_;
+
+  Ramps ramps_;
+  Triggers triggers_;
 
   SlaveRamp slave_ramp_[kNumTChannels];
 

@@ -31,6 +31,7 @@
 
 #include <algorithm>
 
+#include "eurorack/marbles/random/distributions.h"
 #include "eurorack/marbles/resources.h"
 #include "eurorack/stmlib/dsp/units.h"
 
@@ -96,8 +97,6 @@ void TGenerator::Init(RandomStream* random_stream, float sr) {
   frequency_ = 1.0f;
   bias_ = 0.5f;
   jitter_ = 0.0f;
-  pulse_width_mean_ = 0.0f;
-  pulse_width_std_ = 0.0f;
 
   master_phase_ = 0.0f;
   jitter_multiplier_ = 1.0f;
@@ -213,8 +212,7 @@ int TGenerator::GenerateMarkov(const RandomVector& x) {
 
 void TGenerator::ScheduleOutputPulses(const RandomVector& x, int bitmask) {
   for (size_t i = 0; i < kNumTChannels; ++i) {
-    slave_ramp_[i].Init(bitmask & 1,
-                        RandomPulseWidth(i, x.variables.pulse_width[i]), 0.5f);
+    slave_ramp_[i].Init(bitmask & 1, 0.5f);
     bitmask >>= 1;
   }
 }
@@ -250,15 +248,14 @@ void TGenerator::ConfigureSlaveRamps(const RandomVector& x) {
       if (divider_pattern_length_ <= 0) {
         DividerPattern pattern;
         if (model_ == T_GENERATOR_MODEL_DIVIDER) {
-          pattern =
-              bias_quantizer_.Lookup(TGenerator::fixed_divider_patterns, bias_);
+          pattern = bias_quantizer_.Lookup(fixed_divider_patterns, bias_);
         } else {
           float strength = fabs(bias_ - 0.5f) * 2.0f;
           float u = x.variables.u[0];
           u *= (u + strength * strength * (1.0f - u));
           u *= strength;
-          pattern = TGenerator::divider_patterns[static_cast<size_t>(
-              u * kNumDividerPatterns)];
+          pattern =
+              divider_patterns[static_cast<size_t>(u * kNumDividerPatterns)];
           if (bias_ < 0.5f) {
             for (size_t i = 0; i < kNumTChannels / 2; ++i) {
               swap(pattern.ratios[i], pattern.ratios[kNumTChannels - 1 - i]);
@@ -266,8 +263,7 @@ void TGenerator::ConfigureSlaveRamps(const RandomVector& x) {
           }
         }
         for (size_t i = 0; i < kNumTChannels; ++i) {
-          slave_ramp_[i].Init(pattern.length, pattern.ratios[i],
-                              RandomPulseWidth(i, x.variables.pulse_width[i]));
+          slave_ramp_[i].Init(pattern.length, pattern.ratios[i]);
         }
         divider_pattern_length_ = pattern.length;
       }
@@ -275,7 +271,7 @@ void TGenerator::ConfigureSlaveRamps(const RandomVector& x) {
   }
 }
 
-void TGenerator::Process(Ramps ramps, bool* gate) {
+void TGenerator::Process() {
   float frequency = one_hertz_ * frequency_;
 
   float jittery_frequency = frequency * jitter_multiplier_;
@@ -283,6 +279,7 @@ void TGenerator::Process(Ramps ramps, bool* gate) {
   phase_difference_ += frequency - jittery_frequency;
 
   if (master_phase_ > 1.0f) {
+    triggers_.master = true;
     master_phase_ -= 1.0f;
     RandomVector random_vector;
     sequence_.NextVector(random_vector.x,
@@ -301,13 +298,14 @@ void TGenerator::Process(Ramps ramps, bool* gate) {
 
     jitter_multiplier_ = multiplier;
     ConfigureSlaveRamps(random_vector);
+  } else {
+    triggers_.master = false;
   }
 
-  *ramps.master = master_phase_;
+  ramps_.master = master_phase_;
   for (size_t j = 0; j < kNumTChannels; ++j) {
-    slave_ramp_[j].Process(frequency * jitter_multiplier_, ramps.slave[j],
-                           gate);
-    gate++;
+    slave_ramp_[j].Process(frequency * jitter_multiplier_, &ramps_.slave[j],
+                           &triggers_.slave[j]);
   }
 }
 
