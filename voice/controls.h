@@ -21,6 +21,22 @@ class Controls {
   float morph() const { return morph_.Value(); }
   float accent() const { return accent_.Value(); }
 
+  void Attach() {
+    note_.Attach();
+    harmonics_.Attach();
+    timbre_.Attach();
+    morph_.Attach();
+    accent_.Attach();
+  }
+
+  void Detach() {
+    note_.Detach();
+    harmonics_.Detach();
+    timbre_.Detach();
+    morph_.Detach();
+    accent_.Detach();
+  }
+
  private:
   simpletouch::Touch& touch_;
 

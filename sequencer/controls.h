@@ -31,6 +31,22 @@ class Controls {
     return static_cast<int>(loop_length_.Value() * 15.0f) + 1;
   }
 
+  void Attach() {
+    deja_vu_.Attach();
+    rate_.Attach();
+    bias_.Attach();
+    jitter_.Attach();
+    loop_length_.Attach();
+  }
+
+  void Detach() {
+    deja_vu_.Detach();
+    rate_.Detach();
+    bias_.Detach();
+    jitter_.Detach();
+    loop_length_.Detach();
+  }
+
  private:
   simpletouch::Touch& touch_;
 
