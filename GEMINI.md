@@ -38,7 +38,7 @@ It is not possible to automatically test the modules, apart from building the mo
 
 ## Development Conventions
 
-- **Language**: C++14.
+- **Language**: C++20.
 - **Namespace**:
     - `sequencer`: For sequencer-specific logic.
     - `simpletouch`: For hardware interface logic.
@@ -56,3 +56,7 @@ It is not possible to automatically test the modules, apart from building the mo
 - `sequencer/sequencer_check.cpp`: Best example of how the `sequencer` and `simpletouch` modules integrate.
 - `simpletouch/touch.h`: Main entry point for hardware control access.
 - `sequencer/t_generator.cpp`: Core logic for gate generation, including jitter and probability-based sequencing.
+
+## Sync Policy
+
+Before using any file-editing tool (write_file, replace), you MUST first use read_file on the target file to ensure your context matches the current disk state. Do not assume your cached memory of the file is up to date.
