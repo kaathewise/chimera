@@ -1,62 +1,57 @@
 # Chimera Project Overview
 
-This project is a C++ audio synthesis environment built for the **Daisy Audio Platform**. It combines standard Daisy libraries with custom hardware abstractions and synthesis modules, including ports from Mutable Instruments' Eurorack modules.
+Chimera is a sophisticated synthesizer firmware for the **Daisy Seed** (STM32H750) platform. It integrates high-quality DSP engines from Mutable Instruments (Plaits, Marbles) into a custom control framework featuring touch pads and knobs.
 
-## Project Structure
+## Architecture
 
-- **libDaisy/**: Hardware Abstraction Library (HAL) for the Daisy platform. Provides access to audio, MIDI, USB, and peripheral drivers (SPI, I2C, etc.).
-- **DaisySP/**: A powerful DSP library containing modular components for audio software (oscillators, filters, envelopes, etc.).
-- **eurorack/**: Contains code from Mutable Instruments Eurorack modules.
-    - `marbles/`: Implementation of the Marbles random sampler module.
-- **sequencer/**: Custom sequencer implementation.
-    - `t_generator.cpp/h`: Ported and modified gate generator from Marbles.
-    - `controls.cpp/h`: Mapping of hardware inputs to sequencer parameters.
-    - `sequencer_check.cpp`: Test utility for the sequencer module.
-- **simpletouch/**: Hardware-specific interface library for a custom control surface.
-    - `knobs.cpp/h`: Interface for 8 analog knobs.
-    - `pads.h`: Interface for 12 touch pads (MPR121).
-    - `switches.cpp/h`: Interface for switches.
-    - `controls_check.cpp`: Test utility for hardware controls.
+The project is organized into several sub-modules, each handling a specific part of the system:
+
+- **`chimera/`**: The main application entry point and orchestration layer. The `Patch` class manages the high-level logic, switching between sequencer and voice control modes.
+- **`voice/`**: Sound generation logic. It wraps the `plaits::ParticleEngine` (from Mutable Instruments Plaits) and adds a `ChannelPostProcessor` with Low Pass Gate (LPG) and Limiter.
+- **`sequencer/`**: Generative sequencing logic. It uses the `TGenerator` and `RandomStream` from Mutable Instruments Marbles to create rhythmic patterns.
+- **`simpletouch/`**: Hardware abstraction layer for inputs.
+    - `Pads`: Handles MPR121 capacitive touch sensor.
+    - `Knobs`: Manages ADC-connected potentiometers.
+    - `Switches`: Handles digital switches.
+- **`common/`**: Shared utilities, notably `ControlValue` for implementing "soft-takeover" (catch-up) logic when switching knob assignments.
+
+External libraries that are not part of the project itself:
+
+- **`eurorack/`**: A collection of DSP and utility code from Mutable Instruments (Plaits, Marbles, stmlib).
+- **`libDaisy` & `DaisySP`**: Core libraries for the Daisy hardware and audio DSP primitives.
 
 ## Building and Running
 
-The project uses `make` for building. Each main component directory (`DaisySP`, `libDaisy`, `sequencer`, `simpletouch`) contains its own `Makefile`.
+The project uses a standard Makefile-based build system provided by libDaisy, with a custom `include.mk` to handle directory-preserving object mapping.
 
-### Building a module
-
-To build a specific module (e.g., the sequencer test):
-
-```bash
-make -C sequencer
-```
+### Key Commands
+- **Build a module**:
+  ```bash
+  make -C chimera
+  ```
 
 ### Testing
 
 It is not possible to automatically test the modules, apart from building the module, so extra care needs to be taken to ensure code quality.
 
-*Note: Some modules like `sequencer` are configured to run from internal SRAM (`APP_TYPE = BOOT_SRAM`) due to the size of lookup tables.*
+*Note: Some modules are configured to run from internal SRAM (`APP_TYPE = BOOT_SRAM`) due to the size of lookup tables.*
 
 ## Development Conventions
 
-- **Language**: C++20.
-- **Namespace**:
-    - `sequencer`: For sequencer-specific logic.
-    - `simpletouch`: For hardware interface logic.
-    - `daisy`: For libDaisy core functionality.
-    - `stmlib`: For low-level STM32 utility code (used in eurorack ports).
-- **Header Guards**: Prefer `#ifndef #define` pattern over `#pragma once`.
-- **Style Guide**: Follow Google C++ Style Guide.
-- **Includes**: Use absolute paths from workspace root, except for <daisy_seed.h> and <daisysp.h>.
-- **Initialization**: Hardware and module initialization typically happens in `main()` using `hw.Init()` and specific `.Init()` methods for each module.
-- **Audio Processing**: High-priority processing (like knob updates and sequencer logic) should be handled in the `AudioCallback` provided to `hw.StartAudio()`.
-- **Logging**: Use `DaisySeed::Print` and `DaisySeed::PrintLine` for serial debugging. Ensure `DaisySeed::StartLog()` is called.
+- **C++ Standard**: C++20.
+- **Style Guide**: Use Google C++ Style Guide.
+- **Header includes**: Use absolute path from workspace root, with an exception for <daisy_seed.h>.
+- **DSP Processing**: Audio is processed in blocks (default size 4 samples at 48kHz). DSP logic is generally encapsulated in classes with `Init()` and `Process()` methods.
+- **Soft Takeover**: When adding new knob-controlled parameters, use `common::ControlValue` to ensure smooth transitions when switching control pages.
+- **Hardware Integration**: The `simpletouch::Touch` class is the central point for accessing hardware inputs. Avoid direct hardware calls in DSP or high-level logic.
 
 ## Key Files
+- `chimera/chimera.cpp`: Main entry point and audio callback.
+- `chimera/patch.cpp`: High-level patch logic and control routing.
+- `voice/voice.cpp`: Main synthesis voice implementation.
+- `sequencer/sequencer.cpp`: Generative sequencing logic.
+- `include.mk`: Custom build rules for directory-preserving object mapping.
 
-- `sequencer/sequencer_check.cpp`: Best example of how the `sequencer` and `simpletouch` modules integrate.
-- `simpletouch/touch.h`: Main entry point for hardware control access.
-- `sequencer/t_generator.cpp`: Core logic for gate generation, including jitter and probability-based sequencing.
+# DO NOT EDIT BELOW
 
-## Sync Policy
-
-Before using any file-editing tool (write_file, replace), you MUST first use read_file on the target file to ensure your context matches the current disk state. Do not assume your cached memory of the file is up to date.
+@.gemini/rules.md
