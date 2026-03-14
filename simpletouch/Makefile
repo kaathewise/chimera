@@ -13,4 +13,4 @@ CPP_SOURCES = controls_check.cpp \
 C_INCLUDES = -I../
 
 # Include common build rules
-include ../common.mk
+include ../include.mk

@@ -1,6 +1,9 @@
 # Daisy Common Makefile
 # Handles directory-preserving object mapping to avoid name clashes.
 
+# Helps CLion to resolve includes.
+CFLAGS = C_INCLUDES
+
 # Core location, and generic Makefile from libDaisy.
 SYSTEM_FILES_DIR = $(LIBDAISY_DIR)/core
 

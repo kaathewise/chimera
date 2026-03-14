@@ -13,11 +13,8 @@ void Patch::Init(float sample_rate) {
 
 void Patch::ProcessAudio(daisy::AudioHandle::InputBuffer in,
                          daisy::AudioHandle::OutputBuffer out, size_t size) {
-  if (control_target_ == CONTROL_TARGET_SEQUENCER) {
-    sequencer_controls_.Process();
-  } else {
-    voice_controls_.Process();
-  }
+  sequencer_controls_.Process();
+  voice_controls_.Process();
 
   sequencer_.Process(sequencer_controls_.deja_vu(), sequencer_controls_.rate(),
                      sequencer_controls_.bias(), sequencer_controls_.jitter(),
@@ -41,9 +38,6 @@ void Patch::ProcessAudio(daisy::AudioHandle::InputBuffer in,
 }
 
 void Patch::UpdateControls() {
-  // 3. In controls make it so that pad combinations 10 + 3 and 10 + 4 switch
-  // between controlling the sequencer or the voice respectively.
-  // Update this only 100 times per second, not in the AudioCallback.
   const auto& pads = touch_.pads();
 
   if (pads.IsTouched(10)) {

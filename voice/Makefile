@@ -25,4 +25,4 @@ C_INCLUDES = -I.. \
 APP_TYPE = BOOT_SRAM
 
 # Include common build rules
-include ../common.mk
+include ../include.mk
