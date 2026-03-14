@@ -12,7 +12,7 @@ Patch patch(touch);
 
 void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out,
                    size_t size) {
-  patch.ProcessAudio(in, out, size);
+  patch.Process(in, out, size);
 }
 
 int main() {

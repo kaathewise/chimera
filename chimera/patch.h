@@ -22,7 +22,7 @@ class Patch {
         voice_(particle_engine_) {}
 
   void Init(float sample_rate);
-  void ProcessAudio(daisy::AudioHandle::InputBuffer in,
+  void Process(daisy::AudioHandle::InputBuffer in,
                     daisy::AudioHandle::OutputBuffer out, size_t size);
   void UpdateControls();
 

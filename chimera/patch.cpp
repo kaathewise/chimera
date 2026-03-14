@@ -11,7 +11,7 @@ void Patch::Init(float sample_rate) {
   voice_controls_.Detach();
 }
 
-void Patch::ProcessAudio(daisy::AudioHandle::InputBuffer in,
+void Patch::Process(daisy::AudioHandle::InputBuffer in,
                          daisy::AudioHandle::OutputBuffer out, size_t size) {
   sequencer_controls_.Process();
   voice_controls_.Process();
