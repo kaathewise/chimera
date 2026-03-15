@@ -20,6 +20,7 @@ class Controls {
   float timbre() const { return timbre_.Value(); }
   float morph() const { return morph_.Value(); }
   float accent() const { return accent_.Value(); }
+  float overdrive() const { return overdrive_.Value(); }
 
   void Attach() {
     note_.Attach();
@@ -27,6 +28,7 @@ class Controls {
     timbre_.Attach();
     morph_.Attach();
     accent_.Attach();
+    overdrive_.Attach();
   }
 
   void Detach() {
@@ -35,6 +37,7 @@ class Controls {
     timbre_.Detach();
     morph_.Detach();
     accent_.Detach();
+    overdrive_.Detach();
   }
 
  private:
@@ -45,6 +48,7 @@ class Controls {
   ControlValue timbre_{.5f};
   ControlValue morph_{.5f};
   ControlValue accent_{.8f};
+  ControlValue overdrive_{.0f};
 
   DISALLOW_COPY_AND_ASSIGN(Controls);
 };

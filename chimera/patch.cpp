@@ -38,7 +38,7 @@ void Patch::Process(daisy::AudioHandle::InputBuffer in,
                                         .harmonics = voice_controls_.harmonics(),
                                         .accent = voice_controls_.accent()};
 
-  voice_.Process(params, out[0], size);
+  voice_.Process(params, voice_controls_.overdrive(), out[0], size);
 
   memcpy(out[1], out[0], size * sizeof(float));
 }

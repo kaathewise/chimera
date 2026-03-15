@@ -35,6 +35,7 @@
 #include "eurorack/plaits/dsp/engine/engine.h"
 #include "eurorack/plaits/dsp/envelope.h"
 #include "eurorack/plaits/dsp/fx/low_pass_gate.h"
+#include "eurorack/plaits/dsp/fx/overdrive.h"
 #include "eurorack/stmlib/dsp/limiter.h"
 #include "eurorack/stmlib/stmlib.h"
 
@@ -84,8 +85,8 @@ class Voice {
 
   void Init();
 
-  void Process(const plaits::EngineParameters& parameters, float* out,
-               size_t size);
+  void Process(const plaits::EngineParameters& parameters, float overdrive,
+               float* out, size_t size);
 
  private:
   plaits::Engine& engine_;
@@ -94,6 +95,7 @@ class Voice {
   plaits::LPGEnvelope lpg_envelope_;
 
   ChannelPostProcessor post_processor_;
+  plaits::Overdrive overdrive_processor_;
 
   float aux_buffer[128];
 

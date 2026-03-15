@@ -43,10 +43,11 @@ void Voice::Init() {
   decay_envelope_.Init();
   lpg_envelope_.Init();
   post_processor_.Init();
+  overdrive_processor_.Init();
 }
 
-void Voice::Process(const plaits::EngineParameters& parameters, float* out,
-                    size_t size) {
+void Voice::Process(const plaits::EngineParameters& parameters, float overdrive,
+                    float* out, size_t size) {
   bool already_enveloped = engine_.post_processing_settings.already_enveloped;
 
   if (parameters.trigger & plaits::TRIGGER_RISING_EDGE) {
@@ -79,6 +80,8 @@ void Voice::Process(const plaits::EngineParameters& parameters, float* out,
   post_processor_.Process(pp_s.out_gain, lpg_bypass, lpg_envelope_.gain(),
                                lpg_envelope_.frequency(),
                                lpg_envelope_.hf_bleed(), out, size);
+
+  overdrive_processor_.Process(overdrive, out, size);
 }
 
 }  // namespace voice
