@@ -39,15 +39,13 @@ namespace voice {
 void Voice::Init() {
   engine_.post_processing_settings.already_enveloped = false;
   engine_.post_processing_settings.out_gain = -2.0f;
-  engine_.post_processing_settings.aux_gain = 1.0f;
 
   decay_envelope_.Init();
   lpg_envelope_.Init();
-  post_processor_[0].Init();
-  post_processor_[1].Init();
+  post_processor_.Init();
 }
 
-void Voice::Process(const plaits::EngineParameters& parameters, float** out,
+void Voice::Process(const plaits::EngineParameters& parameters, float* out,
                     size_t size) {
   bool already_enveloped = engine_.post_processing_settings.already_enveloped;
 
@@ -56,7 +54,7 @@ void Voice::Process(const plaits::EngineParameters& parameters, float** out,
     lpg_envelope_.Trigger();
   }
 
-  engine_.Render(parameters, out[0], out[1], size, &already_enveloped);
+  engine_.Render(parameters, out, aux_buffer, size, &already_enveloped);
 
   float decay_value = parameters.accent;
   const float short_decay = (200.0f * static_cast<float>(size)) /
@@ -78,11 +76,9 @@ void Voice::Process(const plaits::EngineParameters& parameters, float** out,
   const plaits::PostProcessingSettings& pp_s = engine_.post_processing_settings;
   bool lpg_bypass = already_enveloped;
 
-  for (size_t i = 0; i < 2; i++) {
-    post_processor_[i].Process(pp_s.out_gain, lpg_bypass, lpg_envelope_.gain(),
+  post_processor_.Process(pp_s.out_gain, lpg_bypass, lpg_envelope_.gain(),
                                lpg_envelope_.frequency(),
-                               lpg_envelope_.hf_bleed(), out[i], size);
-  }
+                               lpg_envelope_.hf_bleed(), out, size);
 }
 
 }  // namespace voice

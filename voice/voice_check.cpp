@@ -40,7 +40,9 @@ void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out,
                                         .harmonics = controls.harmonics(),
                                         .accent = controls.accent()};
 
-  v.Process(params, out, size);
+  v.Process(params, out[0], size);
+
+  memcpy(out[1], out[0], size * sizeof(float));
 }
 
 int main() {

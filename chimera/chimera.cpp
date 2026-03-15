@@ -21,7 +21,7 @@ int main() {
   hw.SetAudioBlockSize(4);
 
   touch.Init(hw);
-  patch.Init(hw.AudioCallbackRate());
+  patch.Init(hw);
 
   hw.StartAudio(AudioCallback);
 

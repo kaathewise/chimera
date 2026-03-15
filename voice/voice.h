@@ -84,7 +84,7 @@ class Voice {
 
   void Init();
 
-  void Process(const plaits::EngineParameters& parameters, float** out,
+  void Process(const plaits::EngineParameters& parameters, float* out,
                size_t size);
 
  private:
@@ -93,7 +93,9 @@ class Voice {
   plaits::DecayEnvelope decay_envelope_;
   plaits::LPGEnvelope lpg_envelope_;
 
-  ChannelPostProcessor post_processor_[2];
+  ChannelPostProcessor post_processor_;
+
+  float aux_buffer[128];
 
   DISALLOW_COPY_AND_ASSIGN(Voice);
 };

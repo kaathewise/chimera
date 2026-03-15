@@ -4,7 +4,6 @@
 #include <daisy_seed.h>
 
 #include "eurorack/plaits/dsp/engine/particle_engine.h"
-#include "eurorack/stmlib/utils/buffer_allocator.h"
 #include "sequencer/controls.h"
 #include "sequencer/sequencer.h"
 #include "simpletouch/touch.h"
@@ -21,7 +20,7 @@ class Patch {
         voice_controls_(touch),
         voice_(particle_engine_) {}
 
-  void Init(float sample_rate);
+  void Init(daisy::DaisySeed hw);
   void Process(daisy::AudioHandle::InputBuffer in,
                     daisy::AudioHandle::OutputBuffer out, size_t size);
   void UpdateControls();

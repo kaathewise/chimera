@@ -52,6 +52,4 @@ It is not possible to automatically test the modules, apart from building the mo
 - `sequencer/sequencer.cpp`: Generative sequencing logic.
 - `include.mk`: Custom build rules for directory-preserving object mapping.
 
-# DO NOT EDIT BELOW
-
 @.gemini/rules.md

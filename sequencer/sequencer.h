@@ -11,7 +11,7 @@ namespace sequencer {
 class Sequencer {
  public:
   Sequencer() = default;
-  void Init(float sampleRate);
+  void Init(float callbackRate);
   void Process(float dejaVu, float frequency, float bias, float jitter,
                int loopLength);
   const Ramps& ramps() const { return t_generator_.ramps(); }
