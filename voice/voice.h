@@ -32,6 +32,7 @@
 #ifndef VOICE_VOICE_H
 #define VOICE_VOICE_H
 
+#include "common/delay_line.h"
 #include "eurorack/plaits/dsp/engine/engine.h"
 #include "eurorack/plaits/dsp/envelope.h"
 #include "eurorack/plaits/dsp/fx/low_pass_gate.h"
@@ -41,6 +42,7 @@
 namespace voice {
 
 class ChannelPostProcessor {
+  // ... (rest remains unchanged)
  public:
   ChannelPostProcessor() = default;
   ~ChannelPostProcessor() = default;
@@ -78,22 +80,24 @@ class ChannelPostProcessor {
 
 class Voice {
  public:
-  Voice(plaits::Engine& engine) : engine_(engine) {}
+  Voice(plaits::Engine& engine): engine_(engine) {}
 
   ~Voice() = default;
 
-  void Init();
+  void Init(float sample_rate, stmlib::BufferAllocator* allocator, float max_delay_time);
 
-  void Process(const plaits::EngineParameters& parameters, float* out,
-               size_t size);
+  void Process(const plaits::EngineParameters& parameters, float delay_time,
+               float delay_feedback, float* out, size_t size);
 
  private:
+  float sample_rate_;
   plaits::Engine& engine_;
 
   plaits::DecayEnvelope decay_envelope_;
   plaits::LPGEnvelope lpg_envelope_;
 
   ChannelPostProcessor post_processor_;
+  common::DelayLine delay_line_;
 
   float aux_buffer[128];
 

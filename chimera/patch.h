@@ -3,6 +3,7 @@
 
 #include <daisy_seed.h>
 
+#include "dev/sdram.h"
 #include "eurorack/plaits/dsp/engine/particle_engine.h"
 #include "sequencer/controls.h"
 #include "sequencer/sequencer.h"
@@ -11,6 +12,8 @@
 #include "voice/voice.h"
 
 namespace chimera {
+
+static float DSY_SDRAM_BSS delay_buffer[240000];
 
 class Patch {
  public:

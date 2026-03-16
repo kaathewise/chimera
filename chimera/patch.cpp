@@ -9,7 +9,10 @@ namespace chimera {
 void Patch::Init(daisy::DaisySeed hw) {
   stmlib::BufferAllocator allocator(buffer_space_, sizeof(buffer_space_));
   particle_engine_.Init(&allocator);
-  voice_.Init();
+
+  stmlib::BufferAllocator sdram_allocator(delay_buffer, sizeof(delay_buffer));
+  voice_.Init(hw.AudioSampleRate(), &sdram_allocator, 5);
+
   sequencer_.Init(hw.AudioCallbackRate());
   sequencer_controls_.Attach();
   voice_controls_.Detach();
@@ -38,7 +41,9 @@ void Patch::Process(daisy::AudioHandle::InputBuffer in,
                                         .harmonics = voice_controls_.harmonics(),
                                         .accent = voice_controls_.accent()};
 
-  voice_.Process(params, out[0], size);
+  voice_.Process(params,
+                 voice_controls_.delay_time(), voice_controls_.delay_feedback(),
+                 out[0], size);
 
   memcpy(out[1], out[0], size * sizeof(float));
 }

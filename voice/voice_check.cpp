@@ -9,16 +9,18 @@
 using namespace daisy;
 using namespace voice;
 
+int trigger_counter = 0;
+int sample_rate = 48000;
+
 DaisySeed hw;
 simpletouch::Touch touch;
 Controls controls(touch);
 plaits::ParticleEngine pe;
-Voice v(pe);
 uint32_t buffer_space[8192];
+float DSY_SDRAM_BSS delay_buffer[240000];
 stmlib::BufferAllocator allocator(buffer_space, 8192 * 4);
-
-int trigger_counter = 0;
-int sample_rate = 48000;
+stmlib::BufferAllocator delay_allocator(delay_buffer, sizeof(delay_buffer));
+Voice v(pe);
 
 void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out,
                    size_t size) {
@@ -40,7 +42,8 @@ void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out,
                                         .harmonics = controls.harmonics(),
                                         .accent = controls.accent()};
 
-  v.Process(params, out[0], size);
+  v.Process(params, controls.delay_time(),
+            controls.delay_feedback(), out[0], size);
 
   memcpy(out[1], out[0], size * sizeof(float));
 }
@@ -52,7 +55,7 @@ int main() {
 
   touch.Init(hw);
   pe.Init(&allocator);
-  v.Init();
+  v.Init(sample_rate, &delay_allocator, 5);
 
   hw.StartAudio(AudioCallback);
   while (true) {
