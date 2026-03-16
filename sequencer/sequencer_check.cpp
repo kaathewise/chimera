@@ -30,6 +30,7 @@ int main() {
 
   touch.Init(hw);
   seq.Init(hw.AudioCallbackRate());
+  simpletouch_controls.Attach();
 
   DaisySeed::StartLog();
 

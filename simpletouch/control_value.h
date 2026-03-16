@@ -20,7 +20,7 @@ class ControlValue {
 
   ControlValue(Touch& touch, float initial, float threshold = 0.05f, float coeff = 0.02f)
       : touch_(touch),
-        state_(kStateTryToAttach),
+        state_(kStateDetached),
         value_(initial),
         coeff_(coeff),
         threshold_(threshold) {}

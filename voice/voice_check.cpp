@@ -57,6 +57,9 @@ int main() {
   touch.Init(hw);
   pe.Init(&allocator);
   v.Init(sample_rate, &delay_allocator, 5);
+  simpletouch_controls.Attach();
+
+  DaisySeed::StartLog();
 
   hw.StartAudio(AudioCallback);
   while (true) {
