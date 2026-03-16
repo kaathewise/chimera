@@ -24,7 +24,7 @@ public:
 
   void Blink() {
     hw_->SetLed(true);
-    timer_ = static_cast<uint16_t>(.5f * hw_->AudioCallbackRate());
+    timer_ = static_cast<uint16_t>(.25f * hw_->AudioCallbackRate());
   }
 
   void Process() {

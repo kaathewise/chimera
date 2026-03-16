@@ -18,7 +18,7 @@ class ControlValue {
     kStateSeeking
   };
 
-  ControlValue(Touch& touch, float initial, float threshold = 0.05f, float coeff = 0.02f)
+  ControlValue(Touch& touch, float initial, float threshold = 0.02f, float coeff = 0.02f)
       : touch_(touch),
         state_(kStateDetached),
         value_(initial),
