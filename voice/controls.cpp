@@ -8,7 +8,6 @@ void Controls::Process() {
   timbre_.Process(touch_.knobs().s32().GetRawFloat());
   morph_.Process(touch_.knobs().s33().GetRawFloat());
   accent_.Process(touch_.knobs().s34().GetRawFloat());
-  overdrive_.Process(touch_.knobs().s35().GetRawFloat());
 }
 
 }  // namespace voice

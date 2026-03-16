@@ -17,9 +17,8 @@ class Patch {
   Patch(simpletouch::Touch& touch)
       : touch_(touch),
         sequencer_controls_(touch),
-        particle_engine_(),
-        voice_(particle_engine_),
-        voice_controls_(touch) {}
+        voice_controls_(touch),
+        voice_(particle_engine_) {}
 
   void Init(daisy::DaisySeed hw);
   void Process(daisy::AudioHandle::InputBuffer in,
@@ -36,9 +35,9 @@ class Patch {
   sequencer::Sequencer sequencer_;
   sequencer::Controls sequencer_controls_;
 
-  plaits::ParticleEngine particle_engine_;
   voice::Voice voice_;
   voice::Controls voice_controls_;
+  plaits::ParticleEngine particle_engine_;
 
   ControlTarget control_target_ = CONTROL_TARGET_SEQUENCER;
 
