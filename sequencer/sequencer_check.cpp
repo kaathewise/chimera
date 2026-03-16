@@ -17,6 +17,7 @@ SimpleTouchControls simpletouch_controls(touch);
 
 void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out,
                    size_t size) {
+  touch.Process();
   simpletouch_controls.Process();
   seq.Process(simpletouch_controls.deja_vu(), simpletouch_controls.rate(), simpletouch_controls.bias(),
               simpletouch_controls.jitter(), simpletouch_controls.loop_length());

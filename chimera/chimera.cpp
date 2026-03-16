@@ -12,6 +12,7 @@ Patch patch(touch);
 
 void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out,
                    size_t size) {
+  touch.Process();
   patch.Process(in, out, size);
 }
 
@@ -22,6 +23,9 @@ int main() {
 
   touch.Init(hw);
   patch.Init(hw);
+
+
+  DaisySeed::StartLog();
 
   hw.StartAudio(AudioCallback);
 

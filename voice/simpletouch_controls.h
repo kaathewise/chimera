@@ -12,7 +12,15 @@ using namespace simpletouch;
 class SimpleTouchControls {
  public:
   explicit SimpleTouchControls(Touch& touch, float max_delay_time = 5.f)
-      : touch_(touch), max_delay_time_(max_delay_time) {}
+      : touch_(touch),
+        max_delay_time_(max_delay_time),
+        note_(touch, .5f),
+        harmonics_(touch, .5f),
+        timbre_(touch, .5f),
+        morph_(touch, .5f),
+        accent_(touch, .8f),
+        delay_time_(touch, .2f),
+        delay_feedback_(touch, .0f) {}
 
   void Process();
 
@@ -49,13 +57,13 @@ class SimpleTouchControls {
 
   float max_delay_time_;
 
-  ControlValue note_{.5f};
-  ControlValue harmonics_{.5f};
-  ControlValue timbre_{.5f};
-  ControlValue morph_{.5f};
-  ControlValue accent_{.8f};
-  ControlValue delay_time_{.2f};
-  ControlValue delay_feedback_{.0f};
+  ControlValue note_;
+  ControlValue harmonics_;
+  ControlValue timbre_;
+  ControlValue morph_;
+  ControlValue accent_;
+  ControlValue delay_time_;
+  ControlValue delay_feedback_;
 
   DISALLOW_COPY_AND_ASSIGN(SimpleTouchControls);
 };

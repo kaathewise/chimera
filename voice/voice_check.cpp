@@ -24,6 +24,7 @@ Voice v(pe);
 
 void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out,
                    size_t size) {
+  touch.Process();
   simpletouch_controls.Process();
 
   trigger_counter += size;

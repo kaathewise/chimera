@@ -13,7 +13,13 @@ using namespace simpletouch;
 
 class SimpleTouchControls {
  public:
-  explicit SimpleTouchControls(Touch& touch) : touch_(touch) {}
+  explicit SimpleTouchControls(Touch& touch)
+      : touch_(touch),
+        deja_vu_(touch, .5f),
+        rate_(touch, .5f),
+        bias_(touch, .5f),
+        jitter_(touch, .0f),
+        loop_length_(touch, .5f) {}
 
   void Process();
 
@@ -50,11 +56,11 @@ class SimpleTouchControls {
  private:
   Touch& touch_;
 
-  ControlValue deja_vu_{.5f};
-  ControlValue rate_{.5f};
-  ControlValue bias_{.5f};
-  ControlValue jitter_{.0f};
-  ControlValue loop_length_{.5f};
+  ControlValue deja_vu_;
+  ControlValue rate_;
+  ControlValue bias_;
+  ControlValue jitter_;
+  ControlValue loop_length_;
 
   DISALLOW_COPY_AND_ASSIGN(SimpleTouchControls);
 };

@@ -24,20 +24,20 @@ public:
 
   void Blink() {
     hw_->SetLed(true);
-    turn_off_at_ = System::GetNow() + 500;
+    timer_ = static_cast<uint16_t>(.5f * hw_->AudioCallbackRate());
   }
 
   void Process() {
-    if (turn_off_at_ > 0) {
-      if (System::GetNow() > turn_off_at_) {
+    if (timer_ > 0) {
+      timer_--;
+      if (timer_ == 0) {
         hw_->SetLed(false);
-        turn_off_at_ = -1;
       }
     }
   }
 
 private:
-  float turn_off_at_ {-1};
+  uint16_t timer_ {0};
 
   DaisySeed *hw_;
 

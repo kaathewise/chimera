@@ -22,9 +22,13 @@ class Touch {
     pads_.Init();
     knobs_.Init(hw);
     switches_.Init();
-    ui_.Init(hw);
+    led_.Init(hw);
 
     hw.adc.Start();
+  }
+
+  void Process() {
+    led_.Process();
   }
 
   Pads &pads() { return pads_; }
@@ -33,13 +37,13 @@ class Touch {
 
   Switches &switches() { return switches_; }
 
-  LedUI &led() { return ui_; }
+  LedUI &led() { return led_; }
 
  private:
   Knobs knobs_;
   Pads pads_;
   Switches switches_;
-  LedUI ui_;
+  LedUI led_;
 
   DISALLOW_COPY_AND_ASSIGN(Touch);
 };
