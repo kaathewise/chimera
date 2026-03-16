@@ -12,5 +12,7 @@ CPP_SOURCES = controls_check.cpp \
 # Include paths
 C_INCLUDES = -I../
 
+C_FLAGS = C_INCLUDES + ../libDaisy/src
+
 # Include common build rules
 include ../include.mk

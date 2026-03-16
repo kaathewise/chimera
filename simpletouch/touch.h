@@ -5,6 +5,7 @@
 
 #include "eurorack/stmlib/stmlib.h"
 #include "simpletouch/knobs.h"
+#include "simpletouch/led_ui.h"
 #include "simpletouch/pads.h"
 #include "simpletouch/switches.h"
 
@@ -21,6 +22,7 @@ class Touch {
     pads_.Init();
     knobs_.Init(hw);
     switches_.Init();
+    ui_.Init(hw);
 
     hw.adc.Start();
   }
@@ -31,10 +33,13 @@ class Touch {
 
   Switches &switches() { return switches_; }
 
+  LedUI &led() { return ui_; }
+
  private:
   Knobs knobs_;
   Pads pads_;
   Switches switches_;
+  LedUI ui_;
 
   DISALLOW_COPY_AND_ASSIGN(Touch);
 };
