@@ -9,10 +9,10 @@ DAISYSP_DIR = ../DaisySP
 CPP_SOURCES = chimera.cpp \
               patch.cpp \
 			  ../sequencer/sequencer.cpp \
-			  ../sequencer/controls.cpp \
+			  ../sequencer/simpletouch_controls.cpp \
 			  ../sequencer/t_generator.cpp \
               ../voice/voice.cpp \
-              ../voice/controls.cpp \
+              ../voice/simpletouch_controls.cpp \
               ../simpletouch/knobs.cpp \
               ../simpletouch/switches.cpp
 

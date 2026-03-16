@@ -27,7 +27,7 @@ int main() {
 
   while (true) {
     touch.pads().Process();
-    patch.UpdateControls();
+    patch.UpdateSimpleTouchControls();
     System::Delay(10);
   }
 }

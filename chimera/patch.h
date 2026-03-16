@@ -5,28 +5,26 @@
 
 #include "dev/sdram.h"
 #include "eurorack/plaits/dsp/engine/particle_engine.h"
-#include "sequencer/controls.h"
+#include "sequencer/simpletouch_controls.h"
 #include "sequencer/sequencer.h"
 #include "simpletouch/touch.h"
-#include "voice/controls.h"
+#include "voice/simpletouch_controls.h"
 #include "voice/voice.h"
 
 namespace chimera {
-
-static float DSY_SDRAM_BSS delay_buffer[240000];
 
 class Patch {
  public:
   Patch(simpletouch::Touch& touch)
       : touch_(touch),
-        sequencer_controls_(touch),
-        voice_controls_(touch),
+        sequencer_simpletouch_controls_(touch),
+        voice_simpletouch_controls_(touch),
         voice_(particle_engine_) {}
 
   void Init(daisy::DaisySeed hw);
   void Process(daisy::AudioHandle::InputBuffer in,
                     daisy::AudioHandle::OutputBuffer out, size_t size);
-  void UpdateControls();
+  void UpdateSimpleTouchControls();
 
  private:
   enum ControlTarget {
@@ -35,16 +33,18 @@ class Patch {
   };
 
   simpletouch::Touch& touch_;
-  sequencer::Sequencer sequencer_;
-  sequencer::Controls sequencer_controls_;
+  sequencer::SimpleTouchControls sequencer_simpletouch_controls_;
+  voice::SimpleTouchControls voice_simpletouch_controls_;
 
-  voice::Voice voice_;
-  voice::Controls voice_controls_;
   plaits::ParticleEngine particle_engine_;
+  voice::Voice voice_;
+  sequencer::Sequencer sequencer_;
 
   ControlTarget control_target_ = CONTROL_TARGET_SEQUENCER;
 
   uint32_t buffer_space_[8192];
+
+  static float DSY_SDRAM_BSS delay_buffer[240000];
 
   DISALLOW_COPY_AND_ASSIGN(Patch);
 };

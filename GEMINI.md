@@ -42,7 +42,7 @@ It is not possible to automatically test the modules, apart from building the mo
 - **Style Guide**: Use Google C++ Style Guide.
 - **Header includes**: Use absolute path from workspace root, with an exception for <daisy_seed.h>.
 - **DSP Processing**: Audio is processed in blocks (default size 4 samples at 48kHz). DSP logic is generally encapsulated in classes with `Init()` and `Process()` methods.
-- **Soft Takeover**: When adding new knob-controlled parameters, use `common::ControlValue` to ensure smooth transitions when switching control pages.
+- **Soft Takeover**: When adding new knob-controlled parameters, use `simpletouch::ControlValue` to ensure smooth transitions when switching control pages.
 - **Hardware Integration**: The `simpletouch::Touch` class is the central point for accessing hardware inputs. Avoid direct hardware calls in DSP or high-level logic.
 
 ## Key Files

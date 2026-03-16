@@ -8,7 +8,7 @@ DAISYSP_DIR = ../DaisySP
 # Sources
 CPP_SOURCES = voice_check.cpp \
               voice.cpp \
-              controls.cpp \
+              simpletouch_controls.cpp \
               ../simpletouch/knobs.cpp \
               ../simpletouch/switches.cpp
 

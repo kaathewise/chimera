@@ -8,7 +8,7 @@ DAISYSP_DIR = ../DaisySP
 # Sources
 CPP_SOURCES = sequencer_check.cpp \
               sequencer.cpp \
-              controls.cpp \
+              simpletouch_controls.cpp \
               t_generator.cpp \
               ../simpletouch/knobs.cpp \
               ../simpletouch/switches.cpp
