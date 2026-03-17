@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -19,7 +19,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-// 
+//
 // See http://creativecommons.org/licenses/MIT/ for more information.
 //
 // -----------------------------------------------------------------------------
@@ -39,9 +39,9 @@ namespace common {
 
 class DelayLine {
  public:
-  DelayLine() { }
-  ~DelayLine() { }
-  
+  DelayLine() {}
+  ~DelayLine() {}
+
   void Init(stmlib::BufferAllocator* allocator, size_t size) {
     line_ = allocator->Allocate<float>(size);
     size_ = size;
@@ -55,18 +55,17 @@ class DelayLine {
     delay_ = 1;
     write_ptr_ = 0;
   }
-  
-  inline void set_delay(size_t delay) {
-    delay_ = delay;
-  }
+
+  inline void set_delay(size_t delay) { delay_ = delay; }
 
   inline void Write(const float sample) {
     if (!line_) return;
     line_[write_ptr_] = sample;
     write_ptr_ = (write_ptr_ - 1 + size_) % size_;
   }
-  
-  inline const float Allpass(const float sample, size_t delay, const float coefficient) {
+
+  inline const float Allpass(const float sample, size_t delay,
+                             const float coefficient) {
     if (!line_) return sample;
     float read = line_[(write_ptr_ + delay) % size_];
     float write = sample + coefficient * read;
@@ -78,12 +77,12 @@ class DelayLine {
     Write(sample);
     return Read(delay);
   }
-  
+
   inline const float Read() const {
     if (!line_) return 0.0f;
     return line_[(write_ptr_ + delay_) % size_];
   }
-  
+
   inline const float Read(size_t delay) const {
     if (!line_) return 0.0f;
     return line_[(write_ptr_ + delay) % size_];
@@ -96,7 +95,7 @@ class DelayLine {
     const float b = line_[(write_ptr_ + delay_integral + 1) % size_];
     return a + (b - a) * delay_fractional;
   }
-  
+
   inline const float ReadHermite(float delay) const {
     if (!line_) return 0.0f;
     MAKE_INTEGRAL_FRACTIONAL(delay)
@@ -119,7 +118,7 @@ class DelayLine {
   size_t delay_;
   size_t size_;
   float* line_;
-  
+
   DISALLOW_COPY_AND_ASSIGN(DelayLine);
 };
 

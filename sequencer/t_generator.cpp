@@ -30,6 +30,8 @@
 #include "sequencer/t_generator.h"
 
 #include <algorithm>
+#include <cmath>
+#include <utility>
 
 #include "eurorack/marbles/random/distributions.h"
 #include "eurorack/marbles/resources.h"
@@ -37,9 +39,12 @@
 
 namespace sequencer {
 
-using namespace std;
-using namespace stmlib;
-using namespace marbles;
+using marbles::FastBetaDistributionSample;
+using marbles::RandomStream;
+using marbles::Ratio;
+using std::fill;
+using std::swap;
+using stmlib::SemitonesToRatio;
 
 /* static */
 DividerPattern TGenerator::divider_patterns[kNumDividerPatterns] = {
@@ -141,7 +146,7 @@ int TGenerator::GenerateIndependentBernoulli(const RandomVector& x) {
 
 int TGenerator::GenerateThreeStates(const RandomVector& x) {
   int bitmask = 0;
-  float p_none = 0.75f - fabs(bias_ - 0.5f);
+  float p_none = 0.75f - std::fabs(bias_ - 0.5f);
   float threshold = p_none + (1.0f - p_none) * (0.25f + (bias_ * 0.5f));
 
   for (size_t i = 0; i < kNumTChannels; ++i) {
@@ -157,7 +162,7 @@ int TGenerator::GenerateDrums(const RandomVector& x) {
   ++drum_pattern_step_;
   if (drum_pattern_step_ >= kDrumPatternSize) {
     drum_pattern_step_ = 0;
-    float u = x.variables.u[0] * 2.0f * fabs(bias_ - 0.5f);
+    float u = x.variables.u[0] * 2.0f * std::fabs(bias_ - 0.5f);
     drum_pattern_index_ = static_cast<int32_t>(kNumDrumPatterns * u);
     if (bias_ <= 0.5f) {
       drum_pattern_index_ -= drum_pattern_index_ % 2;
@@ -186,12 +191,13 @@ int TGenerator::GenerateMarkov(const RandomVector& x) {
 
     float logit = -1.5f;
     logit += streak_counter_[i] > 24 ? 10.0f : 0.0f;
-    logit += 8.0f * fabs(b) * (periodic ? b : -b);
+    logit += 8.0f * std::fabs(b) * (periodic ? b : -b);
     logit -= 2.0f * (simultaneous ? b : -b);
     logit -= 1.0f * (dense ? b : 0.0f);
     logit += 1.0f * (alternate ? b : 0.0f);
     CONSTRAIN(logit, -10.0f, 10.0f);
-    float probability = lut_logit[static_cast<int>(logit * 12.8f + 128.0f)];
+    int32_t index = static_cast<int>(logit * 12.8f + 128.0f);
+    float probability = marbles::lut_logit[index];
     bool state = x.variables.u[i] < probability;
 
     if (sequence_.deja_vu() >= x.variables.p) {
@@ -250,7 +256,7 @@ void TGenerator::ConfigureSlaveRamps(const RandomVector& x) {
         if (model_ == T_GENERATOR_MODEL_DIVIDER) {
           pattern = bias_quantizer_.Lookup(fixed_divider_patterns, bias_);
         } else {
-          float strength = fabs(bias_ - 0.5f) * 2.0f;
+          float strength = std::fabs(bias_ - 0.5f) * 2.0f;
           float u = x.variables.u[0];
           u *= (u + strength * strength * (1.0f - u));
           u *= strength;

@@ -7,7 +7,8 @@
 
 namespace voice {
 
-using namespace simpletouch;
+using simpletouch::ControlValue;
+using simpletouch::Touch;
 
 class SimpleTouchControls {
  public:

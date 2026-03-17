@@ -6,8 +6,12 @@
 #include "voice/simpletouch_controls.h"
 #include "voice/voice.h"
 
-using namespace daisy;
-using namespace voice;
+using daisy::AudioHandle;
+using daisy::DaisySeed;
+using daisy::SaiHandle;
+using daisy::System;
+using voice::SimpleTouchControls;
+using voice::Voice;
 
 int trigger_counter = 0;
 int sample_rate = 48000;

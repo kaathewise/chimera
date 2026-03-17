@@ -3,7 +3,7 @@
 
 #include <cmath>
 
-#include "touch.h"
+#include "simpletouch/touch.h"
 
 namespace simpletouch {
 
@@ -34,14 +34,14 @@ class ControlValue {
         value_ += (input - value_) * coeff_;
         break;
       case kStateTryToAttach:
-        if (fabs(input - value_) < threshold_) {
+        if (std::fabs(input - value_) < threshold_) {
           state_ = kStateAttached;
         } else {
           state_ = kStateSeeking;
         }
         break;
       case kStateSeeking:
-        if (fabs(input - value_) < threshold_) {
+        if (std::fabs(input - value_) < threshold_) {
           state_ = kStateAttached;
           touch_.led().Blink();
         }

@@ -9,7 +9,8 @@
 
 namespace sequencer {
 
-using namespace simpletouch;
+using simpletouch::ControlValue;
+using simpletouch::Touch;
 
 class SimpleTouchControls {
  public:

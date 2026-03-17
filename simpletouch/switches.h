@@ -1,12 +1,13 @@
-#ifndef SIMPLETOUCH_SWITCHES_H
-#define SIMPLETOUCH_SWITCHES_H
+#ifndef SIMPLETOUCH_SWITCHES_H_
+#define SIMPLETOUCH_SWITCHES_H_
 
 #include <daisy_seed.h>
 
 #include "eurorack/stmlib/stmlib.h"
 
 namespace simpletouch {
-using namespace daisy;
+
+using daisy::Switch3;
 
 class Switches {
  public:
@@ -28,4 +29,4 @@ class Switches {
 };
 }  // namespace simpletouch
 
-#endif
+#endif  // SIMPLETOUCH_SWITCHES_H_

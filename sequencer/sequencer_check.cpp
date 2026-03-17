@@ -4,8 +4,12 @@
 #include "sequencer/simpletouch_controls.h"
 #include "simpletouch/touch.h"
 
-using namespace daisy;
-using namespace sequencer;
+using daisy::AudioHandle;
+using daisy::DaisySeed;
+using daisy::SaiHandle;
+using daisy::System;
+using sequencer::Sequencer;
+using sequencer::SimpleTouchControls;
 
 constexpr auto kSampleRate = SaiHandle::Config::SampleRate::SAI_48KHZ;
 constexpr size_t kBlockSize = 4;

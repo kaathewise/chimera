@@ -29,8 +29,8 @@
 //
 // Main synthesis voice.
 
-#ifndef VOICE_VOICE_H
-#define VOICE_VOICE_H
+#ifndef VOICE_VOICE_H_
+#define VOICE_VOICE_H_
 
 #include "common/delay_line.h"
 #include "eurorack/plaits/dsp/engine/engine.h"
@@ -42,7 +42,6 @@
 namespace voice {
 
 class ChannelPostProcessor {
-  // ... (rest remains unchanged)
  public:
   ChannelPostProcessor() = default;
   ~ChannelPostProcessor() = default;
@@ -80,7 +79,7 @@ class ChannelPostProcessor {
 
 class Voice {
  public:
-  Voice(plaits::Engine& engine) : engine_(engine) {}
+  explicit Voice(plaits::Engine& engine) : engine_(engine) {}
 
   ~Voice() = default;
 
@@ -105,4 +104,5 @@ class Voice {
   DISALLOW_COPY_AND_ASSIGN(Voice);
 };
 }  // namespace voice
-#endif  // VOICE_VOICE_H
+
+#endif  // VOICE_VOICE_H_

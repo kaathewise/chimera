@@ -1,5 +1,5 @@
-#ifndef SIMPLETOUCH_TOUCH_H
-#define SIMPLETOUCH_TOUCH_H
+#ifndef SIMPLETOUCH_TOUCH_H_
+#define SIMPLETOUCH_TOUCH_H_
 
 #include <daisy_seed.h>
 
@@ -10,7 +10,8 @@
 #include "simpletouch/switches.h"
 
 namespace simpletouch {
-using namespace daisy;
+
+using daisy::DaisySeed;
 
 class Touch {
  public:
@@ -47,4 +48,4 @@ class Touch {
 };
 }  // namespace simpletouch
 
-#endif
+#endif  // SIMPLETOUCH_TOUCH_H_

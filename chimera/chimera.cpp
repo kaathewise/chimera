@@ -3,8 +3,11 @@
 #include "chimera/patch.h"
 #include "simpletouch/touch.h"
 
-using namespace daisy;
-using namespace chimera;
+using chimera::Patch;
+using daisy::AudioHandle;
+using daisy::DaisySeed;
+using daisy::SaiHandle;
+using daisy::System;
 
 DaisySeed hw;
 simpletouch::Touch touch;

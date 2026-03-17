@@ -2,8 +2,11 @@
 
 #include "simpletouch/touch.h"
 
-using namespace daisy;
-using namespace simpletouch;
+using daisy::AudioHandle;
+using daisy::DaisySeed;
+using daisy::SaiHandle;
+using daisy::System;
+using simpletouch::Touch;
 
 constexpr auto kSampleRate = SaiHandle::Config::SampleRate::SAI_48KHZ;
 constexpr size_t kBlockSize = 4;

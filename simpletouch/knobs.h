@@ -1,5 +1,5 @@
-#ifndef SIMPLETOUCH_KNOBS_H
-#define SIMPLETOUCH_KNOBS_H
+#ifndef SIMPLETOUCH_KNOBS_H_
+#define SIMPLETOUCH_KNOBS_H_
 
 #include <daisy_seed.h>
 
@@ -8,7 +8,9 @@
 #include "eurorack/stmlib/stmlib.h"
 
 namespace simpletouch {
-using namespace daisy;
+
+using daisy::AnalogControl;
+using daisy::DaisySeed;
 
 class Knobs {
  public:
@@ -20,14 +22,14 @@ class Knobs {
 
   void Init(DaisySeed &hw);
 
-  AnalogControl &s30() { return knobs_[0]; };
-  AnalogControl &s31() { return knobs_[1]; };
-  AnalogControl &s32() { return knobs_[2]; };
-  AnalogControl &s33() { return knobs_[3]; };
-  AnalogControl &s34() { return knobs_[4]; };
-  AnalogControl &s35() { return knobs_[5]; };
-  AnalogControl &s36() { return knobs_[6]; };
-  AnalogControl &s37() { return knobs_[7]; };
+  AnalogControl &s30() { return knobs_[0]; }
+  AnalogControl &s31() { return knobs_[1]; }
+  AnalogControl &s32() { return knobs_[2]; }
+  AnalogControl &s33() { return knobs_[3]; }
+  AnalogControl &s34() { return knobs_[4]; }
+  AnalogControl &s35() { return knobs_[5]; }
+  AnalogControl &s36() { return knobs_[6]; }
+  AnalogControl &s37() { return knobs_[7]; }
 
   std::array<AnalogControl, kKnobCount> &knobs() { return knobs_; }
 
@@ -38,4 +40,4 @@ class Knobs {
 };
 }  // namespace simpletouch
 
-#endif
+#endif  // SIMPLETOUCH_KNOBS_H_

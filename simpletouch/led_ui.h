@@ -2,15 +2,16 @@
 // Created by Svyatoslav Usachev on 16/03/2026.
 //
 
-#ifndef SIMPLETOUCH_LED_H
-#define SIMPLETOUCH_LED_H
+#ifndef SIMPLETOUCH_LED_UI_H_
+#define SIMPLETOUCH_LED_UI_H_
 
 #include <daisy_seed.h>
 
 #include "eurorack/stmlib/stmlib.h"
 
 namespace simpletouch {
-using namespace daisy;
+
+using daisy::DaisySeed;
 
 class LedUI {
  public:
@@ -44,4 +45,4 @@ class LedUI {
 
 }  // namespace simpletouch
 
-#endif  // CHIMERA_LED_H
+#endif  // SIMPLETOUCH_LED_UI_H_

@@ -1,12 +1,13 @@
-#ifndef SIMPLETOUCH_PADS_H
-#define SIMPLETOUCH_PADS_H
+#ifndef SIMPLETOUCH_PADS_H_
+#define SIMPLETOUCH_PADS_H_
 
 #include <daisy_seed.h>
 
 #include "eurorack/stmlib/stmlib.h"
 
 namespace simpletouch {
-using namespace daisy;
+
+using daisy::Mpr121I2C;
 
 class Pads {
  public:
@@ -47,4 +48,4 @@ class Pads {
 };
 }  // namespace simpletouch
 
-#endif
+#endif  // SIMPLETOUCH_PADS_H_

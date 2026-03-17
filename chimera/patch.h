@@ -15,7 +15,7 @@ namespace chimera {
 
 class Patch {
  public:
-  Patch(simpletouch::Touch& touch)
+  explicit Patch(simpletouch::Touch& touch)
       : touch_(touch),
         sequencer_simpletouch_controls_(touch),
         voice_simpletouch_controls_(touch),
