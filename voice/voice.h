@@ -80,11 +80,12 @@ class ChannelPostProcessor {
 
 class Voice {
  public:
-  Voice(plaits::Engine& engine): engine_(engine) {}
+  Voice(plaits::Engine& engine) : engine_(engine) {}
 
   ~Voice() = default;
 
-  void Init(float sample_rate, stmlib::BufferAllocator* allocator, float max_delay_time);
+  void Init(float sample_rate, stmlib::BufferAllocator* allocator,
+            float max_delay_time);
 
   void Process(const plaits::EngineParameters& parameters, float delay_time,
                float delay_feedback, float* out, size_t size);

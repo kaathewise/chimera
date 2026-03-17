@@ -24,7 +24,6 @@ int main() {
   touch.Init(hw);
   patch.Init(hw);
 
-
   DaisySeed::StartLog();
 
   hw.StartAudio(AudioCallback);

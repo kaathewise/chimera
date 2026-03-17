@@ -36,12 +36,13 @@ void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out,
     trigger_state = plaits::TRIGGER_LOW;
   }
 
-  const plaits::EngineParameters params{.trigger = trigger_state,
-                                        .note = simpletouch_controls.note(),
-                                        .timbre = simpletouch_controls.timbre(),
-                                        .morph = simpletouch_controls.morph(),
-                                        .harmonics = simpletouch_controls.harmonics(),
-                                        .accent = simpletouch_controls.accent()};
+  const plaits::EngineParameters params{
+      .trigger = trigger_state,
+      .note = simpletouch_controls.note(),
+      .timbre = simpletouch_controls.timbre(),
+      .morph = simpletouch_controls.morph(),
+      .harmonics = simpletouch_controls.harmonics(),
+      .accent = simpletouch_controls.accent()};
 
   v.Process(params, simpletouch_controls.delay_time(),
             simpletouch_controls.delay_feedback(), out[0], size);

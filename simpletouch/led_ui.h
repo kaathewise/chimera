@@ -13,14 +13,12 @@ namespace simpletouch {
 using namespace daisy;
 
 class LedUI {
-public:
+ public:
   LedUI() = default;
 
   ~LedUI() = default;
 
-  void Init(DaisySeed &hw) {
-    hw_ = &hw;
-  }
+  void Init(DaisySeed &hw) { hw_ = &hw; }
 
   void Blink() {
     hw_->SetLed(true);
@@ -36,14 +34,14 @@ public:
     }
   }
 
-private:
-  uint16_t timer_ {0};
+ private:
+  uint16_t timer_{0};
 
   DaisySeed *hw_;
 
   DISALLOW_COPY_AND_ASSIGN(LedUI);
 };
 
-}
+}  // namespace simpletouch
 
 #endif  // CHIMERA_LED_H

@@ -36,7 +36,8 @@
 
 namespace voice {
 
-void Voice::Init(float sample_rate, stmlib::BufferAllocator* allocator, float max_delay_time) {
+void Voice::Init(float sample_rate, stmlib::BufferAllocator* allocator,
+                 float max_delay_time) {
   sample_rate_ = sample_rate;
   engine_.post_processing_settings.already_enveloped = false;
   engine_.post_processing_settings.out_gain = -2.0f;
@@ -48,8 +49,8 @@ void Voice::Init(float sample_rate, stmlib::BufferAllocator* allocator, float ma
 }
 
 void Voice::Process(const plaits::EngineParameters& parameters,
-                    float delay_time, float delay_feedback,
-                    float* out, size_t size) {
+                    float delay_time, float delay_feedback, float* out,
+                    size_t size) {
   bool already_enveloped = engine_.post_processing_settings.already_enveloped;
 
   if (parameters.trigger & plaits::TRIGGER_RISING_EDGE) {
@@ -80,8 +81,8 @@ void Voice::Process(const plaits::EngineParameters& parameters,
   bool lpg_bypass = already_enveloped;
 
   post_processor_.Process(pp_s.out_gain, lpg_bypass, lpg_envelope_.gain(),
-                               lpg_envelope_.frequency(),
-                               lpg_envelope_.hf_bleed(), out, size);
+                          lpg_envelope_.frequency(), lpg_envelope_.hf_bleed(),
+                          out, size);
 
   float delay_time_samples = delay_time * sample_rate_;
   for (size_t i = 0; i < size; ++i) {

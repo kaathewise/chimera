@@ -27,9 +27,7 @@ class Touch {
     hw.adc.Start();
   }
 
-  void Process() {
-    led_.Process();
-  }
+  void Process() { led_.Process(); }
 
   Pads &pads() { return pads_; }
 

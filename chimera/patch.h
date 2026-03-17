@@ -5,8 +5,8 @@
 
 #include "dev/sdram.h"
 #include "eurorack/plaits/dsp/engine/particle_engine.h"
-#include "sequencer/simpletouch_controls.h"
 #include "sequencer/sequencer.h"
+#include "sequencer/simpletouch_controls.h"
 #include "simpletouch/touch.h"
 #include "voice/simpletouch_controls.h"
 #include "voice/voice.h"
@@ -23,7 +23,7 @@ class Patch {
 
   void Init(daisy::DaisySeed hw);
   void Process(daisy::AudioHandle::InputBuffer in,
-                    daisy::AudioHandle::OutputBuffer out, size_t size);
+               daisy::AudioHandle::OutputBuffer out, size_t size);
   void UpdateSimpleTouchControls();
 
  private:
