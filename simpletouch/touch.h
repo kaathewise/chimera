@@ -5,7 +5,7 @@
 
 #include "eurorack/stmlib/stmlib.h"
 #include "simpletouch/knobs.h"
-#include "simpletouch/led_ui.h"
+#include "simpletouch/led.h"
 #include "simpletouch/pads.h"
 #include "simpletouch/switches.h"
 
@@ -36,13 +36,13 @@ class Touch {
 
   Switches &switches() { return switches_; }
 
-  LedUI &led() { return led_; }
+  Led &led() { return led_; }
 
  private:
   Knobs knobs_;
   Pads pads_;
   Switches switches_;
-  LedUI led_;
+  Led led_;
 
   DISALLOW_COPY_AND_ASSIGN(Touch);
 };

@@ -2,8 +2,8 @@
 // Created by Svyatoslav Usachev on 16/03/2026.
 //
 
-#ifndef SIMPLETOUCH_LED_UI_H_
-#define SIMPLETOUCH_LED_UI_H_
+#ifndef SIMPLETOUCH_LED_H_
+#define SIMPLETOUCH_LED_H_
 
 #include <daisy_seed.h>
 
@@ -13,11 +13,11 @@ namespace simpletouch {
 
 using daisy::DaisySeed;
 
-class LedUI {
+class Led {
  public:
-  LedUI() = default;
+  Led() = default;
 
-  ~LedUI() = default;
+  ~Led() = default;
 
   void Init(DaisySeed &hw) { hw_ = &hw; }
 
@@ -40,9 +40,9 @@ class LedUI {
 
   DaisySeed *hw_;
 
-  DISALLOW_COPY_AND_ASSIGN(LedUI);
+  DISALLOW_COPY_AND_ASSIGN(Led);
 };
 
 }  // namespace simpletouch
 
-#endif  // SIMPLETOUCH_LED_UI_H_
+#endif  // SIMPLETOUCH_LED_H_
