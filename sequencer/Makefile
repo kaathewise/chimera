@@ -2,8 +2,8 @@
 TARGET = sequencer_check
 
 # Library Locations
-LIBDAISY_DIR = ../libDaisy
-DAISYSP_DIR = ../DaisySP
+LIBDAISY_DIR = ../third_party/libDaisy
+DAISYSP_DIR = ../third_party/DaisySP
 
 # Sources
 CPP_SOURCES = sequencer_check.cpp \
@@ -14,12 +14,13 @@ CPP_SOURCES = sequencer_check.cpp \
               ../simpletouch/switches.cpp
 
 # Add .cc files
-CC_SOURCES = ../eurorack/marbles/resources.cc \
-             ../eurorack/stmlib/dsp/units.cc
+CC_SOURCES = ../third_party/eurorack/marbles/resources.cc \
+             ../third_party/eurorack/stmlib/dsp/units.cc
 
 # Include paths
 C_INCLUDES = -I.. \
-	-I../eurorack
+	-I../third_party \
+	-I../third_party/eurorack
 
 # Use SRAM since internal flash is too small for Marbles resources
 APP_TYPE = BOOT_SRAM

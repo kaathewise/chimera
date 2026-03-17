@@ -2,8 +2,8 @@
 TARGET = chimera
 
 # Library Locations
-LIBDAISY_DIR = ../libDaisy
-DAISYSP_DIR = ../DaisySP
+LIBDAISY_DIR = ../third_party/libDaisy
+DAISYSP_DIR = ../third_party/DaisySP
 
 # Sources
 CPP_SOURCES = chimera.cpp \
@@ -17,14 +17,15 @@ CPP_SOURCES = chimera.cpp \
               ../simpletouch/switches.cpp
 
 # Add .cc files
-CC_SOURCES = ../eurorack/marbles/resources.cc \
-             ../eurorack/plaits/dsp/engine/particle_engine.cc \
-             ../eurorack/stmlib/dsp/units.cc \
-             ../eurorack/stmlib/utils/random.cc
+CC_SOURCES = ../third_party/eurorack/marbles/resources.cc \
+             ../third_party/eurorack/plaits/dsp/engine/particle_engine.cc \
+             ../third_party/eurorack/stmlib/dsp/units.cc \
+             ../third_party/eurorack/stmlib/utils/random.cc
 
 # Include paths
 C_INCLUDES = -I.. \
-	-I../eurorack
+	-I../third_party \
+	-I../third_party/eurorack
 
 # Use SRAM since Marbles resources are large
 APP_TYPE = BOOT_SRAM
