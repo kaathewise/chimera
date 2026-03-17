@@ -14,7 +14,8 @@ CPP_SOURCES = chimera.cpp \
               ../voice/voice.cpp \
               ../voice/simpletouch_controls.cpp \
               ../simpletouch/knobs.cpp \
-              ../simpletouch/switches.cpp
+              ../simpletouch/switches.cpp \
+              ../simpletouch/memory/sdram_alloc.cpp
 
 # Add .cc files
 CC_SOURCES = ../third_party/eurorack/marbles/resources.cc \

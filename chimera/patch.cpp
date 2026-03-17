@@ -6,14 +6,11 @@
 
 namespace chimera {
 
-float Patch::delay_buffer[240000];
-
 void Patch::Init(daisy::DaisySeed hw) {
   stmlib::BufferAllocator allocator(buffer_space_, sizeof(buffer_space_));
   particle_engine_.Init(&allocator);
 
-  stmlib::BufferAllocator sdram_allocator(delay_buffer, sizeof(delay_buffer));
-  voice_.Init(hw.AudioSampleRate(), &sdram_allocator, 5);
+  voice_.Init(hw.AudioSampleRate());
 
   sequencer_.Init(hw.AudioCallbackRate());
   sequencer_simpletouch_controls_.Attach();

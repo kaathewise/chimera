@@ -44,8 +44,6 @@ class Patch {
 
   uint32_t buffer_space_[8192];
 
-  static float DSY_SDRAM_BSS delay_buffer[240000];
-
   DISALLOW_COPY_AND_ASSIGN(Patch);
 };
 

@@ -21,9 +21,7 @@ simpletouch::Touch touch;
 SimpleTouchControls simpletouch_controls(touch);
 plaits::ParticleEngine pe;
 uint32_t buffer_space[8192];
-float DSY_SDRAM_BSS delay_buffer[240000];
 stmlib::BufferAllocator allocator(buffer_space, 8192 * 4);
-stmlib::BufferAllocator delay_allocator(delay_buffer, sizeof(delay_buffer));
 Voice v(pe);
 
 void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out,
@@ -61,7 +59,7 @@ int main() {
 
   touch.Init(hw);
   pe.Init(&allocator);
-  v.Init(sample_rate, &delay_allocator, 5);
+  v.Init(sample_rate);
   simpletouch_controls.Attach();
 
   DaisySeed::StartLog();

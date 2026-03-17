@@ -33,11 +33,11 @@
 #include "eurorack/plaits/dsp/dsp.h"
 #include "eurorack/plaits/dsp/engine/particle_engine.h"
 #include "eurorack/stmlib/dsp/units.h"
+#include "simpletouch/memory/sdram_alloc.h"
 
 namespace voice {
 
-void Voice::Init(float sample_rate, stmlib::BufferAllocator* allocator,
-                 float max_delay_time) {
+void Voice::Init(float sample_rate) {
   sample_rate_ = sample_rate;
   engine_.post_processing_settings.already_enveloped = false;
   engine_.post_processing_settings.out_gain = -2.0f;
@@ -45,7 +45,10 @@ void Voice::Init(float sample_rate, stmlib::BufferAllocator* allocator,
   decay_envelope_.Init();
   lpg_envelope_.Init();
   post_processor_.Init();
-  delay_line_.Init(allocator, sample_rate_ * max_delay_time);
+
+  using DelayLineType = daisysp::DelayLine<float, kMaxDelaySamples>;
+  delay_line_.reset(simpletouch::SDRAM::allocate<DelayLineType>());
+  delay_line_->Init();
 }
 
 void Voice::Process(const plaits::EngineParameters& parameters,
@@ -86,8 +89,8 @@ void Voice::Process(const plaits::EngineParameters& parameters,
 
   float delay_time_samples = delay_time * sample_rate_;
   for (size_t i = 0; i < size; ++i) {
-    out[i] += delay_line_.Read(delay_time_samples) * delay_feedback;
-    delay_line_.Write(out[i]);
+    out[i] += delay_line_->ReadHermite(delay_time_samples) * delay_feedback;
+    delay_line_->Write(out[i]);
   }
 }
 

@@ -40,7 +40,7 @@ It is not possible to automatically test the modules, apart from building the mo
 
 - **C++ Standard**: C++20.
 - **Style Guide**: Use Google C++ Style Guide. Use `cpplint --recursive --exclude=third_party .` to run linter.
-- **Header includes**: Use absolute path from workspace root, with an exception for <daisy_seed.h>.
+- **Header includes**: Use absolute path from workspace root, excluding `third_party/` prefix. Include DaisySeed as <daisy_seed.h>. Examples: `#include "eurorack/stmlib/stmlib.h"`, `#include "simpletouch/knobs.h"`.
 - **DSP Processing**: Audio is processed in blocks (default size 4 samples at 48kHz). DSP logic is generally encapsulated in classes with `Init()` and `Process()` methods.
 - **Soft Takeover**: When adding new knob-controlled parameters, use `simpletouch::ControlValue` to ensure smooth transitions when switching control pages.
 - **Hardware Integration**: The `simpletouch::Touch` class is the central point for accessing hardware inputs. Avoid direct hardware calls in DSP or high-level logic.

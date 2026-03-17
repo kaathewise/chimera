@@ -32,14 +32,18 @@
 #ifndef VOICE_VOICE_H_
 #define VOICE_VOICE_H_
 
-#include "common/delay_line.h"
+#include <memory>
+
 #include "eurorack/plaits/dsp/engine/engine.h"
 #include "eurorack/plaits/dsp/envelope.h"
 #include "eurorack/plaits/dsp/fx/low_pass_gate.h"
 #include "eurorack/stmlib/dsp/limiter.h"
 #include "eurorack/stmlib/stmlib.h"
+#include "DaisySP/Source/Utility/delayline.h"
 
 namespace voice {
+
+constexpr size_t kMaxDelaySamples = 240000;
 
 class ChannelPostProcessor {
  public:
@@ -83,8 +87,7 @@ class Voice {
 
   ~Voice() = default;
 
-  void Init(float sample_rate, stmlib::BufferAllocator* allocator,
-            float max_delay_time);
+  void Init(float sample_rate);
 
   void Process(const plaits::EngineParameters& parameters, float delay_time,
                float delay_feedback, float* out, size_t size);
@@ -97,7 +100,7 @@ class Voice {
   plaits::LPGEnvelope lpg_envelope_;
 
   ChannelPostProcessor post_processor_;
-  common::DelayLine delay_line_;
+  std::unique_ptr<daisysp::DelayLine<float, kMaxDelaySamples>> delay_line_;
 
   float aux_buffer[128];
 
