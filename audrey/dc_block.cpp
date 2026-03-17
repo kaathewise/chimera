@@ -2,7 +2,7 @@
 
 #include <math.h>
 
-namespace infrasonic {
+namespace audrey {
 
 void DCBlock::Init(float sample_rate) {
   output_ = 0.0;
@@ -18,4 +18,4 @@ float DCBlock::Process(float in) {
   return out;
 }
 
-}  // namespace infrasonic
+}  // namespace audrey

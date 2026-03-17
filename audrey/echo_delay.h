@@ -7,7 +7,7 @@
 #include "audrey/biquad_filters.h"
 #include "audrey/dsp_utils.h"
 
-namespace infrasonic {
+namespace audrey {
 
 /**
  * @brief
@@ -89,6 +89,6 @@ class EchoDelay {
   BPF12 bpf_;
 };
 
-}  // namespace infrasonic
+}  // namespace audrey
 
 #endif  // AUDREY_ECHO_DELAY_H_

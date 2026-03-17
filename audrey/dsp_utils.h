@@ -9,7 +9,7 @@
 #include <arm_math.h>
 #endif  // __arm__
 
-namespace infrasonic {
+namespace audrey {
 
 inline float dbfs2lin(float dbfs) { return daisysp::pow10f(dbfs * 0.05f); }
 
@@ -45,6 +45,6 @@ inline float tanf(const float x) {
 #endif  // __arm__
 }
 
-}  // namespace infrasonic
+}  // namespace audrey
 
 #endif  // AUDREY_DSP_UTILS_H_

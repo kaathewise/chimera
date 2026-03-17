@@ -9,8 +9,8 @@ DAISYSP_DIR = ../third_party/DaisySP
 CPP_SOURCES = audrey.cpp \
               biquad_filters.cpp \
               dc_block.cpp \
-              feedback_synth_controls.cpp \
-              feedback_synth_engine.cpp \
+              controls.cpp \
+              engine.cpp \
               karplus_string.cpp \
               ../simpletouch/knobs.cpp \
               ../simpletouch/switches.cpp \

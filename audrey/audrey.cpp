@@ -1,7 +1,7 @@
 #include <daisy_seed.h>
 
-#include "audrey/feedback_synth_controls.h"
-#include "audrey/feedback_synth_engine.h"
+#include "audrey/controls.h"
+#include "audrey/engine.h"
 #include "simpletouch/touch.h"
 
 using daisy::AudioHandle;
@@ -15,8 +15,8 @@ static const size_t kBlockSize = 4;
 
 static DaisySeed hw;
 static Touch touch;
-static infrasonic::FeedbackSynth::Engine engine;
-static infrasonic::FeedbackSynth::Controls controls(engine, touch);
+static audrey::Engine engine;
+static audrey::Controls controls(engine, touch);
 static Limiter limiter[2];
 
 void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out,

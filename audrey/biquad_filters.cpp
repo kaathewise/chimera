@@ -4,14 +4,14 @@
 
 #include "audrey/dsp_utils.h"
 
-namespace infrasonic {
+namespace audrey {
 
 const BiquadSection::Coefficients BiquadSection::CalculateCoefficients(
     const FilterType type, const float sample_rate, const float cutoff_hz,
     const float q) {
   Coefficients coefs;
   float norm;
-  const float K = infrasonic::tanf(PI_F * cutoff_hz * (1.0f / sample_rate));
+  const float K = audrey::tanf(PI_F * cutoff_hz * (1.0f / sample_rate));
   const float Ksq = K * K;
 
   float &b0 = coefs[0];
@@ -52,4 +52,4 @@ const BiquadSection::Coefficients BiquadSection::CalculateCoefficients(
   return coefs;
 }
 
-}  // namespace infrasonic
+}  // namespace audrey

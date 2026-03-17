@@ -9,7 +9,7 @@
 using daisy::DaisySeed;
 using daisysp::fonepole;
 
-namespace synthux {
+namespace audrey {
 
 /**
  * A value that can be detached from tracking the input. When attached back it
@@ -36,7 +36,7 @@ class ControlValue {
             float threshold = 0.02f) {
     value_ = initial;
     state_ = kStateAttached;
-    coef_ = infrasonic::onepole_coef_t60(slew_time, hw.AudioCallbackRate());
+    coef_ = audrey::onepole_coef_t60(slew_time, hw.AudioCallbackRate());
     threshold_ = threshold;
   }
 
@@ -66,6 +66,6 @@ class ControlValue {
   float coef_;
   float threshold_;
 };
-}  // namespace synthux
+}  // namespace audrey
 
 #endif  // AUDREY_CONTROL_VALUE_H_

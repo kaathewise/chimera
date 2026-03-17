@@ -7,7 +7,7 @@
 #include <array>
 #include <cassert>
 
-namespace infrasonic {
+namespace audrey {
 
 /**
  *  Single precision 2nd order biquad filter section with support for stereo
@@ -161,6 +161,6 @@ using BPF12 = BiquadCascade<1, BiquadSection::FilterType::BandPass>;
 /// 24dB/Oct resonant bandpass filter
 using BPF24 = BiquadCascade<2, BiquadSection::FilterType::BandPass>;
 
-}  // namespace infrasonic
+}  // namespace audrey
 
 #endif  // AUDREY_BIQUAD_FILTERS_H_

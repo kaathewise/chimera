@@ -9,7 +9,7 @@ https://opensource.org/licenses/MIT.
 #ifndef AUDREY_DC_BLOCK_H_
 #define AUDREY_DC_BLOCK_H_
 
-namespace infrasonic {
+namespace audrey {
 /** Removes DC component of a signal
  */
 class DCBlock {
@@ -28,6 +28,6 @@ class DCBlock {
  private:
   float input_, output_, gain_;
 };
-}  // namespace infrasonic
+}  // namespace audrey
 
 #endif  // AUDREY_DC_BLOCK_H_

@@ -7,7 +7,7 @@
 
 #include "audrey/dc_block.h"
 
-namespace infrasonic {
+namespace audrey {
 /**
  * Modified version of KarplusString class from DaisySP:
  *  - Increase delay line length for very low pitches
@@ -62,7 +62,7 @@ class KarplusString {
   float sample_rate_;
 
   daisysp::Tone iir_damping_filter_;
-  infrasonic::DCBlock dc_blocker_;
+  audrey::DCBlock dc_blocker_;
   daisysp::CrossFade crossfade_;
 
   // Very crappy linear interpolation upsampler used for low pitches that
@@ -70,6 +70,6 @@ class KarplusString {
   float src_phase_;
   float out_sample_[2];
 };
-}  // namespace infrasonic
+}  // namespace audrey
 
 #endif  // AUDREY_KARPLUS_STRING_H_

@@ -5,7 +5,7 @@
 
 #include <algorithm>
 
-namespace synthux {
+namespace audrey {
 
 class Envelope {
  public:
@@ -183,6 +183,6 @@ class Envelope {
 
   bool has_changed;
 };
-}  // namespace synthux
+}  // namespace audrey
 
 #endif  // AUDREY_ENV_H_

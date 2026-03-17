@@ -4,7 +4,7 @@
 
 #include <cmath>
 
-namespace infrasonic {
+namespace audrey {
 
 void KarplusString::Init(float sample_rate) {
   sample_rate_ = sample_rate;
@@ -111,4 +111,4 @@ float KarplusString::ProcessInternal(const float in) {
   crossfade_.SetPos(src_phase_);
   return crossfade_.Process(out_sample_[1], out_sample_[0]);
 }
-}  // namespace infrasonic
+}  // namespace audrey
