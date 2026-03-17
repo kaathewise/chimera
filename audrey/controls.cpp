@@ -13,12 +13,7 @@ using daisysp::Mapping;
 using daisysp::Oscillator;
 
 void Controls::Init(DaisySeed &hw) {
-  input_volume_cv_.Init(hw, 0.5f, 0.02f);
-  output_volume_cv_.Init(hw, 0.5f, 0.02f);
   output_volume_cv_.Detach();
-
-  feedback_body_knob_cv_.Init(hw, 0.f, 1.f);
-  envelope_shape_cv_.Init(hw, 0.f, 0.02f);
   envelope_shape_cv_.Detach();
 
   body_lfo_.Init(48000.0f);
@@ -157,7 +152,7 @@ void Controls::UpdateSlowRate(DaisySeed &hw) {
   static bool prev_note_touched = false;
   bool note_touched = false;
   for (int pad = 3; pad <= 9; ++pad) {
-    if (touch_.pads().IsRisingEdge(pad)) {
+    if (touch_.pads().IsTouched(pad)) {
       int note_index = pad - 3;
       float base_note = 16.0f;
 

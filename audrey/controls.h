@@ -4,8 +4,8 @@
 
 #include <daisy_seed.h>
 
-#include "audrey/control_value.h"
 #include "audrey/engine.h"
+#include "simpletouch/control_value.h"
 #include "simpletouch/touch.h"
 
 namespace audrey {
@@ -13,12 +13,19 @@ namespace audrey {
 using daisy::AnalogControl;
 using daisy::DaisySeed;
 using daisysp::Oscillator;
+using simpletouch::ControlValue;
 using simpletouch::Touch;
 
 class Controls {
  public:
   explicit Controls(Engine &engine, Touch &touch)
-      : engine_(engine), touch_(touch) {}
+      : engine_(engine),
+        touch_(touch),
+        input_volume_cv_(touch, 0.5f, 0.02f, 0.007f),
+        output_volume_cv_(touch, 0.5f, 0.02f, 0.007f),
+        envelope_shape_cv_(touch, 0.0f, 0.02f, 0.007f),
+        feedback_body_knob_cv_(touch, 0.0f, 0.02f, 0.00014f),
+        feedback_body_final_cv_(touch, 0.0f, 0.02f, 0.007f) {}
 
   ~Controls() = default;
 

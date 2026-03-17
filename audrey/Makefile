@@ -18,10 +18,9 @@ CPP_SOURCES = audrey.cpp \
 
 # Include paths
 C_INCLUDES = -I.. \
-	-I../third_party \
-	-I../third_party/eurorack
+	-I../third_party
 
-# Use SRAM since Marbles resources are large
+# Use SRAM if needed
 APP_TYPE = BOOT_SRAM
 
 # Use DaisySP LGPL for Tone and ReverbSc
