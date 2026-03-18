@@ -11,44 +11,35 @@
 #include "audrey/env.h"
 #include "audrey/karplus_string.h"
 
-#ifdef __arm__
-#include <dev/sdram.h>
-#endif  // __arm__
-
 namespace audrey {
+
+struct EngineParameters {
+  float string_pitch;
+  float feedback_gain;
+  float feedback_delay;
+  float feedback_lpf_cutoff;
+  float feedback_hpf_cutoff;
+  float echo_delay_time;
+  float echo_delay_feedback;
+  float echo_delay_send_amount;
+  float reverb_mix;
+  float reverb_feedback;
+  float output_level;
+  float input_level;
+  float envelope_shape;
+  bool drone_mode;
+  bool note_on;
+};
 
 class Engine {
  public:
   Engine() = default;
   ~Engine() = default;
 
-  void Init(const float sample_rate);
+  void Init(float sample_rate);
 
-  void SetStringPitch(const float nn);
-
-  void SetFeedbackGain(const float gain_dbfs);
-
-  void SetFeedbackDelay(const float delay_s);
-  void SetFeedbackLPFCutoff(const float cutoff_hz);
-  void SetFeedbackHPFCutoff(const float cutoff_hz);
-
-  void SetEchoDelayTime(const float echo_time);
-  void SetEchoDelayFeedback(const float echo_fb);
-  void SetEchoDelaySendAmount(const float echo_send);
-
-  // Both range 0-1
-  void SetReverbMix(const float mix);
-  void SetReverbFeedback(const float time);
-
-  void SetOutputLevel(const float level);
-  void SetInputLevel(const float level);
-
-  void NoteOn();
-  void NoteOff();
-  void SetShape(const float shape);
-  void DroneMode(bool mode);
-
-  void Process(float in, float &outL, float &outR);
+  void Process(const EngineParameters &params, float in, float &outL,
+               float &outR);
 
  private:
   // long enough for 250ms at 48kHz
@@ -57,16 +48,9 @@ class Engine {
   static constexpr size_t kMaxEchoDelaySamp = 48000 * 5;
 
   float sample_rate_;
-  float fb_gain_ = 0.0f;
-  float echo_send_ = 0.0f;
-  float verb_mix_ = 0.0f;
-  float output_level_ = 0.5f;
-  float input_level_ = 1.0f;
-  bool drone = false;
 
   float fb_delay_smooth_coef_;
   float fb_delay_samp_ = 1000.f;
-  float fb_delay_samp_target_ = 64.f;
 
   using KarplusStringPtr = std::unique_ptr<KarplusString>;
   KarplusStringPtr strings_[2];
