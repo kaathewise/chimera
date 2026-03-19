@@ -8,3 +8,5 @@ Before using any file-editing tool (write_file, replace), you MUST first use rea
 1. Run `cpplint --recursive --exclude=third_party .` to check for lint errors.
 
 2. Use `clang-format` to format the changed files.
+
+3. Always check that the changed module builds.

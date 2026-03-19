@@ -1,6 +1,5 @@
-
-#ifndef AUDREY_CONTROLS_H_
-#define AUDREY_CONTROLS_H_
+#ifndef AUDREY_SIMPLETOUCH_CONTROLS_H_
+#define AUDREY_SIMPLETOUCH_CONTROLS_H_
 
 #include <daisy_seed.h>
 
@@ -68,4 +67,4 @@ class Controls {
 };
 }  // namespace audrey
 
-#endif  // AUDREY_CONTROLS_H_
+#endif  // AUDREY_SIMPLETOUCH_CONTROLS_H_

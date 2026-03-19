@@ -1,7 +1,7 @@
 #include <daisy_seed.h>
 
-#include "audrey/controls.h"
 #include "audrey/engine.h"
+#include "audrey/simpletouch_controls.h"
 #include "simpletouch/touch.h"
 
 using daisy::AudioHandle;
