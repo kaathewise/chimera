@@ -15,11 +15,10 @@ using daisysp::Oscillator;
 using simpletouch::ControlValue;
 using simpletouch::Touch;
 
-class Controls {
+class SimpletouchControls {
  public:
-  explicit Controls(Engine &engine, Touch &touch)
-      : engine_(engine),
-        touch_(touch),
+  explicit SimpletouchControls(Touch &touch)
+      : touch_(touch),
         input_volume_cv_(touch, 0.5f, 0.02f, 0.007f),
         output_volume_cv_(touch, 0.5f, 0.02f, 0.007f),
         envelope_shape_cv_(touch, 0.0f, 0.02f, 0.007f),
@@ -36,18 +35,17 @@ class Controls {
     smoothed_val_ = 0.0f;
   }
 
-  ~Controls() = default;
+  ~SimpletouchControls() = default;
 
   void Init(DaisySeed &hw);
 
-  void UpdateAudioRate(DaisySeed &hw);
+  void Process();
 
   void UpdateSlowRate(DaisySeed &hw);
 
   EngineParameters GetEngineParameters();
 
  private:
-  Engine &engine_;
   Touch &touch_;
 
   float current_note_base_;
@@ -70,6 +68,8 @@ class Controls {
 
   int scale_;
   int range_;
+
+  TriggerState trigger_;
 
   Oscillator body_lfo_;
 

@@ -17,6 +17,12 @@
 
 namespace audrey {
 
+enum class TriggerState {
+  RISING_EDGE,
+  FALLING_EDGE,
+  UNKNOWN
+};
+
 struct EngineParameters {
   float string_pitch;
   float feedback_gain;
@@ -32,6 +38,7 @@ struct EngineParameters {
   float input_level;
   float shape;
   bool drone_mode;
+  TriggerState trigger;
 };
 
 class Engine {

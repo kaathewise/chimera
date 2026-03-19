@@ -80,6 +80,11 @@ void Engine::SetParameters(const EngineParameters &params) {
   SetInputLevel(params.input_level);
   SetShape(params.shape);
   DroneMode(params.drone_mode);
+  if (params.trigger == TriggerState::RISING_EDGE) {
+    NoteOn();
+  } else if (params.trigger == TriggerState::FALLING_EDGE) {
+    NoteOff();
+  }
 }
 
 void Engine::SetStringPitch(const float nn) {

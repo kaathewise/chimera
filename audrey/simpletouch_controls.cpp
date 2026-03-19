@@ -12,7 +12,7 @@ using daisysp::fmap;
 using daisysp::Mapping;
 using daisysp::Oscillator;
 
-void Controls::Init(DaisySeed &hw) {
+void SimpletouchControls::Init(DaisySeed &hw) {
   output_volume_cv_.Detach();
   envelope_shape_cv_.Detach();
 
@@ -22,7 +22,7 @@ void Controls::Init(DaisySeed &hw) {
   body_lfo_.SetFreq(1.0f);
 }
 
-void Controls::UpdateAudioRate(DaisySeed &hw) {
+void SimpletouchControls::Process() {
   // Update all controls and state
   FeedbackGainKnob().Process();
   ReverbMixKnob().Process();
@@ -70,7 +70,7 @@ void Controls::UpdateAudioRate(DaisySeed &hw) {
   feedback_body_final_cv_.Process(fclamp(body_val, 0.0f, 1.0f));
 }
 
-void Controls::UpdateSlowRate(DaisySeed &hw) {
+void SimpletouchControls::UpdateSlowRate(DaisySeed &hw) {
   // Note: range is currently unused
   if (RangeSwitch() == Switch3::POS_LEFT) {
     range_ = 0;
@@ -141,9 +141,11 @@ void Controls::UpdateSlowRate(DaisySeed &hw) {
   }
 
   if (note_touched && !prev_note_touched) {
-    engine_.NoteOn();
+    trigger_ = TriggerState::RISING_EDGE;
   } else if (!note_touched && prev_note_touched) {
-    engine_.NoteOff();
+    trigger_ = TriggerState::FALLING_EDGE;
+  } else {
+    trigger_ = TriggerState::UNKNOWN;
   }
 
   prev_note_touched = note_touched;
@@ -151,7 +153,7 @@ void Controls::UpdateSlowRate(DaisySeed &hw) {
   hw.SetLed(drone_mode_ || note_touched);
 }
 
-EngineParameters Controls::GetEngineParameters() {
+EngineParameters SimpletouchControls::GetEngineParameters() {
   EngineParameters p;
   p.string_pitch = fclamp(
       current_note_base_ + touch_.knobs().s36().Value() * 24.0f + octave_shift_,
@@ -173,6 +175,7 @@ EngineParameters Controls::GetEngineParameters() {
   p.input_level = fmap(input_volume_cv_.Value(), 0.0f, 1.0f, Mapping::EXP);
   p.shape = envelope_shape_cv_.Value();
   p.drone_mode = drone_mode_;
+  p.trigger = trigger_;
   return p;
 }
 

@@ -16,12 +16,12 @@ static const size_t kBlockSize = 4;
 static DaisySeed hw;
 static Touch touch;
 static audrey::Engine engine;
-static audrey::Controls controls(engine, touch);
+static audrey::SimpletouchControls controls(touch);
 static Limiter limiter[2];
 
 void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out,
                    size_t size) {
-  controls.UpdateAudioRate(hw);
+  controls.Process();
   const audrey::EngineParameters parameters = controls.GetEngineParameters();
   for (size_t i = 0; i < size; i++) {
     engine.Process(parameters, IN_L[i], OUT_L[i], OUT_R[i]);
