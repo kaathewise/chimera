@@ -15,11 +15,8 @@ using daisysp::Mapping;
 using daisysp::Oscillator;
 
 void SimpletouchControls::Init(DaisySeed &hw) {
-  sample_rate_ = hw.AudioSampleRate();
-
-  Attach();
-  output_volume_.Detach();
-  envelope_shape_.Detach();
+  output_volume_cv_.Detach();
+  envelope_shape_cv_.Detach();
 
   body_lfo_.Init(hw.AudioCallbackRate());
   body_lfo_.SetAmp(1.f);
@@ -27,20 +24,24 @@ void SimpletouchControls::Init(DaisySeed &hw) {
   body_lfo_.SetFreq(1.0f);
 }
 
-void SimpletouchControls::Process() {
-  fb_gain_.Process(FeedbackGainKnob().GetRawFloat());
-  verb_mix_.Process(ReverbMixKnob().GetRawFloat());
-  verb_feedback_.Process(ReverbSizeKnob().GetRawFloat());
-  fb_lpf_cutoff_.Process(LPFKnob().GetRawFloat());
-  fb_hpf_cutoff_.Process(HPFKnob().GetRawFloat());
+void SimpletouchControls::UpdateAudioRate(DaisySeed &hw) {
+  fb_gain_ = fmap(FeedbackGainKnob().Process(), -60.0f, 12.0f);
+  verb_mix_ = fmap(ReverbMixKnob().Process(), 0.0f, 1.0f);
+  verb_feedback_ =
+      fmap(ftension(ReverbSizeKnob().Process(), -3.0f), 0.2f, 1.0f);
+  fb_lpf_cutoff_ = fmap(LPFKnob().Process(), 100.0f, 18000.0f, Mapping::LOG);
+  fb_hpf_cutoff_ = fmap(HPFKnob().Process(), 10.0f, 4000.0f, Mapping::LOG);
 
-  input_volume_.Process(VolumeKnob().GetRawFloat());
-  output_volume_.Process(VolumeKnob().GetRawFloat());
+  input_level_ = fmap(input_volume_cv_.Process(VolumeKnob().GetRawFloat()),
+                      0.0f, 1.0f, Mapping::EXP);
+  output_level_ = fmap(output_volume_cv_.Process(VolumeKnob().GetRawFloat()),
+                       0.0f, 1.0f, Mapping::EXP);
 
-  envelope_shape_.Process(EnvelopeBodyFader().GetRawFloat());
+  envelope_shape_ =
+      envelope_shape_cv_.Process(EnvelopeBodyFader().GetRawFloat());
 
   float body_knob_val =
-      1.0f - feedback_body_knob_.Process(EnvelopeBodyFader().GetRawFloat());
+      1.0f - feedback_body_knob_cv_.Process(EnvelopeBodyFader().GetRawFloat());
 
   float body_val;
   if (LfoSwitch() == Switch3::POS_LEFT) {
@@ -73,10 +74,12 @@ void SimpletouchControls::Process() {
     prev_osc = curr_osc;
   }
 
-  feedback_body_final_.Process(fclamp(body_val, 0.0f, 1.0f));
+  feedback_body_final_cv_.Process(fclamp(body_val, 0.0f, 1.0f));
+  fb_delay_samp_target_ =
+      fmap(feedback_body_final_cv_.Value(), 0.001f, 0.1f, Mapping::EXP) *
+      hw.AudioSampleRate();
 
-  float freq_shift =
-      frequency_.Process(FrequencyFader().GetRawFloat()) * 24.0f;
+  float freq_shift = touch_.knobs().s36().Process() * 24.0f;
   current_note_base_ =
       fclamp(current_note_base_ + freq_shift + octave_shift_, 16.0f, 88.0f);
 }
@@ -95,23 +98,23 @@ void SimpletouchControls::UpdateSlowRate(DaisySeed &hw) {
   touch_.pads().Process();
 
   if (touch_.pads().IsRisingEdge(11)) {
-    feedback_body_knob_.Detach();
-    envelope_shape_.Attach();
+    feedback_body_knob_cv_.Detach();
+    envelope_shape_cv_.Attach();
   }
 
   if (touch_.pads().IsFallingEdge(11)) {
-    envelope_shape_.Detach();
-    feedback_body_knob_.Attach();
+    envelope_shape_cv_.Detach();
+    feedback_body_knob_cv_.Attach();
   }
 
   if (touch_.pads().IsRisingEdge(10)) {
-    input_volume_.Detach();
-    output_volume_.Attach();
+    input_volume_cv_.Detach();
+    output_volume_cv_.Attach();
   }
 
   if (touch_.pads().IsFallingEdge(10)) {
-    output_volume_.Detach();
-    input_volume_.Attach();
+    output_volume_cv_.Detach();
+    input_volume_cv_.Attach();
   }
 
   if (touch_.pads().IsTouched(11)) {
@@ -157,24 +160,18 @@ void SimpletouchControls::UpdateSlowRate(DaisySeed &hw) {
 EngineParameters SimpletouchControls::GetEngineParameters() {
   EngineParameters params;
   params.string_pitch = current_note_base_;
-  params.feedback_gain = fmap(fb_gain_.Value(), -60.0f, 12.0f);
-  params.feedback_delay =
-      fmap(feedback_body_final_.Value(), 0.001f, 0.1f, Mapping::EXP) *
-      sample_rate_;
-  params.feedback_lpf_cutoff =
-      fmap(fb_lpf_cutoff_.Value(), 100.0f, 18000.0f, Mapping::LOG);
-  params.feedback_hpf_cutoff =
-      fmap(fb_hpf_cutoff_.Value(), 10.0f, 4000.0f, Mapping::LOG);
+  params.feedback_gain = fb_gain_;
+  params.feedback_delay = fb_delay_samp_target_;
+  params.feedback_lpf_cutoff = fb_lpf_cutoff_;
+  params.feedback_hpf_cutoff = fb_hpf_cutoff_;
   params.echo_delay_time = echo_delay_time_;
   params.echo_delay_feedback = echo_delay_feedback_;
   params.echo_delay_send_amount = echo_send_;
-  params.reverb_mix = fmap(verb_mix_.Value(), 0.0f, 1.0f);
-  params.reverb_feedback =
-      fmap(ftension(verb_feedback_.Value(), -3.0f), 0.2f, 1.0f);
-  params.output_level =
-      fmap(output_volume_.Value(), 0.0f, 1.0f, Mapping::EXP);
-  params.input_level = fmap(input_volume_.Value(), 0.0f, 1.0f, Mapping::EXP);
-  params.envelope_shape = envelope_shape_.Value();
+  params.reverb_mix = verb_mix_;
+  params.reverb_feedback = verb_feedback_;
+  params.output_level = output_level_;
+  params.input_level = input_level_;
+  params.envelope_shape = envelope_shape_;
   params.drone_mode = drone_mode_;
   params.note_on = note_on_;
   return params;

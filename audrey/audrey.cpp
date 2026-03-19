@@ -1,7 +1,7 @@
 #include <daisy_seed.h>
 
-#include "audrey/engine.h"
 #include "audrey/simpletouch_controls.h"
+#include "audrey/engine.h"
 #include "simpletouch/touch.h"
 
 using daisy::AudioHandle;
@@ -21,7 +21,7 @@ static Limiter limiter[2];
 
 void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out,
                    size_t size) {
-  controls.Process();
+  controls.UpdateAudioRate(hw);
   audrey::EngineParameters params = controls.GetEngineParameters();
 
   for (size_t i = 0; i < size; i++) {
