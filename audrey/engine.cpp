@@ -65,36 +65,66 @@ void Engine::Init(const float sample_rate) {
   fb_hpf_.SetCutoff(60.f);
 }
 
-void Engine::Process(const EngineParameters &params, float in, float &outL,
-                     float &outR) {
-  // Update internal parameters from struct
-  const auto freq = mtof(params.string_pitch);
+void Engine::SetStringPitch(const float nn) {
+  const auto freq = mtof(nn);
   strings_[0]->SetFreq(freq);
   strings_[1]->SetFreq(freq);
+}
 
-  fb_lpf_.SetCutoff(params.feedback_lpf_cutoff);
-  fb_hpf_.SetCutoff(params.feedback_hpf_cutoff);
+void Engine::SetFeedbackGain(const float gain_db) {
+  fb_gain_ = dbfs2lin(gain_db);
+}
 
-  echo_delay_[0]->SetDelayTime(params.echo_delay_time);
-  echo_delay_[1]->SetDelayTime(params.echo_delay_time);
-  echo_delay_[0]->SetFeedback(params.echo_delay_feedback);
-  echo_delay_[1]->SetFeedback(params.echo_delay_feedback);
+void Engine::SetFeedbackDelay(const float delay_s) {
+  fb_delay_samp_target_ =
+      DSY_CLAMP(delay_s * sample_rate_, 1.0f,
+                static_cast<float>(kMaxFeedbackDelaySamp - 1));
+}
 
-  verb_->SetFeedback(params.reverb_feedback);
+void Engine::SetFeedbackLPFCutoff(const float cutoff_hz) {
+  fb_lpf_.SetCutoff(cutoff_hz);
+}
 
-  _env.SetShape(params.envelope_shape);
+void Engine::SetFeedbackHPFCutoff(const float cutoff_hz) {
+  fb_hpf_.SetCutoff(cutoff_hz);
+}
 
-  static bool prev_note_on = false;
-  if (params.note_on && !prev_note_on) {
-    _env.Trigger();
-  } else if (!params.note_on && prev_note_on) {
-    _env.Release();
-  }
-  prev_note_on = params.note_on;
+void Engine::SetEchoDelayTime(const float echo_time) {
+  echo_delay_[0]->SetDelayTime(echo_time);
+  echo_delay_[1]->SetDelayTime(echo_time);
+}
 
+void Engine::SetEchoDelayFeedback(const float echo_fb) {
+  echo_delay_[0]->SetFeedback(echo_fb);
+  echo_delay_[1]->SetFeedback(echo_fb);
+}
+
+void Engine::SetEchoDelaySendAmount(const float echo_send) {
+  echo_send_ = echo_send;
+}
+
+void Engine::SetReverbMix(const float mix) {
+  verb_mix_ = fclamp(mix, 0.0f, 1.0f);
+}
+
+void Engine::SetReverbFeedback(const float time) { verb_->SetFeedback(time); }
+
+void Engine::SetOutputLevel(const float level) { output_level_ = level; }
+
+void Engine::SetInputLevel(const float level) { input_level_ = level; }
+
+void Engine::NoteOn() { _env.Trigger(); }
+
+void Engine::NoteOff() { _env.Release(); }
+
+void Engine::DroneMode(bool mode) { drone = mode; }
+
+void Engine::SetShape(const float shape) { _env.SetShape(shape); }
+
+void Engine::Process(float in, float &outL, float &outR) {
   // --- Update audio-rate-smoothed control params ---
 
-  fonepole(fb_delay_samp_, params.feedback_delay, fb_delay_smooth_coef_);
+  fonepole(fb_delay_samp_, fb_delay_samp_target_, fb_delay_smooth_coef_);
 
   // --- Process Samples ---
 
@@ -106,9 +136,9 @@ void Engine::Process(const EngineParameters &params, float in, float &outL,
 
   // Get noise + feedback output
   inL =
-      fb_delayline_[0]->Read(fb_delay_samp_) + noise_samp + (in * params.input_level);
+      fb_delayline_[0]->Read(fb_delay_samp_) + noise_samp + (in * input_level_);
   inR = fb_delayline_[1]->Read(daisysp::fmax(1.0f, fb_delay_samp_ - 4.f)) +
-        noise_samp + (in * params.input_level);
+        noise_samp + (in * input_level_);
 
   // Process through KS resonator
   sampL = strings_[0]->Process(inL);
@@ -126,26 +156,27 @@ void Engine::Process(const EngineParameters &params, float in, float &outL,
 
   verb_->Process(sampL, sampR, &verbL, &verbR);
 
-  sampL -= (sampL - verbL) * params.reverb_mix;
-  sampR -= (sampR - verbR) * params.reverb_mix;
+  //       (sampL * (1.0f - verb_mix_)) + verbL * verb_mix_;
+  //       sampL - sampL * verb_mix + verbL * verb_mix_;
+  sampL -= (sampL - verbL) * verb_mix_;
+  sampR -= (sampR - verbR) * verb_mix_;
 
   // ---> Resonator feedback
 
   // Write back into delay with attenuation
-  fb_delayline_[0]->Write(sampL * (params.feedback_gain * (params.drone_mode ? 1.0f : env)));
-  fb_delayline_[1]->Write(sampR * (params.feedback_gain * (params.drone_mode ? 1.0f : env)));
+  fb_delayline_[0]->Write(sampL * (fb_gain_ * (drone ? 1.0f : env)));
+  fb_delayline_[1]->Write(sampR * (fb_gain_ * (drone ? 1.0f : env)));
 
   // ---> Echo Delay
 
-  echoL = echo_delay_[0]->Process(sampL * params.echo_delay_send_amount);
-  echoR = echo_delay_[1]->Process(sampR * params.echo_delay_send_amount);
+  echoL = echo_delay_[0]->Process(sampL * echo_send_);
+  echoR = echo_delay_[1]->Process(sampR * echo_send_);
 
   sampL = 0.5f * (sampL + echoL);
   sampR = 0.5f * (sampR + echoR);
 
   // ---> Output
-  outL = sampL * params.output_level;
-  outR = sampR * params.output_level;
+  outL = sampL * output_level_;
+  outR = sampR * output_level_;
 }
-
 }  // namespace audrey
