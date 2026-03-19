@@ -17,12 +17,31 @@
 
 namespace audrey {
 
+struct EngineParameters {
+  float string_pitch;
+  float feedback_gain;
+  float feedback_delay;
+  float feedback_lpf_cutoff;
+  float feedback_hpf_cutoff;
+  float echo_delay_time;
+  float echo_delay_feedback;
+  float echo_delay_send_amount;
+  float reverb_mix;
+  float reverb_feedback;
+  float output_level;
+  float input_level;
+  float shape;
+  bool drone_mode;
+};
+
 class Engine {
  public:
   Engine() = default;
   ~Engine() = default;
 
   void Init(const float sample_rate);
+
+  void SetParameters(const EngineParameters &params);
 
   void SetStringPitch(const float nn);
 
@@ -48,7 +67,7 @@ class Engine {
   void SetShape(const float shape);
   void DroneMode(bool mode);
 
-  void Process(float in, float &outL, float &outR);
+  void Process(EngineParameters params, float in, float &outL, float &outR);
 
  private:
   // long enough for 250ms at 48kHz

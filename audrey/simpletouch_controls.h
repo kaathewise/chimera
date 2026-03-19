@@ -24,7 +24,17 @@ class Controls {
         output_volume_cv_(touch, 0.5f, 0.02f, 0.007f),
         envelope_shape_cv_(touch, 0.0f, 0.02f, 0.007f),
         feedback_body_knob_cv_(touch, 0.0f, 0.02f, 0.00014f),
-        feedback_body_final_cv_(touch, 0.0f, 0.02f, 0.007f) {}
+        feedback_body_final_cv_(touch, 0.0f, 0.02f, 0.007f) {
+    current_note_base_ = 40.0f;
+    octave_shift_ = 0.0f;
+    drone_mode_ = false;
+    echo_delay_time_ = 5.0f;
+    echo_delay_feedback_ = 0.5f;
+    echo_delay_send_amount_ = 0.0f;
+    prev_osc_ = 0.0f;
+    held_val_ = 0.0f;
+    smoothed_val_ = 0.0f;
+  }
 
   ~Controls() = default;
 
@@ -34,6 +44,8 @@ class Controls {
 
   void UpdateSlowRate(DaisySeed &hw);
 
+  EngineParameters GetEngineParameters();
+
  private:
   Engine &engine_;
   Touch &touch_;
@@ -41,6 +53,14 @@ class Controls {
   float current_note_base_;
   float octave_shift_;
   bool drone_mode_;
+
+  float echo_delay_time_;
+  float echo_delay_feedback_;
+  float echo_delay_send_amount_;
+
+  float prev_osc_;
+  float held_val_;
+  float smoothed_val_;
 
   ControlValue input_volume_cv_;
   ControlValue output_volume_cv_;

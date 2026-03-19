@@ -23,31 +23,20 @@ void Controls::Init(DaisySeed &hw) {
 }
 
 void Controls::UpdateAudioRate(DaisySeed &hw) {
-  // Feedback Gain in dbFS
-  engine_.SetFeedbackGain(fmap(FeedbackGainKnob().Process(), -60.0f, 12.0f));
+  // Update all controls and state
+  FeedbackGainKnob().Process();
+  ReverbMixKnob().Process();
+  ReverbSizeKnob().Process();
+  LPFKnob().Process();
+  HPFKnob().Process();
+  VolumeKnob().Process();
+  touch_.knobs().s36().Process();
+  EnvelopeBodyFader().Process();
 
-  // Reverb Mix
-  engine_.SetReverbMix(fmap(ReverbMixKnob().Process(), 0.0f, 1.0f));
+  input_volume_cv_.Process(VolumeKnob().GetRawFloat());
+  output_volume_cv_.Process(VolumeKnob().GetRawFloat());
+  envelope_shape_cv_.Process(EnvelopeBodyFader().GetRawFloat());
 
-  // Reverb Feedback
-  engine_.SetReverbFeedback(
-      fmap(ftension(ReverbSizeKnob().Process(), -3.0f), 0.2f, 1.0f));
-
-  // Feedback filter cutoffs in hz
-  engine_.SetFeedbackLPFCutoff(
-      fmap(LPFKnob().Process(), 100.0f, 18000.0f, Mapping::LOG));
-  engine_.SetFeedbackHPFCutoff(
-      fmap(HPFKnob().Process(), 10.0f, 4000.0f, Mapping::LOG));
-
-  engine_.SetInputLevel(
-      fmap(input_volume_cv_.Process(VolumeKnob().GetRawFloat()), 0.0f, 1.0f,
-           Mapping::EXP));
-  engine_.SetOutputLevel(
-      fmap(output_volume_cv_.Process(VolumeKnob().GetRawFloat()), 0.0f, 1.0f,
-           Mapping::EXP));
-
-  engine_.SetShape(
-      envelope_shape_cv_.Process(EnvelopeBodyFader().GetRawFloat()));
   float body_knob_val =
       1 - feedback_body_knob_cv_.Process(EnvelopeBodyFader().GetRawFloat());
 
@@ -55,10 +44,6 @@ void Controls::UpdateAudioRate(DaisySeed &hw) {
   if (LfoSwitch() == Switch3::POS_LEFT) {
     body_val = body_knob_val;
   } else {
-    static float prev_osc = 0.0f;
-    static float held_val = 0.0f;
-    static float smoothed_val = 0.0f;
-
     float slew_rate;
     if (LfoSwitch() == Switch3::POS_CENTER) {
       body_lfo_.SetFreq(0.01f + ((1.0f - body_knob_val) * 0.5f));
@@ -70,25 +55,19 @@ void Controls::UpdateAudioRate(DaisySeed &hw) {
     }
 
     float curr_osc = body_lfo_.Process();
-    if ((prev_osc < 0.0f && curr_osc >= 0.0f) ||
-        (prev_osc > 0.0f && curr_osc <= 0.0f)) {
-      held_val = Random::GetFloat(
+    if ((prev_osc_ < 0.0f && curr_osc >= 0.0f) ||
+        (prev_osc_ > 0.0f && curr_osc <= 0.0f)) {
+      held_val_ = Random::GetFloat(
           body_knob_val - (0.05f + (0.07f * (1.0f - body_knob_val))),
           body_knob_val + (0.05f + (0.07f * (1.0f - body_knob_val))));
     }
 
-    smoothed_val += slew_rate * (held_val - smoothed_val);
-    body_val = smoothed_val;
-    prev_osc = curr_osc;
+    smoothed_val_ += slew_rate * (held_val_ - smoothed_val_);
+    body_val = smoothed_val_;
+    prev_osc_ = curr_osc;
   }
 
   feedback_body_final_cv_.Process(fclamp(body_val, 0.0f, 1.0f));
-  engine_.SetFeedbackDelay(
-      fmap(feedback_body_final_cv_.Value(), 0.001f, 0.1f, Mapping::EXP));
-
-  float freq_shift = touch_.knobs().s36().Process() * 24.0f;
-  engine_.SetStringPitch(
-      fclamp(current_note_base_ + freq_shift + octave_shift_, 16.0f, 88.0f));
 }
 
 void Controls::UpdateSlowRate(DaisySeed &hw) {
@@ -131,7 +110,6 @@ void Controls::UpdateSlowRate(DaisySeed &hw) {
 
     if (touch_.pads().IsRisingEdge(2)) {
       drone_mode_ = !drone_mode_;
-      engine_.DroneMode(drone_mode_);
     }
   } else {
     if (touch_.pads().IsRisingEdge(0)) {
@@ -171,6 +149,31 @@ void Controls::UpdateSlowRate(DaisySeed &hw) {
   prev_note_touched = note_touched;
 
   hw.SetLed(drone_mode_ || note_touched);
+}
+
+EngineParameters Controls::GetEngineParameters() {
+  EngineParameters p;
+  p.string_pitch = fclamp(
+      current_note_base_ + touch_.knobs().s36().Value() * 24.0f + octave_shift_,
+      16.0f, 88.0f);
+  p.feedback_gain = fmap(FeedbackGainKnob().Value(), -60.0f, 12.0f);
+  p.feedback_delay =
+      fmap(feedback_body_final_cv_.Value(), 0.001f, 0.1f, Mapping::EXP);
+  p.feedback_lpf_cutoff =
+      fmap(LPFKnob().Value(), 100.0f, 18000.0f, Mapping::LOG);
+  p.feedback_hpf_cutoff =
+      fmap(HPFKnob().Value(), 10.0f, 4000.0f, Mapping::LOG);
+  p.echo_delay_time = echo_delay_time_;
+  p.echo_delay_feedback = echo_delay_feedback_;
+  p.echo_delay_send_amount = echo_delay_send_amount_;
+  p.reverb_mix = fmap(ReverbMixKnob().Value(), 0.0f, 1.0f);
+  p.reverb_feedback =
+      fmap(ftension(ReverbSizeKnob().Value(), -3.0f), 0.2f, 1.0f);
+  p.output_level = fmap(output_volume_cv_.Value(), 0.0f, 1.0f, Mapping::EXP);
+  p.input_level = fmap(input_volume_cv_.Value(), 0.0f, 1.0f, Mapping::EXP);
+  p.shape = envelope_shape_cv_.Value();
+  p.drone_mode = drone_mode_;
+  return p;
 }
 
 }  // namespace audrey

@@ -23,8 +23,8 @@ void Engine::Init(const float sample_rate) {
   verb_ = VerbPtr(simpletouch::SDRAM::allocate<ReverbSc>());
 
   for (int i = 0; i < 2; i++) {
-    strings_[i] = KarplusStringPtr(
-        simpletouch::SDRAM::allocate<KarplusString>());
+    strings_[i] =
+        KarplusStringPtr(simpletouch::SDRAM::allocate<KarplusString>());
     fb_delayline_[i] =
         FeedbackDelayLinePtr(simpletouch::SDRAM::allocate<FB_DL>());
   }
@@ -63,6 +63,23 @@ void Engine::Init(const float sample_rate) {
   fb_hpf_.Init(sample_rate);
   fb_hpf_.SetQ(0.9f);
   fb_hpf_.SetCutoff(60.f);
+}
+
+void Engine::SetParameters(const EngineParameters &params) {
+  SetStringPitch(params.string_pitch);
+  SetFeedbackGain(params.feedback_gain);
+  SetFeedbackDelay(params.feedback_delay);
+  SetFeedbackLPFCutoff(params.feedback_lpf_cutoff);
+  SetFeedbackHPFCutoff(params.feedback_hpf_cutoff);
+  SetEchoDelayTime(params.echo_delay_time);
+  SetEchoDelayFeedback(params.echo_delay_feedback);
+  SetEchoDelaySendAmount(params.echo_delay_send_amount);
+  SetReverbMix(params.reverb_mix);
+  SetReverbFeedback(params.reverb_feedback);
+  SetOutputLevel(params.output_level);
+  SetInputLevel(params.input_level);
+  SetShape(params.shape);
+  DroneMode(params.drone_mode);
 }
 
 void Engine::SetStringPitch(const float nn) {
@@ -121,7 +138,10 @@ void Engine::DroneMode(bool mode) { drone = mode; }
 
 void Engine::SetShape(const float shape) { _env.SetShape(shape); }
 
-void Engine::Process(float in, float &outL, float &outR) {
+void Engine::Process(EngineParameters params, float in, float &outL,
+                     float &outR) {
+  SetParameters(params);
+
   // --- Update audio-rate-smoothed control params ---
 
   fonepole(fb_delay_samp_, fb_delay_samp_target_, fb_delay_smooth_coef_);
