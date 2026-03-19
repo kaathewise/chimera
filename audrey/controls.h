@@ -1,5 +1,6 @@
-#ifndef AUDREY_SIMPLETOUCH_CONTROLS_H_
-#define AUDREY_SIMPLETOUCH_CONTROLS_H_
+
+#ifndef AUDREY_CONTROLS_H_
+#define AUDREY_CONTROLS_H_
 
 #include <daisy_seed.h>
 
@@ -15,17 +16,17 @@ using daisysp::Oscillator;
 using simpletouch::ControlValue;
 using simpletouch::Touch;
 
-class SimpletouchControls {
+class Controls {
  public:
-  explicit SimpletouchControls(Touch &touch)
-      : touch_(touch),
+  explicit Controls(Touch &touch):
+        touch_(touch),
         input_volume_cv_(touch, 0.5f, 0.02f, 0.007f),
         output_volume_cv_(touch, 0.5f, 0.02f, 0.007f),
         envelope_shape_cv_(touch, 0.0f, 0.02f, 0.007f),
         feedback_body_knob_cv_(touch, 0.0f, 0.02f, 0.00014f),
         feedback_body_final_cv_(touch, 0.0f, 0.02f, 0.007f) {}
 
-  ~SimpletouchControls() = default;
+  ~Controls() = default;
 
   void Init(DaisySeed &hw);
 
@@ -81,4 +82,4 @@ class SimpletouchControls {
 };
 }  // namespace audrey
 
-#endif  // AUDREY_SIMPLETOUCH_CONTROLS_H_
+#endif  // AUDREY_CONTROLS_H_

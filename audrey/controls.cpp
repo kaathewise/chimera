@@ -1,4 +1,4 @@
-#include "audrey/simpletouch_controls.h"
+#include "audrey/controls.h"
 
 #include <daisysp.h>
 
@@ -14,7 +14,7 @@ using daisysp::fmap;
 using daisysp::Mapping;
 using daisysp::Oscillator;
 
-void SimpletouchControls::Init(DaisySeed &hw) {
+void Controls::Init(DaisySeed &hw) {
   output_volume_cv_.Detach();
   envelope_shape_cv_.Detach();
 
@@ -24,21 +24,19 @@ void SimpletouchControls::Init(DaisySeed &hw) {
   body_lfo_.SetFreq(1.0f);
 }
 
-void SimpletouchControls::UpdateAudioRate(DaisySeed &hw) {
+void Controls::UpdateAudioRate(DaisySeed &hw) {
   fb_gain_ = fmap(FeedbackGainKnob().Process(), -60.0f, 12.0f);
   verb_mix_ = fmap(ReverbMixKnob().Process(), 0.0f, 1.0f);
-  verb_feedback_ =
-      fmap(ftension(ReverbSizeKnob().Process(), -3.0f), 0.2f, 1.0f);
+  verb_feedback_ = fmap(ftension(ReverbSizeKnob().Process(), -3.0f), 0.2f, 1.0f);
   fb_lpf_cutoff_ = fmap(LPFKnob().Process(), 100.0f, 18000.0f, Mapping::LOG);
   fb_hpf_cutoff_ = fmap(HPFKnob().Process(), 10.0f, 4000.0f, Mapping::LOG);
 
-  input_level_ = fmap(input_volume_cv_.Process(VolumeKnob().GetRawFloat()),
-                      0.0f, 1.0f, Mapping::EXP);
+  input_level_ = fmap(input_volume_cv_.Process(VolumeKnob().GetRawFloat()), 0.0f,
+                      1.0f, Mapping::EXP);
   output_level_ = fmap(output_volume_cv_.Process(VolumeKnob().GetRawFloat()),
                        0.0f, 1.0f, Mapping::EXP);
 
-  envelope_shape_ =
-      envelope_shape_cv_.Process(EnvelopeBodyFader().GetRawFloat());
+  envelope_shape_ = envelope_shape_cv_.Process(EnvelopeBodyFader().GetRawFloat());
 
   float body_knob_val =
       1.0f - feedback_body_knob_cv_.Process(EnvelopeBodyFader().GetRawFloat());
@@ -84,7 +82,7 @@ void SimpletouchControls::UpdateAudioRate(DaisySeed &hw) {
       fclamp(current_note_base_ + freq_shift + octave_shift_, 16.0f, 88.0f);
 }
 
-void SimpletouchControls::UpdateSlowRate(DaisySeed &hw) {
+void Controls::UpdateSlowRate(DaisySeed &hw) {
   // Note: range is currently unused
   if (RangeSwitch() == Switch3::POS_LEFT) {
     range_ = 0;
@@ -157,7 +155,7 @@ void SimpletouchControls::UpdateSlowRate(DaisySeed &hw) {
   hw.SetLed(drone_mode_ || note_touched);
 }
 
-EngineParameters SimpletouchControls::GetEngineParameters() {
+EngineParameters Controls::GetEngineParameters() {
   EngineParameters params;
   params.string_pitch = current_note_base_;
   params.feedback_gain = fb_gain_;

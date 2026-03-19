@@ -1,6 +1,6 @@
 #include <daisy_seed.h>
 
-#include "audrey/simpletouch_controls.h"
+#include "audrey/controls.h"
 #include "audrey/engine.h"
 #include "simpletouch/touch.h"
 
@@ -16,7 +16,7 @@ static const size_t kBlockSize = 4;
 static DaisySeed hw;
 static Touch touch;
 static audrey::Engine engine;
-static audrey::SimpletouchControls controls(touch);
+static audrey::Controls controls(touch);
 static Limiter limiter[2];
 
 void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out,
