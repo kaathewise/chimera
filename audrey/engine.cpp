@@ -148,7 +148,7 @@ void Engine::Process(EngineParameters params, float in, float &outL,
   sampR = 0.5f * (sampR + echoR);
 
   // ---> Output
-  outL = sampL * params.output_level;
-  outR = sampR * params.output_level;
+  outL += sampL * params.output_level;
+  outR += sampR * params.output_level;
 }
 }  // namespace audrey

@@ -3,7 +3,8 @@
 
 #include <daisy_seed.h>
 
-#include "dev/sdram.h"
+#include "audrey/engine.h"
+#include "audrey/simpletouch_controls.h"
 #include "eurorack/plaits/dsp/engine/particle_engine.h"
 #include "sequencer/sequencer.h"
 #include "sequencer/simpletouch_controls.h"
@@ -19,7 +20,8 @@ class Patch {
       : touch_(touch),
         sequencer_simpletouch_controls_(touch),
         voice_simpletouch_controls_(touch),
-        voice_(particle_engine_) {}
+        voice_(particle_engine_),
+        audrey_simpletouch_controls_(touch) {}
 
   void Init(daisy::DaisySeed hw);
   void Process(daisy::AudioHandle::InputBuffer in,
@@ -27,9 +29,10 @@ class Patch {
   void UpdateSimpleTouchControls();
 
  private:
-  enum ControlTarget {
-    CONTROL_TARGET_SEQUENCER,
-    CONTROL_TARGET_VOICE,
+  enum class ControlTarget {
+    SEQUENCER,
+    VOICE,
+    AUDREY
   };
 
   simpletouch::Touch& touch_;
@@ -40,7 +43,12 @@ class Patch {
   voice::Voice voice_;
   sequencer::Sequencer sequencer_;
 
-  ControlTarget control_target_ = CONTROL_TARGET_SEQUENCER;
+  audrey::Engine audrey_;
+  audrey::SimpletouchControls audrey_simpletouch_controls_;
+
+  daisysp::Limiter limiter_[2];
+
+  ControlTarget control_target_ = ControlTarget::SEQUENCER;
 
   uint32_t buffer_space_[8192];
 

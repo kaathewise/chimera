@@ -8,6 +8,11 @@ DAISYSP_DIR = ../third_party/DaisySP
 # Sources
 CPP_SOURCES = chimera.cpp \
               patch.cpp \
+              ../audrey/biquad_filters.cpp \
+			  ../audrey/dc_block.cpp \
+			  ../audrey/simpletouch_controls.cpp \
+			  ../audrey/engine.cpp \
+			  ../audrey/karplus_string.cpp \
 			  ../sequencer/sequencer.cpp \
 			  ../sequencer/simpletouch_controls.cpp \
 			  ../sequencer/t_generator.cpp \
@@ -30,6 +35,9 @@ C_INCLUDES = -I.. \
 
 # Use SRAM since Marbles resources are large
 APP_TYPE = BOOT_SRAM
+
+# Use DaisySP LGPL for Tone and ReverbSc
+USE_DAISYSP_LGPL = 1
 
 # Include common build rules
 include ../include.mk
