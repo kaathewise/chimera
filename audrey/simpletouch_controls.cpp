@@ -13,8 +13,9 @@ using daisysp::Mapping;
 using daisysp::Oscillator;
 
 void SimpletouchControls::Init(DaisySeed &hw) {
-  output_volume_cv_.Detach();
-  envelope_shape_cv_.Detach();
+  Attach();
+  output_volume_.Detach();
+  envelope_shape_.Detach();
 
   body_lfo_.Init(48000.0f);
   body_lfo_.SetAmp(1.f);
@@ -23,22 +24,18 @@ void SimpletouchControls::Init(DaisySeed &hw) {
 }
 
 void SimpletouchControls::Process() {
-  // Update all controls and state
-  FeedbackGainKnob().Process();
-  ReverbMixKnob().Process();
-  ReverbSizeKnob().Process();
-  LPFKnob().Process();
-  HPFKnob().Process();
-  VolumeKnob().Process();
-  touch_.knobs().s36().Process();
-  EnvelopeBodyFader().Process();
-
-  input_volume_cv_.Process(VolumeKnob().GetRawFloat());
-  output_volume_cv_.Process(VolumeKnob().GetRawFloat());
-  envelope_shape_cv_.Process(EnvelopeBodyFader().GetRawFloat());
+  input_volume_.Process(VolumeKnob().GetRawFloat());
+  output_volume_.Process(VolumeKnob().GetRawFloat());
+  envelope_shape_.Process(EnvelopeBodyFader().GetRawFloat());
+  frequency_.Process(FrequencyFader().GetRawFloat());
+  feedback_gain_.Process(FeedbackGainKnob().GetRawFloat());
+  lpf_.Process(LPFKnob().GetRawFloat());
+  hpf_.Process(HPFKnob().GetRawFloat());
+  reverb_mix_.Process(ReverbMixKnob().GetRawFloat());
+  reverb_size_.Process(ReverbSizeKnob().GetRawFloat());
 
   float body_knob_val =
-      1 - feedback_body_knob_cv_.Process(EnvelopeBodyFader().GetRawFloat());
+      1 - feedback_body_knob_.Process(EnvelopeBodyFader().GetRawFloat());
 
   float body_val;
   if (LfoSwitch() == Switch3::POS_LEFT) {
@@ -67,7 +64,7 @@ void SimpletouchControls::Process() {
     prev_osc_ = curr_osc;
   }
 
-  feedback_body_final_cv_.Process(fclamp(body_val, 0.0f, 1.0f));
+  feedback_body_final_.Process(fclamp(body_val, 0.0f, 1.0f));
 }
 
 void SimpletouchControls::UpdateSlowRate(DaisySeed &hw) {
@@ -84,23 +81,23 @@ void SimpletouchControls::UpdateSlowRate(DaisySeed &hw) {
   touch_.pads().Process();
 
   if (touch_.pads().IsRisingEdge(11)) {
-    feedback_body_knob_cv_.Detach();
-    envelope_shape_cv_.Attach();
+    feedback_body_knob_.Detach();
+    envelope_shape_.Attach();
   }
 
   if (touch_.pads().IsFallingEdge(11)) {
-    envelope_shape_cv_.Detach();
-    feedback_body_knob_cv_.Attach();
+    envelope_shape_.Detach();
+    feedback_body_knob_.Attach();
   }
 
   if (touch_.pads().IsRisingEdge(10)) {
-    input_volume_cv_.Detach();
-    output_volume_cv_.Attach();
+    input_volume_.Detach();
+    output_volume_.Attach();
   }
 
   if (touch_.pads().IsFallingEdge(10)) {
-    output_volume_cv_.Detach();
-    input_volume_cv_.Attach();
+    output_volume_.Detach();
+    input_volume_.Attach();
   }
 
   if (touch_.pads().IsTouched(11)) {
@@ -153,27 +150,52 @@ void SimpletouchControls::UpdateSlowRate(DaisySeed &hw) {
   hw.SetLed(drone_mode_ || note_touched);
 }
 
+void SimpletouchControls::Attach() {
+  input_volume_.Attach();
+  output_volume_.Attach();
+  envelope_shape_.Attach();
+  feedback_body_knob_.Attach();
+  feedback_body_final_.Attach();
+  frequency_.Attach();
+  feedback_gain_.Attach();
+  lpf_.Attach();
+  hpf_.Attach();
+  reverb_mix_.Attach();
+  reverb_size_.Attach();
+}
+
+void SimpletouchControls::Detach() {
+  input_volume_.Detach();
+  output_volume_.Detach();
+  envelope_shape_.Detach();
+  feedback_body_knob_.Detach();
+  feedback_body_final_.Detach();
+  frequency_.Detach();
+  feedback_gain_.Detach();
+  lpf_.Detach();
+  hpf_.Detach();
+  reverb_mix_.Detach();
+  reverb_size_.Detach();
+}
+
 EngineParameters SimpletouchControls::GetEngineParameters() {
   EngineParameters p;
-  p.string_pitch = fclamp(
-      current_note_base_ + touch_.knobs().s36().Value() * 24.0f + octave_shift_,
-      16.0f, 88.0f);
-  p.feedback_gain = fmap(FeedbackGainKnob().Value(), -60.0f, 12.0f);
+  p.string_pitch =
+      fclamp(current_note_base_ + frequency_.Value() * 24.0f + octave_shift_,
+             16.0f, 88.0f);
+  p.feedback_gain = fmap(feedback_gain_.Value(), -60.0f, 12.0f);
   p.feedback_delay =
-      fmap(feedback_body_final_cv_.Value(), 0.001f, 0.1f, Mapping::EXP);
-  p.feedback_lpf_cutoff =
-      fmap(LPFKnob().Value(), 100.0f, 18000.0f, Mapping::LOG);
-  p.feedback_hpf_cutoff =
-      fmap(HPFKnob().Value(), 10.0f, 4000.0f, Mapping::LOG);
+      fmap(feedback_body_final_.Value(), 0.001f, 0.1f, Mapping::EXP);
+  p.feedback_lpf_cutoff = fmap(lpf_.Value(), 100.0f, 18000.0f, Mapping::LOG);
+  p.feedback_hpf_cutoff = fmap(hpf_.Value(), 10.0f, 4000.0f, Mapping::LOG);
   p.echo_delay_time = echo_delay_time_;
   p.echo_delay_feedback = echo_delay_feedback_;
   p.echo_delay_send_amount = echo_delay_send_amount_;
-  p.reverb_mix = fmap(ReverbMixKnob().Value(), 0.0f, 1.0f);
-  p.reverb_feedback =
-      fmap(ftension(ReverbSizeKnob().Value(), -3.0f), 0.2f, 1.0f);
-  p.output_level = fmap(output_volume_cv_.Value(), 0.0f, 1.0f, Mapping::EXP);
-  p.input_level = fmap(input_volume_cv_.Value(), 0.0f, 1.0f, Mapping::EXP);
-  p.shape = envelope_shape_cv_.Value();
+  p.reverb_mix = fmap(reverb_mix_.Value(), 0.0f, 1.0f);
+  p.reverb_feedback = fmap(ftension(reverb_size_.Value(), -3.0f), 0.2f, 1.0f);
+  p.output_level = fmap(output_volume_.Value(), 0.0f, 1.0f, Mapping::EXP);
+  p.input_level = fmap(input_volume_.Value(), 0.0f, 1.0f, Mapping::EXP);
+  p.shape = envelope_shape_.Value();
   p.drone_mode = drone_mode_;
   p.trigger = trigger_;
   return p;
