@@ -142,9 +142,9 @@ void Engine::Process(EngineParameters params, float in, float &outL,
   const float fb_gain = dbfs2lin(params.feedback_gain);
 
   // Write back into delay with attenuation
-  if (params.trigger == TriggerState::RISING_EDGE) {
+  if (params.trigger == TriggerState::kRisingEdge) {
     _env.Trigger();
-  } else if (params.trigger == TriggerState::FALLING_EDGE) {
+  } else if (params.trigger == TriggerState::kFallingEdge) {
     _env.Release();
   }
   _env.SetShape(params.shape);

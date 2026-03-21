@@ -30,7 +30,8 @@ class SimpletouchControls {
         lpf_(touch, 0.5f, 0.02f, 0.007f),
         hpf_(touch, 0.5f, 0.02f, 0.007f),
         reverb_mix_(touch, 0.5f, 0.02f, 0.007f),
-        reverb_size_(touch, 0.5f, 0.02f, 0.007f) {
+        reverb_size_(touch, 0.5f, 0.02f, 0.007f),
+        trigger_(TriggerState::kUnknown) {
     current_note_base_ = 40.0f;
     octave_shift_ = 0.0f;
     drone_mode_ = false;

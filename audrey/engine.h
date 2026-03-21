@@ -30,13 +30,9 @@
 #include "audrey/env.h"
 #include "audrey/karplus_string.h"
 
-#ifdef __arm__
-#include <dev/sdram.h>
-#endif  // __arm__
-
 namespace audrey {
 
-enum class TriggerState { RISING_EDGE, FALLING_EDGE, UNKNOWN };
+enum class TriggerState { kUnknown, kRisingEdge, kFallingEdge };
 
 struct EngineParameters {
   float string_pitch;
@@ -61,7 +57,7 @@ class Engine {
   Engine() = default;
   ~Engine() = default;
 
-  void Init(const float sample_rate);
+  void Init(float sample_rate);
 
   void Process(EngineParameters params, float in, float &outL, float &outR);
 

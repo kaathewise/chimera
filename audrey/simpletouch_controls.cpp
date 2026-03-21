@@ -141,11 +141,11 @@ void SimpletouchControls::UpdateSlowRate(DaisySeed &hw) {
   }
 
   if (note_touched && !prev_note_touched) {
-    trigger_ = TriggerState::RISING_EDGE;
+    trigger_ = TriggerState::kRisingEdge;
   } else if (!note_touched && prev_note_touched) {
-    trigger_ = TriggerState::FALLING_EDGE;
+    trigger_ = TriggerState::kFallingEdge;
   } else {
-    trigger_ = TriggerState::UNKNOWN;
+    trigger_ = TriggerState::kUnknown;
   }
 
   prev_note_touched = note_touched;
