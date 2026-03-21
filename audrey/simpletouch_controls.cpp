@@ -13,9 +13,6 @@ using daisysp::Mapping;
 using daisysp::Oscillator;
 
 void SimpletouchControls::Init() {
-  output_volume_.Detach();
-  envelope_shape_.Detach();
-
   body_lfo_.Init(48000.0f);
   body_lfo_.SetAmp(1.f);
   body_lfo_.SetWaveform(Oscillator::WAVE_RAMP);
@@ -86,21 +83,17 @@ void SimpletouchControls::UpdateSlowRate() {
   if (touch_.pads().IsRisingEdge(11)) {
     feedback_body_knob_.Detach();
     envelope_shape_.Attach();
+
+    output_volume_.Detach();
+    input_volume_.Attach();
   }
 
   if (touch_.pads().IsFallingEdge(11)) {
     envelope_shape_.Detach();
     feedback_body_knob_.Attach();
-  }
 
-  if (touch_.pads().IsRisingEdge(10)) {
     input_volume_.Detach();
     output_volume_.Attach();
-  }
-
-  if (touch_.pads().IsFallingEdge(10)) {
-    output_volume_.Detach();
-    input_volume_.Attach();
   }
 
   if (touch_.pads().IsTouched(11)) {
@@ -153,9 +146,7 @@ void SimpletouchControls::UpdateSlowRate() {
 
 void SimpletouchControls::Attach() {
   attached_ = true;
-  input_volume_.Attach();
   output_volume_.Attach();
-  envelope_shape_.Attach();
   feedback_body_knob_.Attach();
   feedback_body_final_.Attach();
   frequency_.Attach();
