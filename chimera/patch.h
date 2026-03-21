@@ -26,7 +26,7 @@ class Patch {
   void Init(daisy::DaisySeed hw);
   void Process(daisy::AudioHandle::InputBuffer in,
                daisy::AudioHandle::OutputBuffer out, size_t size);
-  void UpdateSimpleTouchControls();
+  void UpdateSlowRate();
 
  private:
   enum class ControlTarget {

@@ -49,7 +49,7 @@ class SimpletouchControls {
 
   void Process();
 
-  void UpdateSlowRate(DaisySeed &hw);
+  void UpdateSlowRate();
 
   void Attach();
   void Detach();

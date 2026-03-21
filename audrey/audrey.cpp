@@ -50,7 +50,7 @@ int main() {
   hw.StartAudio(AudioCallback);
 
   while (true) {
-    controls.UpdateSlowRate(hw);
+    controls.UpdateSlowRate();
     hw.DelayMs(4);
   }
 }

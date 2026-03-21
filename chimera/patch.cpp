@@ -60,7 +60,7 @@ void Patch::Process(daisy::AudioHandle::InputBuffer in,
   limiter_[1].ProcessBlock(OUT_R, size, 0.7f);
 }
 
-void Patch::UpdateSimpleTouchControls() {
+void Patch::UpdateSlowRate() {
   const auto& pads = touch_.pads();
 
   if (pads.IsTouched(10)) {
@@ -86,6 +86,8 @@ void Patch::UpdateSimpleTouchControls() {
         sequencer_simpletouch_controls_.Detach();
       }
     }
+
+    audrey_simpletouch_controls_.UpdateSlowRate();
   }
 }
 

@@ -33,7 +33,7 @@ int main() {
 
   while (true) {
     touch.pads().Process();
-    patch.UpdateSimpleTouchControls();
+    patch.UpdateSlowRate();
     System::Delay(10);
   }
 }

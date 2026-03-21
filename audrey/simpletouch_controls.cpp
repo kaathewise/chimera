@@ -66,7 +66,7 @@ void SimpletouchControls::Process() {
   feedback_body_final_.Process(fclamp(body_val, 0.0f, 1.0f));
 }
 
-void SimpletouchControls::UpdateSlowRate(DaisySeed &hw) {
+void SimpletouchControls::UpdateSlowRate() {
   if (!attached_) {
     return;
   }
@@ -149,8 +149,6 @@ void SimpletouchControls::UpdateSlowRate(DaisySeed &hw) {
   }
 
   prev_note_touched = note_touched;
-
-  hw.SetLed(drone_mode_ || note_touched);
 }
 
 void SimpletouchControls::Attach() {
