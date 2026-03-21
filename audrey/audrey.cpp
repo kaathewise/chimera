@@ -23,6 +23,9 @@ void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out,
                    size_t size) {
   controls.Process();
   const audrey::EngineParameters parameters = controls.GetEngineParameters();
+  std::fill(OUT_L, OUT_L + size, 0.0f);
+  std::fill(OUT_R, OUT_R + size, 0.0f);
+
   for (size_t i = 0; i < size; i++) {
     engine.Process(parameters, IN_L[i], OUT_L[i], OUT_R[i]);
   }
