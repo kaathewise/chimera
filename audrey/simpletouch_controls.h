@@ -19,6 +19,7 @@ class SimpletouchControls {
  public:
   explicit SimpletouchControls(Touch &touch)
       : touch_(touch),
+        attached_(false),
         input_volume_(touch, 0.5f, 0.02f, 0.007f),
         output_volume_(touch, 0.5f, 0.02f, 0.007f),
         envelope_shape_(touch, 0.0f, 0.02f, 0.007f),
@@ -43,7 +44,7 @@ class SimpletouchControls {
 
   ~SimpletouchControls() = default;
 
-  void Init(DaisySeed &hw);
+  void Init();
 
   void Process();
 
@@ -56,6 +57,7 @@ class SimpletouchControls {
 
  private:
   Touch &touch_;
+  bool attached_;
 
   float current_note_base_;
   float octave_shift_;

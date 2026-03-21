@@ -13,7 +13,7 @@ void Patch::Init(daisy::DaisySeed hw) {
   voice_.Init(hw.AudioSampleRate());
   sequencer_.Init(hw.AudioCallbackRate());
   audrey_.Init(hw.AudioSampleRate());
-  audrey_simpletouch_controls_.Init(hw);
+  audrey_simpletouch_controls_.Init();
 
   sequencer_simpletouch_controls_.Attach();
 }

@@ -37,7 +37,8 @@ int main() {
 
   touch.Init(hw);
   engine.Init(hw.AudioSampleRate());
-  controls.Init(hw);
+  controls.Init();
+  controls.Attach();
 
   for (auto &lim : limiter) {
     lim.Init();

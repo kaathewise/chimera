@@ -12,8 +12,7 @@ using daisysp::fmap;
 using daisysp::Mapping;
 using daisysp::Oscillator;
 
-void SimpletouchControls::Init(DaisySeed &hw) {
-  Attach();
+void SimpletouchControls::Init() {
   output_volume_.Detach();
   envelope_shape_.Detach();
 
@@ -68,6 +67,10 @@ void SimpletouchControls::Process() {
 }
 
 void SimpletouchControls::UpdateSlowRate(DaisySeed &hw) {
+  if (!attached_) {
+    return;
+  }
+
   // Note: range is currently unused
   if (RangeSwitch() == Switch3::POS_LEFT) {
     range_ = 0;
@@ -151,6 +154,7 @@ void SimpletouchControls::UpdateSlowRate(DaisySeed &hw) {
 }
 
 void SimpletouchControls::Attach() {
+  attached_ = true;
   input_volume_.Attach();
   output_volume_.Attach();
   envelope_shape_.Attach();
@@ -165,6 +169,7 @@ void SimpletouchControls::Attach() {
 }
 
 void SimpletouchControls::Detach() {
+  attached_ = false;
   input_volume_.Detach();
   output_volume_.Detach();
   envelope_shape_.Detach();

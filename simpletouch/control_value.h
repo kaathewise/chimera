@@ -1,6 +1,7 @@
 #ifndef SIMPLETOUCH_CONTROL_VALUE_H_
 #define SIMPLETOUCH_CONTROL_VALUE_H_
 
+#include <algorithm>
 #include <cmath>
 
 #include "simpletouch/touch.h"
@@ -11,42 +12,40 @@ class Touch;
 
 class ControlValue {
  public:
-  enum State {
-    kStateAttached,
-    kStateDetached,
-    kStateTryToAttach,
-    kStateSeeking
+  enum class State {
+    kAttached,
+    kDetached,
+    kTryToAttach
   };
 
   ControlValue(Touch& touch, float initial, float threshold = 0.02f,
                float coeff = 0.02f)
       : touch_(touch),
-        state_(kStateDetached),
+        state_(State::kDetached),
         value_(initial),
         coeff_(coeff),
-        threshold_(threshold) {}
+        threshold_(threshold),
+        min_input_(1),
+        max_input_(0),
+        blink_when_attached_(true) {}
 
   ~ControlValue() = default;
 
   float Process(float input) {
+    min_input_ = std::min(min_input_, input);
+    max_input_ = std::max(max_input_, input);
     switch (state_) {
-      case kStateAttached:
+      case State::kAttached:
         value_ += (input - value_) * coeff_;
-        break;
-      case kStateTryToAttach:
-        if (std::fabs(input - value_) < threshold_) {
-          state_ = kStateAttached;
-        } else {
-          state_ = kStateSeeking;
-        }
-        break;
-      case kStateSeeking:
-        if (std::fabs(input - value_) < threshold_) {
-          state_ = kStateAttached;
+        if (blink_when_attached_ && (max_input_ - min_input_ > threshold_)) {
           touch_.led().Blink();
+          blink_when_attached_ = false;
         }
         break;
-      case kStateDetached:
+      case State::kTryToAttach:
+        if (std::fabs(input - value_) < threshold_) {
+          state_ = State::kAttached;
+        }
         break;
       default:
         break;
@@ -55,9 +54,14 @@ class ControlValue {
     return value_;
   }
 
-  void Attach() { state_ = kStateTryToAttach; }
+  void Attach() {
+    state_ = State::kTryToAttach;
+    blink_when_attached_ = true;
+    min_input_ = 1;
+    max_input_ = 0;
+  }
 
-  void Detach() { state_ = kStateDetached; }
+  void Detach() { state_ = State::kDetached; }
 
   float Value() const { return value_; }
 
@@ -67,6 +71,9 @@ class ControlValue {
   float value_;
   float coeff_;
   float threshold_;
+  float min_input_;
+  float max_input_;
+  bool blink_when_attached_;
 };
 }  // namespace simpletouch
 
