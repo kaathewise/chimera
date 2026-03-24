@@ -50,6 +50,7 @@ int main() {
   hw.StartAudio(AudioCallback);
 
   while (true) {
+    touch.pads().Process();
     controls.UpdateSlowRate();
     hw.DelayMs(4);
   }

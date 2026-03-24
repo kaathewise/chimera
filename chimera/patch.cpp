@@ -86,9 +86,9 @@ void Patch::UpdateSlowRate() {
         sequencer_simpletouch_controls_.Detach();
       }
     }
-
-    audrey_simpletouch_controls_.UpdateSlowRate();
   }
+
+  audrey_simpletouch_controls_.UpdateSlowRate();
 }
 
 }  // namespace chimera

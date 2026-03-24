@@ -78,8 +78,6 @@ void SimpletouchControls::UpdateSlowRate() {
     range_ = 2;
   }
 
-  touch_.pads().Process();
-
   if (touch_.pads().IsRisingEdge(11)) {
     feedback_body_knob_.Detach();
     envelope_shape_.Attach();
