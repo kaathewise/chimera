@@ -24,7 +24,6 @@ class SimpletouchControls {
         output_volume_(touch, 0.5f, 0.02f, 0.007f),
         envelope_shape_(touch, 0.0f, 0.02f, 0.007f),
         feedback_body_knob_(touch, 0.0f, 0.02f, 0.00014f),
-        feedback_body_final_(touch, 0.0f, 0.02f, 0.007f),
         frequency_(touch, 0.5f, 0.02f, 0.007f),
         feedback_gain_(touch, 0.7f, 0.02f, 0.007f),
         lpf_(touch, 0.5f, 0.02f, 0.007f),
@@ -41,6 +40,7 @@ class SimpletouchControls {
     prev_osc_ = 0.0f;
     held_val_ = 0.0f;
     smoothed_val_ = 0.0f;
+    feedback_body_ = 0.0f;
   }
 
   ~SimpletouchControls() = default;
@@ -71,12 +71,12 @@ class SimpletouchControls {
   float prev_osc_;
   float held_val_;
   float smoothed_val_;
+  float feedback_body_;
 
   ControlValue input_volume_;
   ControlValue output_volume_;
   ControlValue envelope_shape_;
   ControlValue feedback_body_knob_;
-  ControlValue feedback_body_final_;
   ControlValue frequency_;
   ControlValue feedback_gain_;
   ControlValue lpf_;

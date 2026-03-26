@@ -30,20 +30,18 @@ void SimpletouchControls::Process() {
   reverb_mix_.Process(ReverbMixKnob().GetRawFloat());
   reverb_size_.Process(ReverbSizeKnob().GetRawFloat());
 
-  float body_knob_val =
-      1 - feedback_body_knob_.Process(EnvelopeBodyFader().GetRawFloat());
+  float body_knob_val = feedback_body_knob_.Process(EnvelopeBodyFader().GetRawFloat());
 
-  float body_val;
   if (LfoSwitch() == Switch3::POS_LEFT) {
-    body_val = body_knob_val;
+    feedback_body_ = body_knob_val;
   } else {
     float slew_rate;
     if (LfoSwitch() == Switch3::POS_CENTER) {
-      body_lfo_.SetFreq(0.01f + ((1.0f - body_knob_val) * 0.5f));
+      body_lfo_.SetFreq(0.01f + body_knob_val * 0.5f);
       slew_rate = 0.0001f;  // lower is slower
     } else {
       // POS_RIGHT
-      body_lfo_.SetFreq(1.0f + ((1.0f - body_knob_val) * 7.0f));
+      body_lfo_.SetFreq(1.0f + body_knob_val * 7.0f);
       slew_rate = 0.08f;  // lower is slower
     }
 
@@ -51,16 +49,13 @@ void SimpletouchControls::Process() {
     if ((prev_osc_ < 0.0f && curr_osc >= 0.0f) ||
         (prev_osc_ > 0.0f && curr_osc <= 0.0f)) {
       held_val_ = Random::GetFloat(
-          body_knob_val - (0.05f + (0.07f * (1.0f - body_knob_val))),
-          body_knob_val + (0.05f + (0.07f * (1.0f - body_knob_val))));
+          body_knob_val - (0.05f + 0.07f * body_knob_val),
+          body_knob_val + (0.05f + 0.07f * body_knob_val));
     }
 
-    smoothed_val_ += slew_rate * (held_val_ - smoothed_val_);
-    body_val = smoothed_val_;
+    feedback_body_ += slew_rate * (held_val_ - feedback_body_);
     prev_osc_ = curr_osc;
   }
-
-  feedback_body_final_.Process(fclamp(body_val, 0.0f, 1.0f));
 }
 
 void SimpletouchControls::UpdateSlowRate() {
@@ -146,7 +141,6 @@ void SimpletouchControls::Attach() {
   attached_ = true;
   output_volume_.Attach();
   feedback_body_knob_.Attach();
-  feedback_body_final_.Attach();
   frequency_.Attach();
   feedback_gain_.Attach();
   lpf_.Attach();
@@ -161,7 +155,6 @@ void SimpletouchControls::Detach() {
   output_volume_.Detach();
   envelope_shape_.Detach();
   feedback_body_knob_.Detach();
-  feedback_body_final_.Detach();
   frequency_.Detach();
   feedback_gain_.Detach();
   lpf_.Detach();
@@ -177,7 +170,7 @@ EngineParameters SimpletouchControls::GetEngineParameters() {
              16.0f, 88.0f);
   p.feedback_gain = fmap(feedback_gain_.Value(), -60.0f, 12.0f);
   p.feedback_delay =
-      fmap(feedback_body_final_.Value(), 0.001f, 0.1f, Mapping::EXP);
+      fmap(fclamp(feedback_body_, 0.0f, 1.0f), 0.1f, 0.001f, Mapping::EXP);
   p.feedback_lpf_cutoff = fmap(lpf_.Value(), 100.0f, 18000.0f, Mapping::LOG);
   p.feedback_hpf_cutoff = fmap(hpf_.Value(), 10.0f, 4000.0f, Mapping::LOG);
   p.echo_delay_time = echo_delay_time_;

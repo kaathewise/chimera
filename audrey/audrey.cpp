@@ -21,6 +21,7 @@ static Limiter limiter[2];
 
 void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out,
                    size_t size) {
+  touch.led().Process();
   controls.Process();
   const audrey::EngineParameters parameters = controls.GetEngineParameters();
   std::fill(OUT_L, OUT_L + size, 0.0f);
