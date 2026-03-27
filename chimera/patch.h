@@ -29,12 +29,6 @@ class Patch {
   void UpdateSlowRate();
 
  private:
-  enum class ControlTarget {
-    SEQUENCER,
-    VOICE,
-    AUDREY
-  };
-
   simpletouch::Touch& touch_;
   sequencer::SimpleTouchControls sequencer_simpletouch_controls_;
   voice::SimpleTouchControls voice_simpletouch_controls_;
@@ -47,8 +41,6 @@ class Patch {
   audrey::SimpletouchControls audrey_simpletouch_controls_;
 
   daisysp::Limiter limiter_[2];
-
-  ControlTarget control_target_ = ControlTarget::SEQUENCER;
 
   uint32_t buffer_space_[8192];
 

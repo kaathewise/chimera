@@ -55,6 +55,9 @@ class ControlValue {
   }
 
   void Attach() {
+    if (state_ != State::kDetached) {
+      return;
+    }
     state_ = State::kTryToAttach;
     blink_when_attached_ = true;
     min_input_ = 1;

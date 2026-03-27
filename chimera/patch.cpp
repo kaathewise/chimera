@@ -32,8 +32,6 @@ void Patch::Process(daisy::AudioHandle::InputBuffer in,
 
   const auto& triggers = sequencer_.triggers();
 
-  // 3. The synth should take the first trigger from the sequencer and use it
-  // to trigger a ParticleEngine voice.
   int trigger_state =
       triggers.slave[0] ? plaits::TRIGGER_RISING_EDGE : plaits::TRIGGER_LOW;
 
@@ -65,26 +63,17 @@ void Patch::UpdateSlowRate() {
 
   if (pads.IsTouched(10)) {
     if (pads.IsRisingEdge(3)) {
-      if (control_target_ != ControlTarget::SEQUENCER) {
-        control_target_ = ControlTarget::SEQUENCER;
-        sequencer_simpletouch_controls_.Attach();
-        voice_simpletouch_controls_.Detach();
-        audrey_simpletouch_controls_.Detach();
-      }
+      sequencer_simpletouch_controls_.Attach();
+      voice_simpletouch_controls_.Detach();
+      audrey_simpletouch_controls_.Detach();
     } else if (pads.IsRisingEdge(4)) {
-      if (control_target_ != ControlTarget::VOICE) {
-        control_target_ = ControlTarget::VOICE;
-        voice_simpletouch_controls_.Attach();
-        sequencer_simpletouch_controls_.Detach();
-        audrey_simpletouch_controls_.Detach();
-      }
+      voice_simpletouch_controls_.Attach();
+      sequencer_simpletouch_controls_.Detach();
+      audrey_simpletouch_controls_.Detach();
     } else if (pads.IsRisingEdge(5)) {
-      if (control_target_ != ControlTarget::AUDREY) {
-        control_target_ = ControlTarget::AUDREY;
-        audrey_simpletouch_controls_.Attach();
-        voice_simpletouch_controls_.Detach();
-        sequencer_simpletouch_controls_.Detach();
-      }
+      audrey_simpletouch_controls_.Attach();
+      voice_simpletouch_controls_.Detach();
+      sequencer_simpletouch_controls_.Detach();
     }
   }
 
