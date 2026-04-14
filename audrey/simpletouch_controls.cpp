@@ -12,6 +12,53 @@ using daisysp::fmap;
 using daisysp::Mapping;
 using daisysp::Oscillator;
 
+__attribute__((
+    section(".backup_sram"))) static PersistentSettings persistent_settings;
+
+SimpletouchControls::SimpletouchControls(Touch& touch)
+    : touch_(touch),
+      attached_(false),
+      input_volume_(touch, persistent_settings.input_volumeSimpletouchControls),
+      output_volume_(touch, persistent_settings.output_volumeSimpletouchControls),
+      envelope_shape_(touch, persistent_settings.envelope_shapeSimpletouchControls),
+      feedback_body_knob_(touch, persistent_settings.feedback_body_knob),
+      frequency_(touch, persistent_settings.frequencySimpletouchControls),
+      feedback_gain_(touch, persistent_settings.feedback_gainSimpletouchControls),
+      lpf_(touch, persistent_settings.lpfSimpletouchControls),
+      hpf_(touch, persistent_settings.hpfSimpletouchControls),
+      reverb_mix_(touch, persistent_settings.reverb_mixSimpletouchControls),
+      reverb_size_(touch, persistent_settings.reverb_sizeSimpletouchControls),
+      echo_delay_time_(touch, persistent_settings.echo_delay_time),
+      echo_delay_feedback_(touch, persistent_settings.echo_delay_feedback),
+      echo_delay_send_amount_(touch, persistent_settings.echo_delay_send_amount),
+      trigger_(TriggerState::kUnknown) {
+  const uint32_t kMagic = 0x41554452;  // "AUDR"
+  if (persistent_settings.magic != kMagic) {
+    persistent_settings.magic = kMagic;
+    persistent_settings.input_volume = 0.5f;
+    persistent_settings.output_volume = 0.5f;
+    persistent_settings.envelope_shape = 0.0f;
+    persistent_settings.feedback_body_knob = 0.0f;
+    persistent_settings.frequency = 0.5f;
+    persistent_settings.feedback_gain = 0.7f;
+    persistent_settings.lpf = 0.5f;
+    persistent_settings.hpf = 0.5f;
+    persistent_settings.reverb_mix = 0.5f;
+    persistent_settings.reverb_size = 0.5f;
+    persistent_settings.echo_delay_time = 1.0f;
+    persistent_settings.echo_delay_feedback = 0.5f;
+    persistent_settings.echo_delay_send_amount = 0.0f;
+  }
+
+  current_note_base_ = 40.0f;
+  octave_shift_ = 0.0f;
+  drone_mode_ = false;
+  prev_osc_ = 0.0f;
+  held_val_ = 0.0f;
+  smoothed_val_ = 0.0f;
+  feedback_body_ = 0.0f;
+}
+
 void SimpletouchControls::Init() {
   body_lfo_.Init(48000.0f);
   body_lfo_.SetAmp(1.f);

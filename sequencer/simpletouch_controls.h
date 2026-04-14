@@ -12,15 +12,18 @@ namespace sequencer {
 using simpletouch::ControlValue;
 using simpletouch::Touch;
 
+struct PersistentSettings {
+  uint32_t magic;
+  float deja_vu;
+  float rate;
+  float bias;
+  float jitter;
+  float loop_length;
+};
+
 class SimpleTouchControls {
  public:
-  explicit SimpleTouchControls(Touch& touch)
-      : touch_(touch),
-        deja_vu_(touch, .5f),
-        rate_(touch, .5f),
-        bias_(touch, .5f),
-        jitter_(touch, .0f),
-        loop_length_(touch, .5f) {}
+  explicit SimpleTouchControls(Touch& touch);
 
   void Process();
 

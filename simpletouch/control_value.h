@@ -12,17 +12,13 @@ class Touch;
 
 class ControlValue {
  public:
-  enum class State {
-    kAttached,
-    kDetached,
-    kTryToAttach
-  };
+  enum class State { kAttached, kDetached, kTryToAttach };
 
-  ControlValue(Touch& touch, float initial, float threshold = 0.02f,
-               float coeff = 0.02f)
+  ControlValue(Touch& touch, float& value, float threshold = 0.02f,
+               float coeff = 0.007f)
       : touch_(touch),
         state_(State::kDetached),
-        value_(initial),
+        value_(value),
         coeff_(coeff),
         threshold_(threshold),
         min_input_(1),
@@ -71,7 +67,7 @@ class ControlValue {
  private:
   Touch& touch_;
   State state_;
-  float value_;
+  float& value_;
   float coeff_;
   float threshold_;
   float min_input_;

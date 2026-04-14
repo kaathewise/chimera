@@ -10,19 +10,22 @@ namespace voice {
 using simpletouch::ControlValue;
 using simpletouch::Touch;
 
+struct PersistentSettings {
+  uint32_t magic;
+  float note;
+  float harmonics;
+  float timbre;
+  float morph;
+  float accent;
+  float delay_time;
+  float delay_feedback;
+};
+
 class SimpleTouchControls {
  public:
-  explicit SimpleTouchControls(Touch& touch, float max_delay_time = 5.f)
-      : touch_(touch),
-        max_delay_time_(max_delay_time),
-        note_(touch, .5f),
-        harmonics_(touch, .5f),
-        timbre_(touch, .5f),
-        morph_(touch, .5f),
-        accent_(touch, .8f),
-        delay_time_(touch, .2f),
-        delay_feedback_(touch, .0f) {}
+  explicit SimpleTouchControls(Touch& touch, float max_delay_time = 5.f);
 
+  void Init();
   void Process();
 
   float note() const { return 24.0f + note_.Value() * 72.0f; }

@@ -15,32 +15,26 @@ using daisysp::Oscillator;
 using simpletouch::ControlValue;
 using simpletouch::Touch;
 
+struct PersistentSettings {
+  uint32_t magic;
+  float input_volume;
+  float output_volume;
+  float envelope_shape;
+  float feedback_body_knob;
+  float frequency;
+  float feedback_gain;
+  float lpf;
+  float hpf;
+  float reverb_mix;
+  float reverb_size;
+  float echo_delay_time;
+  float echo_delay_feedback;
+  float echo_delay_send_amount;
+};
+
 class SimpletouchControls {
  public:
-  explicit SimpletouchControls(Touch &touch)
-      : touch_(touch),
-        attached_(false),
-        input_volume_(touch, 0.5f, 0.02f, 0.007f),
-        output_volume_(touch, 0.5f, 0.02f, 0.007f),
-        feedback_body_knob_(touch, 0.0f, 0.02f, 0.00014f),
-        frequency_(touch, 0.5f, 0.02f, 0.007f),
-        feedback_gain_(touch, 0.7f, 0.02f, 0.007f),
-        lpf_(touch, 0.5f, 0.02f, 0.007f),
-        hpf_(touch, 0.5f, 0.02f, 0.007f),
-        reverb_mix_(touch, 0.5f, 0.02f, 0.007f),
-        reverb_size_(touch, 0.5f, 0.02f, 0.007f),
-        echo_delay_time_(touch, 0.5f, 0.02f, 0.007f),
-        echo_delay_feedback_(touch, 0.5f, 0.02f, 0.007f),
-        echo_delay_send_amount_(touch, 0.0f, 0.02f, 0.007f),
-        trigger_(TriggerState::kUnknown) {
-    current_note_base_ = 40.0f;
-    octave_shift_ = 0.0f;
-    drone_mode_ = false;
-    prev_osc_ = 0.0f;
-    held_val_ = 0.0f;
-    smoothed_val_ = 0.0f;
-    feedback_body_ = 0.0f;
-  }
+  explicit SimpletouchControls(Touch &touch);
 
   ~SimpletouchControls() = default;
 
@@ -70,6 +64,7 @@ class SimpletouchControls {
 
   ControlValue input_volume_;
   ControlValue output_volume_;
+  ControlValue envelope_shape_;
   ControlValue feedback_body_knob_;
   ControlValue frequency_;
   ControlValue feedback_gain_;
