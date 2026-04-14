@@ -46,8 +46,8 @@ int main() {
                        touch.pads().GetValue(i));
     }
 
-    DaisySeed::PrintLine("%d %d", touch.switches().s7s8(),
-                         touch.switches().s9s10());
+    DaisySeed::PrintLine("%d %d", touch.switches().left(),
+                         touch.switches().right());
     System::Delay(10);
   }
 }

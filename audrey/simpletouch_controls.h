@@ -22,7 +22,6 @@ class SimpletouchControls {
         attached_(false),
         input_volume_(touch, 0.5f, 0.02f, 0.007f),
         output_volume_(touch, 0.5f, 0.02f, 0.007f),
-        envelope_shape_(touch, 0.0f, 0.02f, 0.007f),
         feedback_body_knob_(touch, 0.0f, 0.02f, 0.00014f),
         frequency_(touch, 0.5f, 0.02f, 0.007f),
         feedback_gain_(touch, 0.7f, 0.02f, 0.007f),
@@ -30,13 +29,13 @@ class SimpletouchControls {
         hpf_(touch, 0.5f, 0.02f, 0.007f),
         reverb_mix_(touch, 0.5f, 0.02f, 0.007f),
         reverb_size_(touch, 0.5f, 0.02f, 0.007f),
+        echo_delay_time_(touch, 0.5f, 0.02f, 0.007f),
+        echo_delay_feedback_(touch, 0.5f, 0.02f, 0.007f),
+        echo_delay_send_amount_(touch, 0.0f, 0.02f, 0.007f),
         trigger_(TriggerState::kUnknown) {
     current_note_base_ = 40.0f;
     octave_shift_ = 0.0f;
     drone_mode_ = false;
-    echo_delay_time_ = 5.0f;
-    echo_delay_feedback_ = 0.5f;
-    echo_delay_send_amount_ = 0.0f;
     prev_osc_ = 0.0f;
     held_val_ = 0.0f;
     smoothed_val_ = 0.0f;
@@ -64,10 +63,6 @@ class SimpletouchControls {
   float octave_shift_;
   bool drone_mode_;
 
-  float echo_delay_time_;
-  float echo_delay_feedback_;
-  float echo_delay_send_amount_;
-
   float prev_osc_;
   float held_val_;
   float smoothed_val_;
@@ -75,7 +70,6 @@ class SimpletouchControls {
 
   ControlValue input_volume_;
   ControlValue output_volume_;
-  ControlValue envelope_shape_;
   ControlValue feedback_body_knob_;
   ControlValue frequency_;
   ControlValue feedback_gain_;
@@ -83,6 +77,9 @@ class SimpletouchControls {
   ControlValue hpf_;
   ControlValue reverb_mix_;
   ControlValue reverb_size_;
+  ControlValue echo_delay_time_;
+  ControlValue echo_delay_feedback_;
+  ControlValue echo_delay_send_amount_;
 
   int scale_;
   int range_;
@@ -98,10 +95,9 @@ class SimpletouchControls {
   AnalogControl &ReverbSizeKnob() const { return touch_.knobs().s33(); }
   AnalogControl &LPFKnob() const { return touch_.knobs().s34(); }
   AnalogControl &HPFKnob() const { return touch_.knobs().s35(); }
-  AnalogControl &EnvelopeBodyFader() const { return touch_.knobs().s37(); }
+  AnalogControl &BodyFader() const { return touch_.knobs().s37(); }
 
-  int RangeSwitch() const { return touch_.switches().s7s8(); }
-  int LfoSwitch() const { return touch_.switches().s9s10(); }
+  int LfoSwitch() const { return touch_.switches().right(); }
 };
 }  // namespace audrey
 

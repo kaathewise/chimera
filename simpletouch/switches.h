@@ -17,9 +17,9 @@ class Switches {
 
   void Init();
 
-  int s7s8();
+  int left();
 
-  int s9s10();
+  int right();
 
  private:
   Switch3 switch_7_8_;
