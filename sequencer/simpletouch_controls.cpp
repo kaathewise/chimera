@@ -12,7 +12,7 @@ SimpleTouchControls::SimpleTouchControls(Touch& touch)
       bias_(touch, persistent_settings.bias),
       jitter_(touch, persistent_settings.jitter),
       loop_length_(touch, persistent_settings.loop_length) {
-  const uint32_t kMagic = 0x53455155;  // "SEQU"
+  constexpr uint32_t kMagic = 0x53455155;  // "SEQU"
   if (persistent_settings.magic != kMagic) {
     persistent_settings.magic = kMagic;
     persistent_settings.deja_vu = .5f;

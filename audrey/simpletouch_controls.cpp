@@ -18,21 +18,22 @@ __attribute__((
 SimpletouchControls::SimpletouchControls(Touch& touch)
     : touch_(touch),
       attached_(false),
-      input_volume_(touch, persistent_settings.input_volumeSimpletouchControls),
-      output_volume_(touch, persistent_settings.output_volumeSimpletouchControls),
-      envelope_shape_(touch, persistent_settings.envelope_shapeSimpletouchControls),
+      input_volume_(touch, persistent_settings.input_volume),
+      output_volume_(touch, persistent_settings.output_volume),
+      envelope_shape_(touch, persistent_settings.envelope_shape),
       feedback_body_knob_(touch, persistent_settings.feedback_body_knob),
-      frequency_(touch, persistent_settings.frequencySimpletouchControls),
-      feedback_gain_(touch, persistent_settings.feedback_gainSimpletouchControls),
-      lpf_(touch, persistent_settings.lpfSimpletouchControls),
-      hpf_(touch, persistent_settings.hpfSimpletouchControls),
-      reverb_mix_(touch, persistent_settings.reverb_mixSimpletouchControls),
-      reverb_size_(touch, persistent_settings.reverb_sizeSimpletouchControls),
+      frequency_(touch, persistent_settings.frequency),
+      feedback_gain_(touch, persistent_settings.feedback_gain),
+      lpf_(touch, persistent_settings.lpf),
+      hpf_(touch, persistent_settings.hpf),
+      reverb_mix_(touch, persistent_settings.reverb_mix),
+      reverb_size_(touch, persistent_settings.reverb_size),
       echo_delay_time_(touch, persistent_settings.echo_delay_time),
       echo_delay_feedback_(touch, persistent_settings.echo_delay_feedback),
-      echo_delay_send_amount_(touch, persistent_settings.echo_delay_send_amount),
+      echo_delay_send_amount_(touch,
+                              persistent_settings.echo_delay_send_amount),
       trigger_(TriggerState::kUnknown) {
-  const uint32_t kMagic = 0x41554452;  // "AUDR"
+  constexpr uint32_t kMagic = 0x41554452;  // "AUDR"
   if (persistent_settings.magic != kMagic) {
     persistent_settings.magic = kMagic;
     persistent_settings.input_volume = 0.5f;
@@ -90,7 +91,7 @@ void SimpletouchControls::Process() {
       body_lfo_.SetFreq(0.01f + body_knob_val * 0.5f);
       slew_rate = 0.0001f;  // lower is slower
     } else {
-      // POS_RIGHT
+      // POS_UP
       body_lfo_.SetFreq(1.0f + body_knob_val * 7.0f);
       slew_rate = 0.08f;  // lower is slower
     }
@@ -215,26 +216,26 @@ void SimpletouchControls::Detach() {
   echo_delay_send_amount_.Detach();
 }
 
-EngineParameters SimpletouchControls::GetEngineParameters() {
-  EngineParameters p;
-  p.string_pitch =
-      fclamp(current_note_base_ + frequency_.Value() * 24.0f + octave_shift_,
-             16.0f, 88.0f);
-  p.feedback_gain = fmap(feedback_gain_.Value(), -60.0f, 12.0f);
-  p.feedback_delay =
-      fmap(fclamp(feedback_body_, 0.0f, 1.0f), 0.001f, 0.1f, Mapping::EXP);
-  p.feedback_lpf_cutoff = fmap(lpf_.Value(), 100.0f, 18000.0f, Mapping::LOG);
-  p.feedback_hpf_cutoff = fmap(hpf_.Value(), 10.0f, 4000.0f, Mapping::LOG);
-  p.echo_delay_time = fmap(echo_delay_time_.Value(), 0.1f, 5.0f);
-  p.echo_delay_feedback = echo_delay_feedback_.Value();
-  p.echo_delay_send_amount = echo_delay_send_amount_.Value();
-  p.reverb_mix = fmap(reverb_mix_.Value(), 0.0f, 1.0f);
-  p.reverb_feedback = fmap(ftension(reverb_size_.Value(), -3.0f), 0.2f, 1.0f);
-  p.output_level = fmap(output_volume_.Value(), 0.0f, 1.0f, Mapping::EXP);
-  p.input_level = fmap(input_volume_.Value(), 0.0f, 1.0f, Mapping::EXP);
-  p.drone_mode = drone_mode_;
-  p.trigger = trigger_;
-  return p;
+EngineParameters SimpletouchControls::GetEngineParameters() const {
+  return EngineParameters{
+      .string_pitch = fclamp(
+          current_note_base_ + frequency_.Value() * 24.0f + octave_shift_,
+          16.0f, 88.0f),
+      .feedback_gain = fmap(feedback_gain_.Value(), -60.0f, 12.0f),
+      .feedback_delay =
+          fmap(fclamp(feedback_body_, 0.0f, 1.0f), 0.001f, 0.1f, Mapping::EXP),
+      .feedback_lpf_cutoff = fmap(lpf_.Value(), 100.0f, 18000.0f, Mapping::LOG),
+      .feedback_hpf_cutoff = fmap(hpf_.Value(), 10.0f, 4000.0f, Mapping::LOG),
+      .echo_delay_time = fmap(echo_delay_time_.Value(), 0.1f, 5.0f),
+      .echo_delay_feedback = echo_delay_feedback_.Value(),
+      .echo_delay_send_amount = echo_delay_send_amount_.Value(),
+      .reverb_mix = fmap(reverb_mix_.Value(), 0.0f, 1.0f),
+      .reverb_feedback =
+          fmap(ftension(reverb_size_.Value(), -3.0f), 0.2f, 1.0f),
+      .output_level = fmap(output_volume_.Value(), 0.0f, 1.0f, Mapping::EXP),
+      .input_level = fmap(input_volume_.Value(), 0.0f, 1.0f, Mapping::EXP),
+      .drone_mode = drone_mode_,
+      .trigger = trigger_};
 }
 
 }  // namespace audrey

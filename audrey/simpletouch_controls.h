@@ -47,7 +47,7 @@ class SimpletouchControls {
   void Attach();
   void Detach();
 
-  EngineParameters GetEngineParameters();
+  EngineParameters GetEngineParameters() const;
 
  private:
   Touch &touch_;

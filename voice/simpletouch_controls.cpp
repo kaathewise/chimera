@@ -15,7 +15,7 @@ SimpleTouchControls::SimpleTouchControls(Touch& touch, float max_delay_time)
       accent_(touch, persistent_settings.accent),
       delay_time_(touch, persistent_settings.delay_time),
       delay_feedback_(touch, persistent_settings.delay_feedback) {
-  const uint32_t kMagic = 0x564F4943;  // "VOIC"
+  constexpr uint32_t kMagic = 0x564F4943;  // "VOIC"
   if (persistent_settings.magic != kMagic) {
     persistent_settings.magic = kMagic;
     persistent_settings.note = .5f;
