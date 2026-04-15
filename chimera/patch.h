@@ -38,7 +38,7 @@ class Patch {
   sequencer::Sequencer sequencer_;
 
   audrey::Engine audrey_;
-  audrey::SimpletouchControls audrey_simpletouch_controls_;
+  audrey::SimpleTouchControls audrey_simpletouch_controls_;
 
   daisysp::Limiter limiter_[2];
 

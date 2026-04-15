@@ -32,11 +32,11 @@ struct PersistentSettings {
   float echo_delay_send_amount;
 };
 
-class SimpletouchControls {
- public:
-  explicit SimpletouchControls(Touch &touch);
+class SimpleTouchControls {
+public:
+  explicit SimpleTouchControls(Touch &touch);
 
-  ~SimpletouchControls() = default;
+  ~SimpleTouchControls() = default;
 
   void Init();
 
@@ -49,18 +49,21 @@ class SimpletouchControls {
 
   EngineParameters GetEngineParameters() const;
 
- private:
+private:
   Touch &touch_;
-  bool attached_;
+  bool attached_{false};
+  int scale_{0};
 
-  float current_note_base_;
-  float octave_shift_;
-  bool drone_mode_;
+  TriggerState trigger_{TriggerState::kUnknown};
 
-  float prev_osc_;
-  float held_val_;
-  float smoothed_val_;
-  float feedback_body_;
+  float current_note_base_{40};
+  float octave_shift_{0};
+  bool drone_mode_{false};
+
+  float prev_osc_{0};
+  float held_val_{0};
+  float smoothed_val_{0};
+  float feedback_body_{0};
 
   ControlValue input_volume_;
   ControlValue output_volume_;
@@ -75,11 +78,6 @@ class SimpletouchControls {
   ControlValue echo_delay_time_;
   ControlValue echo_delay_feedback_;
   ControlValue echo_delay_send_amount_;
-
-  int scale_;
-  int range_;
-
-  TriggerState trigger_;
 
   Oscillator body_lfo_;
 

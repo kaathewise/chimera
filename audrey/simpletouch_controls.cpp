@@ -15,9 +15,8 @@ using daisysp::Oscillator;
 __attribute__((
     section(".backup_sram"))) static PersistentSettings persistent_settings;
 
-SimpletouchControls::SimpletouchControls(Touch& touch)
+SimpleTouchControls::SimpleTouchControls(Touch& touch)
     : touch_(touch),
-      attached_(false),
       input_volume_(touch, persistent_settings.input_volume),
       output_volume_(touch, persistent_settings.output_volume),
       envelope_shape_(touch, persistent_settings.envelope_shape),
@@ -31,8 +30,7 @@ SimpletouchControls::SimpletouchControls(Touch& touch)
       echo_delay_time_(touch, persistent_settings.echo_delay_time),
       echo_delay_feedback_(touch, persistent_settings.echo_delay_feedback),
       echo_delay_send_amount_(touch,
-                              persistent_settings.echo_delay_send_amount),
-      trigger_(TriggerState::kUnknown) {
+                              persistent_settings.echo_delay_send_amount) {
   constexpr uint32_t kMagic = 0x41554452;  // "AUDR"
   if (persistent_settings.magic != kMagic) {
     persistent_settings.magic = kMagic;
@@ -50,24 +48,16 @@ SimpletouchControls::SimpletouchControls(Touch& touch)
     persistent_settings.echo_delay_feedback = 0.5f;
     persistent_settings.echo_delay_send_amount = 0.0f;
   }
-
-  current_note_base_ = 40.0f;
-  octave_shift_ = 0.0f;
-  drone_mode_ = false;
-  prev_osc_ = 0.0f;
-  held_val_ = 0.0f;
-  smoothed_val_ = 0.0f;
-  feedback_body_ = 0.0f;
 }
 
-void SimpletouchControls::Init() {
+void SimpleTouchControls::Init() {
   body_lfo_.Init(48000.0f);
   body_lfo_.SetAmp(1.f);
   body_lfo_.SetWaveform(Oscillator::WAVE_RAMP);
   body_lfo_.SetFreq(1.0f);
 }
 
-void SimpletouchControls::Process() {
+void SimpleTouchControls::Process() {
   input_volume_.Process(VolumeKnob().GetRawFloat());
   output_volume_.Process(VolumeKnob().GetRawFloat());
   frequency_.Process(FrequencyFader().GetRawFloat());
@@ -109,7 +99,7 @@ void SimpletouchControls::Process() {
   }
 }
 
-void SimpletouchControls::UpdateSlowRate() {
+void SimpleTouchControls::UpdateSlowRate() {
   if (!attached_) {
     return;
   }
@@ -188,7 +178,7 @@ void SimpletouchControls::UpdateSlowRate() {
   prev_note_touched = note_touched;
 }
 
-void SimpletouchControls::Attach() {
+void SimpleTouchControls::Attach() {
   attached_ = true;
   output_volume_.Attach();
   feedback_body_knob_.Attach();
@@ -200,7 +190,7 @@ void SimpletouchControls::Attach() {
   reverb_size_.Attach();
 }
 
-void SimpletouchControls::Detach() {
+void SimpleTouchControls::Detach() {
   attached_ = false;
   input_volume_.Detach();
   output_volume_.Detach();
@@ -216,7 +206,7 @@ void SimpletouchControls::Detach() {
   echo_delay_send_amount_.Detach();
 }
 
-EngineParameters SimpletouchControls::GetEngineParameters() const {
+EngineParameters SimpleTouchControls::GetEngineParameters() const {
   return EngineParameters{
       .string_pitch = fclamp(
           current_note_base_ + frequency_.Value() * 24.0f + octave_shift_,
