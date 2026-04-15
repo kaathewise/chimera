@@ -25,7 +25,6 @@ class SimpleTouchControls {
  public:
   explicit SimpleTouchControls(Touch& touch, float max_delay_time = 5.f);
 
-  void Init();
   void Process();
 
   float note() const { return 24.0f + note_.Value() * 72.0f; }

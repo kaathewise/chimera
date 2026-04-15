@@ -28,8 +28,6 @@ SimpleTouchControls::SimpleTouchControls(Touch& touch, float max_delay_time)
   }
 }
 
-void SimpleTouchControls::Init() {}
-
 void SimpleTouchControls::Process() {
   note_.Process(touch_.knobs().s30().GetRawFloat());
   harmonics_.Process(touch_.knobs().s31().GetRawFloat());
