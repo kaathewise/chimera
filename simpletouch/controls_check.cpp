@@ -1,5 +1,6 @@
 #include <daisy_seed.h>
 
+#include "simpletouch/control_value.h"
 #include "simpletouch/touch.h"
 
 using daisy::AudioHandle;
@@ -13,12 +14,18 @@ constexpr size_t kBlockSize = 4;
 
 DaisySeed hw;
 Touch touch;
+float val;
+simpletouch::ControlValue cv(touch, val);
 
 void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out,
                    size_t size) {
   for (auto &knob : touch.knobs().knobs()) {
     knob.Process();
   }
+
+  cv.Process(touch.knobs().s30().GetRawFloat());
+
+  touch.led().Process();
 }
 
 int main() {
@@ -31,6 +38,8 @@ int main() {
   DaisySeed::StartLog();
 
   hw.StartAudio(AudioCallback);
+
+  cv.Attach();
 
   while (true) {
     for (auto &knob : touch.knobs().knobs()) {
