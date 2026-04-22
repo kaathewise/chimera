@@ -6,8 +6,10 @@ LIBDAISY_DIR = ../third_party/libDaisy
 
 # Sources
 CPP_SOURCES = controls_check.cpp \
+              control_value.cpp \
               knobs.cpp \
-              switches.cpp
+              switches.cpp \
+              memory/sdram_alloc.cpp
 
 # Include paths
 C_INCLUDES = -I../ \

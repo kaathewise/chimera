@@ -12,6 +12,7 @@ CPP_SOURCES = audrey.cpp \
               simpletouch_controls.cpp \
               engine.cpp \
               karplus_string.cpp \
+              ../simpletouch/control_value.cpp \
               ../simpletouch/knobs.cpp \
               ../simpletouch/switches.cpp \
               ../simpletouch/memory/sdram_alloc.cpp

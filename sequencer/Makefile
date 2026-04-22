@@ -10,8 +10,10 @@ CPP_SOURCES = sequencer_check.cpp \
               sequencer.cpp \
               simpletouch_controls.cpp \
               t_generator.cpp \
+              ../simpletouch/control_value.cpp \
               ../simpletouch/knobs.cpp \
-              ../simpletouch/switches.cpp
+              ../simpletouch/switches.cpp \
+              ../simpletouch/memory/sdram_alloc.cpp
 
 # Add .cc files
 CC_SOURCES = ../third_party/eurorack/marbles/resources.cc \

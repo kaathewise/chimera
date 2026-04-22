@@ -18,6 +18,7 @@ CPP_SOURCES = chimera.cpp \
 			  ../sequencer/t_generator.cpp \
               ../voice/voice.cpp \
               ../voice/simpletouch_controls.cpp \
+              ../simpletouch/control_value.cpp \
               ../simpletouch/knobs.cpp \
               ../simpletouch/switches.cpp \
               ../simpletouch/memory/sdram_alloc.cpp

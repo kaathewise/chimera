@@ -9,8 +9,10 @@ DAISYSP_DIR = ../third_party/DaisySP
 CPP_SOURCES = voice_check.cpp \
               voice.cpp \
               simpletouch_controls.cpp \
+              ../simpletouch/control_value.cpp \
               ../simpletouch/knobs.cpp \
-              ../simpletouch/switches.cpp
+              ../simpletouch/switches.cpp \
+              ../simpletouch/memory/sdram_alloc.cpp
 
 # Add .cc files
 CC_SOURCES = ../third_party/eurorack/plaits/dsp/engine/particle_engine.cc \
