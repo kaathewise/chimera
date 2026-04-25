@@ -1,7 +1,7 @@
 #include <daisy_seed.h>
 
 #include "chimera/patch.h"
-#include "simpletouch/touch.h"
+#include "simple_touch/touch.h"
 
 using chimera::Patch;
 using daisy::AudioHandle;
@@ -10,7 +10,7 @@ using daisy::SaiHandle;
 using daisy::System;
 
 DaisySeed hw;
-simpletouch::Touch touch;
+simple_touch::Touch touch;
 Patch patch(touch);
 
 void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out,

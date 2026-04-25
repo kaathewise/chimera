@@ -1,9 +1,9 @@
-#ifndef SIMPLETOUCH_CONTROL_VALUE_H_
-#define SIMPLETOUCH_CONTROL_VALUE_H_
+#ifndef SIMPLE_TOUCH_CONTROL_VALUE_H_
+#define SIMPLE_TOUCH_CONTROL_VALUE_H_
 
-#include "simpletouch/touch.h"
+#include "simple_touch/touch.h"
 
-namespace simpletouch {
+namespace simple_touch {
 
 class Touch;
 
@@ -47,6 +47,6 @@ class ControlValue {
 
   void DetectValueMovement_();
 };
-}  // namespace simpletouch
+}  // namespace simple_touch
 
-#endif  // SIMPLETOUCH_CONTROL_VALUE_H_
+#endif  // SIMPLE_TOUCH_CONTROL_VALUE_H_

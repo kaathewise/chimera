@@ -1,11 +1,11 @@
-#ifndef SIMPLETOUCH_SWITCHES_H_
-#define SIMPLETOUCH_SWITCHES_H_
+#ifndef SIMPLE_TOUCH_SWITCHES_H_
+#define SIMPLE_TOUCH_SWITCHES_H_
 
 #include <daisy_seed.h>
 
 #include "eurorack/stmlib/stmlib.h"
 
-namespace simpletouch {
+namespace simple_touch {
 
 using daisy::Switch3;
 
@@ -27,6 +27,6 @@ class Switches {
 
   DISALLOW_COPY_AND_ASSIGN(Switches);
 };
-}  // namespace simpletouch
+}  // namespace simple_touch
 
-#endif  // SIMPLETOUCH_SWITCHES_H_
+#endif  // SIMPLE_TOUCH_SWITCHES_H_

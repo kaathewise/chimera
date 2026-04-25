@@ -1,4 +1,4 @@
-#include "sequencer/simpletouch_controls.h"
+#include "sequencer/simple_touch_controls.h"
 
 namespace sequencer {
 

@@ -9,7 +9,7 @@ The project is organized into several sub-modules, each handling a specific part
 - **`chimera/`**: The main application entry point and orchestration layer. The `Patch` class manages the high-level logic, switching between sequencer and voice control modes.
 - **`voice/`**: Sound generation logic. It wraps the `plaits::ParticleEngine` (from Mutable Instruments Plaits) and adds a `ChannelPostProcessor` with Low Pass Gate (LPG) and Limiter.
 - **`sequencer/`**: Generative sequencing logic. It uses the `TGenerator` and `RandomStream` from Mutable Instruments Marbles to create rhythmic patterns.
-- **`simpletouch/`**: Hardware abstraction layer for inputs.
+- **`simple_touch/`**: Hardware abstraction layer for inputs.
     - `Pads`: Handles MPR121 capacitive touch sensor.
     - `Knobs`: Manages ADC-connected potentiometers.
     - `Switches`: Handles digital switches.
@@ -40,10 +40,10 @@ It is not possible to automatically test the modules, apart from building the mo
 
 - **C++ Standard**: C++20.
 - **Style Guide**: Use Google C++ Style Guide. Use `cpplint --recursive --exclude=third_party .` to run linter.
-- **Header includes**: Use absolute path from workspace root, excluding `third_party/` prefix. Include DaisySeed as <daisy_seed.h>. Examples: `#include "eurorack/stmlib/stmlib.h"`, `#include "simpletouch/knobs.h"`.
+- **Header includes**: Use absolute path from workspace root, excluding `third_party/` prefix. Include DaisySeed as <daisy_seed.h>. Examples: `#include "eurorack/stmlib/stmlib.h"`, `#include "simple_touch/knobs.h"`.
 - **DSP Processing**: Audio is processed in blocks (default size 4 samples at 48kHz). DSP logic is generally encapsulated in classes with `Init()` and `Process()` methods.
-- **Soft Takeover**: When adding new knob-controlled parameters, use `simpletouch::ControlValue` to ensure smooth transitions when switching control pages.
-- **Hardware Integration**: The `simpletouch::Touch` class is the central point for accessing hardware inputs. Avoid direct hardware calls in DSP or high-level logic.
+- **Soft Takeover**: When adding new knob-controlled parameters, use `simple_touch::ControlValue` to ensure smooth transitions when switching control pages.
+- **Hardware Integration**: The `simple_touch::Touch` class is the central point for accessing hardware inputs. Avoid direct hardware calls in DSP or high-level logic.
 
 ## Key Files
 - `chimera/chimera.cpp`: Main entry point and audio callback.

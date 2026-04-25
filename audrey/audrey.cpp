@@ -1,14 +1,14 @@
 #include <daisy_seed.h>
 
 #include "audrey/engine.h"
-#include "audrey/simpletouch_controls.h"
-#include "simpletouch/touch.h"
+#include "audrey/simple_touch_controls.h"
+#include "simple_touch/touch.h"
 
 using daisy::AudioHandle;
 using daisy::DaisySeed;
 using daisy::SaiHandle;
 using daisysp::Limiter;
-using simpletouch::Touch;
+using simple_touch::Touch;
 
 static constexpr auto kSampleRate = SaiHandle::Config::SampleRate::SAI_48KHZ;
 static constexpr size_t kBlockSize = 4;

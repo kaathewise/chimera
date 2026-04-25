@@ -1,4 +1,4 @@
-#include "audrey/simpletouch_controls.h"
+#include "audrey/simple_touch_controls.h"
 
 #include <daisysp.h>
 

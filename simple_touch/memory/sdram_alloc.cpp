@@ -1,10 +1,10 @@
-#include "simpletouch/memory/sdram_alloc.h"
+#include "simple_touch/memory/sdram_alloc.h"
 
 #include <daisy_seed.h>
 
 #include <type_traits>
 
-namespace simpletouch {
+namespace simple_touch {
 std::aligned_storage_t<SDRAM::kPoolSize> DSY_SDRAM_BSS sdram_pool;
 
 // Implementation here inspired by Eurorack Blocks MonotonicMemoryPool but
@@ -39,4 +39,4 @@ void* SDRAM::allocate_raw(size_t size, size_t alignment) {
   return &pool_ptr[align_pos];
 }
 
-}  // namespace simpletouch
+}  // namespace simple_touch

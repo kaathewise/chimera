@@ -1,14 +1,14 @@
-#ifndef VOICE_SIMPLETOUCH_CONTROLS_H_
-#define VOICE_SIMPLETOUCH_CONTROLS_H_
+#ifndef VOICE_SIMPLE_TOUCH_CONTROLS_H_
+#define VOICE_SIMPLE_TOUCH_CONTROLS_H_
 
 #include "eurorack/stmlib/stmlib.h"
-#include "simpletouch/control_value.h"
-#include "simpletouch/touch.h"
+#include "simple_touch/control_value.h"
+#include "simple_touch/touch.h"
 
 namespace voice {
 
-using simpletouch::ControlValue;
-using simpletouch::Touch;
+using simple_touch::ControlValue;
+using simple_touch::Touch;
 
 struct PersistentSettings {
   uint32_t magic;
@@ -73,4 +73,4 @@ class SimpleTouchControls {
 
 }  // namespace voice
 
-#endif  // VOICE_SIMPLETOUCH_CONTROLS_H_
+#endif  // VOICE_SIMPLE_TOUCH_CONTROLS_H_

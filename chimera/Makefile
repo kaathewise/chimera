@@ -10,18 +10,18 @@ CPP_SOURCES = chimera.cpp \
               patch.cpp \
               ../audrey/biquad_filters.cpp \
 			  ../audrey/dc_block.cpp \
-			  ../audrey/simpletouch_controls.cpp \
+			  ../audrey/simple_touch_controls.cpp \
 			  ../audrey/engine.cpp \
 			  ../audrey/karplus_string.cpp \
 			  ../sequencer/sequencer.cpp \
-			  ../sequencer/simpletouch_controls.cpp \
+			  ../sequencer/simple_touch_controls.cpp \
 			  ../sequencer/t_generator.cpp \
               ../voice/voice.cpp \
-              ../voice/simpletouch_controls.cpp \
-              ../simpletouch/control_value.cpp \
-              ../simpletouch/knobs.cpp \
-              ../simpletouch/switches.cpp \
-              ../simpletouch/memory/sdram_alloc.cpp
+              ../voice/simple_touch_controls.cpp \
+              ../simple_touch/control_value.cpp \
+              ../simple_touch/knobs.cpp \
+              ../simple_touch/switches.cpp \
+              ../simple_touch/memory/sdram_alloc.cpp
 
 # Add .cc files
 CC_SOURCES = ../third_party/eurorack/marbles/resources.cc \

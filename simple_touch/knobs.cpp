@@ -1,8 +1,8 @@
-#include "simpletouch/knobs.h"
+#include "simple_touch/knobs.h"
 
 #include <daisy_seed.h>
 
-namespace simpletouch {
+namespace simple_touch {
 
 using daisy::AdcChannelConfig;
 using daisy::DaisySeed;
@@ -23,4 +23,4 @@ void Knobs::Init(DaisySeed &hw) {
     knobs_[i].Init(hw.adc.GetPtr(i), hw.AudioCallbackRate());
   }
 }
-}  // namespace simpletouch
+}  // namespace simple_touch

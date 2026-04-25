@@ -4,24 +4,24 @@
 #include <daisy_seed.h>
 
 #include "audrey/engine.h"
-#include "audrey/simpletouch_controls.h"
+#include "audrey/simple_touch_controls.h"
 #include "eurorack/plaits/dsp/engine/particle_engine.h"
 #include "sequencer/sequencer.h"
-#include "sequencer/simpletouch_controls.h"
-#include "simpletouch/touch.h"
-#include "voice/simpletouch_controls.h"
+#include "sequencer/simple_touch_controls.h"
+#include "simple_touch/touch.h"
+#include "voice/simple_touch_controls.h"
 #include "voice/voice.h"
 
 namespace chimera {
 
 class Patch {
  public:
-  explicit Patch(simpletouch::Touch& touch)
+  explicit Patch(simple_touch::Touch& touch)
       : touch_(touch),
-        sequencer_simpletouch_controls_(touch),
-        voice_simpletouch_controls_(touch),
+        sequencer_simple_touch_controls_(touch),
+        voice_simple_touch_controls_(touch),
         voice_(particle_engine_),
-        audrey_simpletouch_controls_(touch) {}
+        audrey_simple_touch_controls_(touch) {}
 
   void Init(daisy::DaisySeed hw);
   void Process(daisy::AudioHandle::InputBuffer in,
@@ -29,16 +29,16 @@ class Patch {
   void UpdateSlowRate();
 
  private:
-  simpletouch::Touch& touch_;
-  sequencer::SimpleTouchControls sequencer_simpletouch_controls_;
-  voice::SimpleTouchControls voice_simpletouch_controls_;
+  simple_touch::Touch& touch_;
+  sequencer::SimpleTouchControls sequencer_simple_touch_controls_;
+  voice::SimpleTouchControls voice_simple_touch_controls_;
 
   plaits::ParticleEngine particle_engine_;
   voice::Voice voice_;
   sequencer::Sequencer sequencer_;
 
   audrey::Engine audrey_;
-  audrey::SimpleTouchControls audrey_simpletouch_controls_;
+  audrey::SimpleTouchControls audrey_simple_touch_controls_;
 
   daisysp::Limiter limiter_[2];
 

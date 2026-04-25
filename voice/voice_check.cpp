@@ -2,8 +2,8 @@
 
 #include "eurorack/plaits/dsp/engine/particle_engine.h"
 #include "eurorack/stmlib/utils/buffer_allocator.h"
-#include "simpletouch/touch.h"
-#include "voice/simpletouch_controls.h"
+#include "simple_touch/touch.h"
+#include "voice/simple_touch_controls.h"
 #include "voice/voice.h"
 
 using daisy::AudioHandle;
@@ -17,8 +17,8 @@ int trigger_counter = 0;
 int sample_rate = 48000;
 
 DaisySeed hw;
-simpletouch::Touch touch;
-SimpleTouchControls simpletouch_controls(touch);
+simple_touch::Touch touch;
+SimpleTouchControls simple_touch_controls(touch);
 plaits::ParticleEngine pe;
 uint32_t buffer_space[8192];
 stmlib::BufferAllocator allocator(buffer_space, 8192 * 4);
@@ -27,7 +27,7 @@ Voice v(pe);
 void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out,
                    size_t size) {
   touch.Process();
-  simpletouch_controls.Process();
+  simple_touch_controls.Process();
 
   trigger_counter += size;
   int trigger_state;
@@ -40,14 +40,14 @@ void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out,
 
   const plaits::EngineParameters params{
       .trigger = trigger_state,
-      .note = simpletouch_controls.note(),
-      .timbre = simpletouch_controls.timbre(),
-      .morph = simpletouch_controls.morph(),
-      .harmonics = simpletouch_controls.harmonics(),
-      .accent = simpletouch_controls.accent()};
+      .note = simple_touch_controls.note(),
+      .timbre = simple_touch_controls.timbre(),
+      .morph = simple_touch_controls.morph(),
+      .harmonics = simple_touch_controls.harmonics(),
+      .accent = simple_touch_controls.accent()};
 
-  v.Process(params, simpletouch_controls.delay_time(),
-            simpletouch_controls.delay_feedback(), out[0], size);
+  v.Process(params, simple_touch_controls.delay_time(),
+            simple_touch_controls.delay_feedback(), out[0], size);
 
   memcpy(out[1], out[0], size * sizeof(float));
 }
@@ -60,7 +60,7 @@ int main() {
   touch.Init(hw);
   pe.Init(&allocator);
   v.Init(sample_rate);
-  simpletouch_controls.Attach();
+  simple_touch_controls.Attach();
 
   DaisySeed::StartLog();
 

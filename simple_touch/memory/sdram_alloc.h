@@ -1,5 +1,5 @@
-#ifndef SIMPLETOUCH_MEMORY_SDRAM_ALLOC_H_
-#define SIMPLETOUCH_MEMORY_SDRAM_ALLOC_H_
+#ifndef SIMPLE_TOUCH_MEMORY_SDRAM_ALLOC_H_
+#define SIMPLE_TOUCH_MEMORY_SDRAM_ALLOC_H_
 
 #include <stddef.h>
 
@@ -7,7 +7,7 @@
 #include <new>
 #include <utility>
 
-namespace simpletouch {
+namespace simple_touch {
 
 /**
  * @brief
@@ -58,6 +58,6 @@ class SDRAM {
   std::atomic_size_t pool_pos_ = {0};
 };
 
-}  // namespace simpletouch
+}  // namespace simple_touch
 
-#endif  // SIMPLETOUCH_MEMORY_SDRAM_ALLOC_H_
+#endif  // SIMPLE_TOUCH_MEMORY_SDRAM_ALLOC_H_

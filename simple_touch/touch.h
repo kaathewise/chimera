@@ -1,15 +1,15 @@
-#ifndef SIMPLETOUCH_TOUCH_H_
-#define SIMPLETOUCH_TOUCH_H_
+#ifndef SIMPLE_TOUCH_TOUCH_H_
+#define SIMPLE_TOUCH_TOUCH_H_
 
 #include <daisy_seed.h>
 
 #include "eurorack/stmlib/stmlib.h"
-#include "simpletouch/knobs.h"
-#include "simpletouch/led.h"
-#include "simpletouch/pads.h"
-#include "simpletouch/switches.h"
+#include "simple_touch/knobs.h"
+#include "simple_touch/led.h"
+#include "simple_touch/pads.h"
+#include "simple_touch/switches.h"
 
-namespace simpletouch {
+namespace simple_touch {
 
 using daisy::DaisySeed;
 
@@ -46,6 +46,6 @@ class Touch {
 
   DISALLOW_COPY_AND_ASSIGN(Touch);
 };
-}  // namespace simpletouch
+}  // namespace simple_touch
 
-#endif  // SIMPLETOUCH_TOUCH_H_
+#endif  // SIMPLE_TOUCH_TOUCH_H_

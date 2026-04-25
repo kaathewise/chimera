@@ -1,19 +1,19 @@
-#ifndef AUDREY_SIMPLETOUCH_CONTROLS_H_
-#define AUDREY_SIMPLETOUCH_CONTROLS_H_
+#ifndef AUDREY_SIMPLE_TOUCH_CONTROLS_H_
+#define AUDREY_SIMPLE_TOUCH_CONTROLS_H_
 
 #include <daisy_seed.h>
 
 #include "audrey/engine.h"
-#include "simpletouch/control_value.h"
-#include "simpletouch/touch.h"
+#include "simple_touch/control_value.h"
+#include "simple_touch/touch.h"
 
 namespace audrey {
 
 using daisy::AnalogControl;
 using daisy::DaisySeed;
 using daisysp::Oscillator;
-using simpletouch::ControlValue;
-using simpletouch::Touch;
+using simple_touch::ControlValue;
+using simple_touch::Touch;
 
 struct PersistentSettings {
   uint32_t magic;
@@ -94,4 +94,4 @@ private:
 };
 }  // namespace audrey
 
-#endif  // AUDREY_SIMPLETOUCH_CONTROLS_H_
+#endif  // AUDREY_SIMPLE_TOUCH_CONTROLS_H_

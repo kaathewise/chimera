@@ -1,4 +1,4 @@
-#include "voice/simpletouch_controls.h"
+#include "voice/simple_touch_controls.h"
 
 namespace voice {
 

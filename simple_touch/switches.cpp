@@ -1,6 +1,6 @@
-#include "simpletouch/switches.h"
+#include "simple_touch/switches.h"
 
-namespace simpletouch {
+namespace simple_touch {
 
 void Switches::Init() {
   switch_7_8_.Init(daisy::seed::D7, daisy::seed::D6);
@@ -10,4 +10,4 @@ void Switches::Init() {
 int Switches::left() { return switch_7_8_.Read(); }
 
 int Switches::right() { return switch_9_10_.Read(); }
-}  // namespace simpletouch
+}  // namespace simple_touch

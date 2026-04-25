@@ -1,5 +1,5 @@
-#ifndef SIMPLETOUCH_KNOBS_H_
-#define SIMPLETOUCH_KNOBS_H_
+#ifndef SIMPLE_TOUCH_KNOBS_H_
+#define SIMPLE_TOUCH_KNOBS_H_
 
 #include <daisy_seed.h>
 
@@ -7,7 +7,7 @@
 
 #include "eurorack/stmlib/stmlib.h"
 
-namespace simpletouch {
+namespace simple_touch {
 
 using daisy::AnalogControl;
 using daisy::DaisySeed;
@@ -38,6 +38,6 @@ class Knobs {
 
   DISALLOW_COPY_AND_ASSIGN(Knobs);
 };
-}  // namespace simpletouch
+}  // namespace simple_touch
 
-#endif  // SIMPLETOUCH_KNOBS_H_
+#endif  // SIMPLE_TOUCH_KNOBS_H_

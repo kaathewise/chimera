@@ -22,7 +22,7 @@
 #include "audrey/engine.h"
 
 #include "audrey/dsp_utils.h"
-#include "simpletouch/memory/sdram_alloc.h"
+#include "simple_touch/memory/sdram_alloc.h"
 
 namespace audrey {
 
@@ -39,15 +39,15 @@ void Engine::Init(const float sample_rate) {
   _env.SetMode(Envelope::Mode::ASR);
   _env.SetShape(0.0f);
 
-  echo_delay_[0] = EchoDelayPtr(simpletouch::SDRAM::allocate<ED>());
-  echo_delay_[1] = EchoDelayPtr(simpletouch::SDRAM::allocate<ED>());
-  verb_ = VerbPtr(simpletouch::SDRAM::allocate<ReverbSc>());
+  echo_delay_[0] = EchoDelayPtr(simple_touch::SDRAM::allocate<ED>());
+  echo_delay_[1] = EchoDelayPtr(simple_touch::SDRAM::allocate<ED>());
+  verb_ = VerbPtr(simple_touch::SDRAM::allocate<ReverbSc>());
 
   for (int i = 0; i < 2; i++) {
     strings_[i] =
-        KarplusStringPtr(simpletouch::SDRAM::allocate<KarplusString>());
+        KarplusStringPtr(simple_touch::SDRAM::allocate<KarplusString>());
     fb_delayline_[i] =
-        FeedbackDelayLinePtr(simpletouch::SDRAM::allocate<FB_DL>());
+        FeedbackDelayLinePtr(simple_touch::SDRAM::allocate<FB_DL>());
   }
 
   sample_rate_ = sample_rate;

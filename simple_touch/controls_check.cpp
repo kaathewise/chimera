@@ -1,13 +1,13 @@
 #include <daisy_seed.h>
 
-#include "simpletouch/control_value.h"
-#include "simpletouch/touch.h"
+#include "simple_touch/control_value.h"
+#include "simple_touch/touch.h"
 
 using daisy::AudioHandle;
 using daisy::DaisySeed;
 using daisy::SaiHandle;
 using daisy::System;
-using simpletouch::Touch;
+using simple_touch::Touch;
 
 constexpr auto kSampleRate = SaiHandle::Config::SampleRate::SAI_48KHZ;
 constexpr size_t kBlockSize = 4;
@@ -15,7 +15,7 @@ constexpr size_t kBlockSize = 4;
 DaisySeed hw;
 Touch touch;
 float val;
-simpletouch::ControlValue cv(touch, val);
+simple_touch::ControlValue cv(touch, val);
 
 void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out,
                    size_t size) {

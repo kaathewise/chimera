@@ -14,22 +14,22 @@ void Patch::Init(daisy::DaisySeed hw) {
   sequencer_.Init(hw.AudioCallbackRate());
   audrey_.Init(hw.AudioSampleRate());
 
-  audrey_simpletouch_controls_.Init();
+  audrey_simple_touch_controls_.Init();
 
-  sequencer_simpletouch_controls_.Attach();
+  sequencer_simple_touch_controls_.Attach();
 }
 
 void Patch::Process(daisy::AudioHandle::InputBuffer in,
                     daisy::AudioHandle::OutputBuffer out, size_t size) {
-  sequencer_simpletouch_controls_.Process();
-  voice_simpletouch_controls_.Process();
-  audrey_simpletouch_controls_.Process();
+  sequencer_simple_touch_controls_.Process();
+  voice_simple_touch_controls_.Process();
+  audrey_simple_touch_controls_.Process();
 
-  sequencer_.Process(sequencer_simpletouch_controls_.deja_vu(),
-                     sequencer_simpletouch_controls_.rate(),
-                     sequencer_simpletouch_controls_.bias(),
-                     sequencer_simpletouch_controls_.jitter(),
-                     sequencer_simpletouch_controls_.loop_length());
+  sequencer_.Process(sequencer_simple_touch_controls_.deja_vu(),
+                     sequencer_simple_touch_controls_.rate(),
+                     sequencer_simple_touch_controls_.bias(),
+                     sequencer_simple_touch_controls_.jitter(),
+                     sequencer_simple_touch_controls_.loop_length());
 
   const auto& triggers = sequencer_.triggers();
 
@@ -38,19 +38,19 @@ void Patch::Process(daisy::AudioHandle::InputBuffer in,
 
   const plaits::EngineParameters params{
       .trigger = trigger_state,
-      .note = voice_simpletouch_controls_.note(),
-      .timbre = voice_simpletouch_controls_.timbre(),
-      .morph = voice_simpletouch_controls_.morph(),
-      .harmonics = voice_simpletouch_controls_.harmonics(),
-      .accent = voice_simpletouch_controls_.accent()};
+      .note = voice_simple_touch_controls_.note(),
+      .timbre = voice_simple_touch_controls_.timbre(),
+      .morph = voice_simple_touch_controls_.morph(),
+      .harmonics = voice_simple_touch_controls_.harmonics(),
+      .accent = voice_simple_touch_controls_.accent()};
 
-  voice_.Process(params, voice_simpletouch_controls_.delay_time(),
-                 voice_simpletouch_controls_.delay_feedback(), out[0], size);
+  voice_.Process(params, voice_simple_touch_controls_.delay_time(),
+                 voice_simple_touch_controls_.delay_feedback(), out[0], size);
 
   memcpy(out[1], out[0], size * sizeof(float));
 
   const audrey::EngineParameters audrey_params =
-      audrey_simpletouch_controls_.GetEngineParameters();
+      audrey_simple_touch_controls_.GetEngineParameters();
   for (size_t i = 0; i < size; i++) {
     audrey_.Process(audrey_params, IN_L[i], OUT_L[i], OUT_R[i]);
   }
@@ -64,21 +64,21 @@ void Patch::UpdateSlowRate() {
 
   if (pads.IsTouched(10)) {
     if (pads.IsRisingEdge(3)) {
-      sequencer_simpletouch_controls_.Attach();
-      voice_simpletouch_controls_.Detach();
-      audrey_simpletouch_controls_.Detach();
+      sequencer_simple_touch_controls_.Attach();
+      voice_simple_touch_controls_.Detach();
+      audrey_simple_touch_controls_.Detach();
     } else if (pads.IsRisingEdge(4)) {
-      voice_simpletouch_controls_.Attach();
-      sequencer_simpletouch_controls_.Detach();
-      audrey_simpletouch_controls_.Detach();
+      voice_simple_touch_controls_.Attach();
+      sequencer_simple_touch_controls_.Detach();
+      audrey_simple_touch_controls_.Detach();
     } else if (pads.IsRisingEdge(5)) {
-      audrey_simpletouch_controls_.Attach();
-      voice_simpletouch_controls_.Detach();
-      sequencer_simpletouch_controls_.Detach();
+      audrey_simple_touch_controls_.Attach();
+      voice_simple_touch_controls_.Detach();
+      sequencer_simple_touch_controls_.Detach();
     }
   }
 
-  audrey_simpletouch_controls_.UpdateSlowRate();
+  audrey_simple_touch_controls_.UpdateSlowRate();
 }
 
 }  // namespace chimera

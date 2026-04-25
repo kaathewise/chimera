@@ -1,8 +1,8 @@
-#include "simpletouch/control_value.h"
+#include "simple_touch/control_value.h"
 
 #include <cmath>
 
-namespace simpletouch {
+namespace simple_touch {
 
 ControlValue::ControlValue(Touch& touch, float& value, float threshold,
                            float coeff)
@@ -58,4 +58,4 @@ void ControlValue::DetectValueMovement_() {
   }
 }
 
-}  // namespace simpletouch
+}  // namespace simple_touch

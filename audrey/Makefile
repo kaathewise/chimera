@@ -9,13 +9,13 @@ DAISYSP_DIR = ../third_party/DaisySP
 CPP_SOURCES = audrey.cpp \
               biquad_filters.cpp \
               dc_block.cpp \
-              simpletouch_controls.cpp \
+              simple_touch_controls.cpp \
               engine.cpp \
               karplus_string.cpp \
-              ../simpletouch/control_value.cpp \
-              ../simpletouch/knobs.cpp \
-              ../simpletouch/switches.cpp \
-              ../simpletouch/memory/sdram_alloc.cpp
+              ../simple_touch/control_value.cpp \
+              ../simple_touch/knobs.cpp \
+              ../simple_touch/switches.cpp \
+              ../simple_touch/memory/sdram_alloc.cpp
 
 # Include paths
 C_INCLUDES = -I.. \

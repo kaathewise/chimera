@@ -1,16 +1,16 @@
-#ifndef SEQUENCER_SIMPLETOUCH_CONTROLS_H_
-#define SEQUENCER_SIMPLETOUCH_CONTROLS_H_
+#ifndef SEQUENCER_SIMPLE_TOUCH_CONTROLS_H_
+#define SEQUENCER_SIMPLE_TOUCH_CONTROLS_H_
 
 #include <cmath>
 
 #include "eurorack/stmlib/stmlib.h"
-#include "simpletouch/control_value.h"
-#include "simpletouch/touch.h"
+#include "simple_touch/control_value.h"
+#include "simple_touch/touch.h"
 
 namespace sequencer {
 
-using simpletouch::ControlValue;
-using simpletouch::Touch;
+using simple_touch::ControlValue;
+using simple_touch::Touch;
 
 struct PersistentSettings {
   uint32_t magic;
@@ -71,4 +71,4 @@ class SimpleTouchControls {
 
 }  // namespace sequencer
 
-#endif  // SEQUENCER_SIMPLETOUCH_CONTROLS_H_
+#endif  // SEQUENCER_SIMPLE_TOUCH_CONTROLS_H_

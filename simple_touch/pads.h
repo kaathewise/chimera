@@ -1,11 +1,11 @@
-#ifndef SIMPLETOUCH_PADS_H_
-#define SIMPLETOUCH_PADS_H_
+#ifndef SIMPLE_TOUCH_PADS_H_
+#define SIMPLE_TOUCH_PADS_H_
 
 #include <daisy_seed.h>
 
 #include "eurorack/stmlib/stmlib.h"
 
-namespace simpletouch {
+namespace simple_touch {
 
 using daisy::Mpr121I2C;
 
@@ -46,6 +46,6 @@ class Pads {
 
   DISALLOW_COPY_AND_ASSIGN(Pads);
 };
-}  // namespace simpletouch
+}  // namespace simple_touch
 
-#endif  // SIMPLETOUCH_PADS_H_
+#endif  // SIMPLE_TOUCH_PADS_H_

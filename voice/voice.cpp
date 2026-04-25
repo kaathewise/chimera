@@ -33,7 +33,7 @@
 #include "eurorack/plaits/dsp/dsp.h"
 #include "eurorack/plaits/dsp/engine/particle_engine.h"
 #include "eurorack/stmlib/dsp/units.h"
-#include "simpletouch/memory/sdram_alloc.h"
+#include "simple_touch/memory/sdram_alloc.h"
 
 namespace voice {
 
@@ -47,7 +47,7 @@ void Voice::Init(float sample_rate) {
   post_processor_.Init();
 
   using DelayLineType = daisysp::DelayLine<float, kMaxDelaySamples>;
-  delay_line_.reset(simpletouch::SDRAM::allocate<DelayLineType>());
+  delay_line_.reset(simple_touch::SDRAM::allocate<DelayLineType>());
   delay_line_->Init();
 }
 
