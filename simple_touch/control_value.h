@@ -1,11 +1,11 @@
 #ifndef SIMPLE_TOUCH_CONTROL_VALUE_H_
 #define SIMPLE_TOUCH_CONTROL_VALUE_H_
 
-#include "simple_touch/touch.h"
+#include "simple_touch/simple_touch.h"
 
 namespace simple_touch {
 
-class Touch;
+class SimpleTouch;
 
 class ControlValue {
  public:
@@ -21,7 +21,7 @@ class ControlValue {
 
   static float constexpr kIdleTicks = kCallbackRate * 5;  // 5 seconds
 
-  ControlValue(Touch& touch, float& value, float threshold = 0.02f,
+  ControlValue(SimpleTouch& touch, float& value, float threshold = 0.02f,
                float coeff = kSmoothingCoefficient);
 
   ~ControlValue() = default;
@@ -35,7 +35,7 @@ class ControlValue {
   float Value() const { return value_; }
 
  private:
-  Touch& touch_;
+  SimpleTouch& touch_;
   State state_;
   float& value_;
   float coeff_;

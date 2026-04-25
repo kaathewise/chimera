@@ -38,7 +38,7 @@ class Pads {
     return ~state_ & prev_state_ & (1 << pad);
   }
 
-  uint16_t Touched() const { return state_; }
+  uint16_t SimpleTouched() const { return state_; }
 
  private:
   uint16_t state_{0}, prev_state_{0};

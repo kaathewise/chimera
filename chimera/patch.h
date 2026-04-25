@@ -8,7 +8,7 @@
 #include "eurorack/plaits/dsp/engine/particle_engine.h"
 #include "sequencer/sequencer.h"
 #include "sequencer/simple_touch_controls.h"
-#include "simple_touch/touch.h"
+#include "simple_touch/simple_touch.h"
 #include "voice/simple_touch_controls.h"
 #include "voice/voice.h"
 
@@ -16,7 +16,7 @@ namespace chimera {
 
 class Patch {
  public:
-  explicit Patch(simple_touch::Touch& touch)
+  explicit Patch(simple_touch::SimpleTouch& touch)
       : touch_(touch),
         sequencer_simple_touch_controls_(touch),
         voice_simple_touch_controls_(touch),
@@ -29,7 +29,7 @@ class Patch {
   void UpdateSlowRate();
 
  private:
-  simple_touch::Touch& touch_;
+  simple_touch::SimpleTouch& touch_;
   sequencer::SimpleTouchControls sequencer_simple_touch_controls_;
   voice::SimpleTouchControls voice_simple_touch_controls_;
 

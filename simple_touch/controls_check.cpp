@@ -1,19 +1,19 @@
 #include <daisy_seed.h>
 
 #include "simple_touch/control_value.h"
-#include "simple_touch/touch.h"
+#include "simple_touch/simple_touch.h"
 
 using daisy::AudioHandle;
 using daisy::DaisySeed;
 using daisy::SaiHandle;
 using daisy::System;
-using simple_touch::Touch;
+using simple_touch::SimpleTouch;
 
 constexpr auto kSampleRate = SaiHandle::Config::SampleRate::SAI_48KHZ;
 constexpr size_t kBlockSize = 4;
 
 DaisySeed hw;
-Touch touch;
+SimpleTouch touch;
 float val;
 simple_touch::ControlValue cv(touch, val);
 
@@ -48,7 +48,7 @@ int main() {
 
     touch.pads().Process();
 
-    DaisySeed::Print("%d ", touch.pads().Touched());
+    DaisySeed::Print("%d ", touch.pads().SimpleTouched());
 
     for (uint8_t i = 0; i < 12; i++) {
       DaisySeed::Print("%d %d ", touch.pads().GetBaseline(i),

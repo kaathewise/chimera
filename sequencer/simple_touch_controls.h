@@ -5,12 +5,12 @@
 
 #include "eurorack/stmlib/stmlib.h"
 #include "simple_touch/control_value.h"
-#include "simple_touch/touch.h"
+#include "simple_touch/simple_touch.h"
 
 namespace sequencer {
 
 using simple_touch::ControlValue;
-using simple_touch::Touch;
+using simple_touch::SimpleTouch;
 
 struct PersistentSettings {
   uint32_t magic;
@@ -23,7 +23,7 @@ struct PersistentSettings {
 
 class SimpleTouchControls {
  public:
-  explicit SimpleTouchControls(Touch& touch);
+  explicit SimpleTouchControls(SimpleTouch& touch);
 
   void Process();
 
@@ -58,7 +58,7 @@ class SimpleTouchControls {
   }
 
  private:
-  Touch& touch_;
+  SimpleTouch& touch_;
 
   ControlValue deja_vu_;
   ControlValue rate_;

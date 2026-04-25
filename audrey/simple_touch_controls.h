@@ -5,7 +5,7 @@
 
 #include "audrey/engine.h"
 #include "simple_touch/control_value.h"
-#include "simple_touch/touch.h"
+#include "simple_touch/simple_touch.h"
 
 namespace audrey {
 
@@ -13,7 +13,7 @@ using daisy::AnalogControl;
 using daisy::DaisySeed;
 using daisysp::Oscillator;
 using simple_touch::ControlValue;
-using simple_touch::Touch;
+using simple_touch::SimpleTouch;
 
 struct PersistentSettings {
   uint32_t magic;
@@ -34,7 +34,7 @@ struct PersistentSettings {
 
 class SimpleTouchControls {
 public:
-  explicit SimpleTouchControls(Touch &touch);
+  explicit SimpleTouchControls(SimpleTouch &touch);
 
   ~SimpleTouchControls() = default;
 
@@ -50,7 +50,7 @@ public:
   EngineParameters GetEngineParameters() const;
 
 private:
-  Touch &touch_;
+  SimpleTouch &touch_;
   bool attached_{false};
   int scale_{0};
 

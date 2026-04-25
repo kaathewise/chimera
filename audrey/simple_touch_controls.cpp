@@ -15,7 +15,7 @@ using daisysp::Oscillator;
 __attribute__((
     section(".backup_sram"))) static PersistentSettings persistent_settings;
 
-SimpleTouchControls::SimpleTouchControls(Touch& touch)
+SimpleTouchControls::SimpleTouchControls(SimpleTouch& touch)
     : touch_(touch),
       input_volume_(touch, persistent_settings.input_volume),
       output_volume_(touch, persistent_settings.output_volume),

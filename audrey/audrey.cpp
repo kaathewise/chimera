@@ -2,19 +2,19 @@
 
 #include "audrey/engine.h"
 #include "audrey/simple_touch_controls.h"
-#include "simple_touch/touch.h"
+#include "simple_touch/simple_touch.h"
 
 using daisy::AudioHandle;
 using daisy::DaisySeed;
 using daisy::SaiHandle;
 using daisysp::Limiter;
-using simple_touch::Touch;
+using simple_touch::SimpleTouch;
 
 static constexpr auto kSampleRate = SaiHandle::Config::SampleRate::SAI_48KHZ;
 static constexpr size_t kBlockSize = 4;
 
 static DaisySeed hw;
-static Touch touch;
+static SimpleTouch touch;
 static audrey::Engine engine;
 static audrey::SimpleTouchControls controls(touch);
 static Limiter limiter[2];

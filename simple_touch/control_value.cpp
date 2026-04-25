@@ -4,7 +4,7 @@
 
 namespace simple_touch {
 
-ControlValue::ControlValue(Touch& touch, float& value, float threshold,
+ControlValue::ControlValue(SimpleTouch& touch, float& value, float threshold,
                            float coeff)
     : touch_(touch),
       state_(State::kDetached),

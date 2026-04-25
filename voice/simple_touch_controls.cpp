@@ -5,7 +5,7 @@ namespace voice {
 __attribute__((
     section(".backup_sram"))) static PersistentSettings persistent_settings;
 
-SimpleTouchControls::SimpleTouchControls(Touch& touch, float max_delay_time)
+SimpleTouchControls::SimpleTouchControls(SimpleTouch& touch, float max_delay_time)
     : touch_(touch),
       max_delay_time_(max_delay_time),
       note_(touch, persistent_settings.note),

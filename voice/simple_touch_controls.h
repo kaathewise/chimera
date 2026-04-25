@@ -3,12 +3,12 @@
 
 #include "eurorack/stmlib/stmlib.h"
 #include "simple_touch/control_value.h"
-#include "simple_touch/touch.h"
+#include "simple_touch/simple_touch.h"
 
 namespace voice {
 
 using simple_touch::ControlValue;
-using simple_touch::Touch;
+using simple_touch::SimpleTouch;
 
 struct PersistentSettings {
   uint32_t magic;
@@ -23,7 +23,7 @@ struct PersistentSettings {
 
 class SimpleTouchControls {
  public:
-  explicit SimpleTouchControls(Touch& touch, float max_delay_time = 5.f);
+  explicit SimpleTouchControls(SimpleTouch& touch, float max_delay_time = 5.f);
 
   void Process();
 
@@ -56,7 +56,7 @@ class SimpleTouchControls {
   }
 
  private:
-  Touch& touch_;
+  SimpleTouch& touch_;
 
   float max_delay_time_;
 

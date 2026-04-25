@@ -1,5 +1,5 @@
-#ifndef SIMPLE_TOUCH_TOUCH_H_
-#define SIMPLE_TOUCH_TOUCH_H_
+#ifndef SIMPLE_TOUCH_SIMPLE_TOUCH_H_
+#define SIMPLE_TOUCH_SIMPLE_TOUCH_H_
 
 #include <daisy_seed.h>
 
@@ -13,11 +13,11 @@ namespace simple_touch {
 
 using daisy::DaisySeed;
 
-class Touch {
+class SimpleTouch {
  public:
-  Touch() = default;
+  SimpleTouch() = default;
 
-  ~Touch() = default;
+  ~SimpleTouch() = default;
 
   void Init(DaisySeed &hw) {
     pads_.Init();
@@ -44,8 +44,8 @@ class Touch {
   Switches switches_;
   Led led_;
 
-  DISALLOW_COPY_AND_ASSIGN(Touch);
+  DISALLOW_COPY_AND_ASSIGN(SimpleTouch);
 };
 }  // namespace simple_touch
 
-#endif  // SIMPLE_TOUCH_TOUCH_H_
+#endif  // SIMPLE_TOUCH_SIMPLE_TOUCH_H_

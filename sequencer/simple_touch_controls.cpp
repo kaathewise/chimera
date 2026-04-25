@@ -5,7 +5,7 @@ namespace sequencer {
 __attribute__((
     section(".backup_sram"))) static PersistentSettings persistent_settings;
 
-SimpleTouchControls::SimpleTouchControls(Touch& touch)
+SimpleTouchControls::SimpleTouchControls(SimpleTouch& touch)
     : touch_(touch),
       deja_vu_(touch, persistent_settings.deja_vu),
       rate_(touch, persistent_settings.rate),

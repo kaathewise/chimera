@@ -2,7 +2,7 @@
 
 #include "eurorack/plaits/dsp/engine/particle_engine.h"
 #include "eurorack/stmlib/utils/buffer_allocator.h"
-#include "simple_touch/touch.h"
+#include "simple_touch/simple_touch.h"
 #include "voice/simple_touch_controls.h"
 #include "voice/voice.h"
 
@@ -17,7 +17,7 @@ int trigger_counter = 0;
 int sample_rate = 48000;
 
 DaisySeed hw;
-simple_touch::Touch touch;
+simple_touch::SimpleTouch touch;
 SimpleTouchControls simple_touch_controls(touch);
 plaits::ParticleEngine pe;
 uint32_t buffer_space[8192];
