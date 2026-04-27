@@ -3,6 +3,7 @@
 #include "sequencer/sequencer.h"
 #include "sequencer/simple_touch_controls.h"
 #include "simple_touch/simple_touch.h"
+#include "third_party/libDaisy/src/per/sai.h"
 
 using daisy::AudioHandle;
 using daisy::DaisySeed;
@@ -10,12 +11,13 @@ using daisy::SaiHandle;
 using daisy::System;
 using sequencer::Sequencer;
 using sequencer::SimpleTouchControls;
+using simple_touch::SimpleTouch;
 
-constexpr auto kSampleRate = SaiHandle::Config::SampleRate::SAI_48KHZ;
-constexpr size_t kBlockSize = 4;
-
-DaisySeed hw;
-simple_touch::SimpleTouch touch;
+SimpleTouch::Config config{
+  .daisy_sample_rate = SaiHandle::Config::SampleRate::SAI_48KHZ,
+  .block_size = 4
+};
+SimpleTouch touch(config);
 Sequencer seq;
 SimpleTouchControls simple_touch_controls(touch);
 
@@ -29,17 +31,13 @@ void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out,
 }
 
 int main() {
-  hw.Init();
-  hw.SetAudioSampleRate(kSampleRate);
-  hw.SetAudioBlockSize(kBlockSize);
-
-  touch.Init(hw);
-  seq.Init(hw.AudioCallbackRate());
+  touch.Init();
+  seq.Init(config.AudioCallbackRate());
   simple_touch_controls.Attach();
 
   DaisySeed::StartLog();
 
-  hw.StartAudio(AudioCallback);
+  touch.hw().StartAudio(AudioCallback);
 
   while (true) {
     DaisySeed::Print(FLT_FMT(5) " ",

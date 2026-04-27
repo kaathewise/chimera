@@ -11,15 +11,10 @@ class ControlValue {
  public:
   enum class State { kAttached, kDetached, kTryToAttach };
 
-  static float constexpr kCallbackRate = 12000.f;
-
-  static float constexpr kSmoothingCoefficient =
-      6.9f /
-      (0.02f * kCallbackRate);  // Within 0.1% in 0.02s, 12KHz callback rate
+  // Within 0.1% in 0.02s, will be multiplied by callback rate.
+  static float constexpr kSmoothingCoefficient = 6.9f / 0.02;
 
   static float constexpr kMovementDetectionThreshold = 0.0001f;
-
-  static float constexpr kIdleTicks = kCallbackRate * 5;  // 5 seconds
 
   ControlValue(SimpleTouch& touch, float& value, float threshold = 0.02f,
                float coeff = kSmoothingCoefficient);
@@ -42,7 +37,8 @@ class ControlValue {
   float threshold_;
   float slow_value_;
   float slow_coeff_;
-  float idle_counter_;
+  uint32_t idle_time_;
+  uint32_t idle_time_threshold_;
   bool blink_when_value_moves_;
 
   void DetectValueMovement_();

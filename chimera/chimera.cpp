@@ -8,9 +8,13 @@ using daisy::AudioHandle;
 using daisy::DaisySeed;
 using daisy::SaiHandle;
 using daisy::System;
+using simple_touch::SimpleTouch;
 
-DaisySeed hw;
-simple_touch::SimpleTouch touch;
+SimpleTouch::Config config{
+  .daisy_sample_rate = SaiHandle::Config::SampleRate::SAI_48KHZ,
+  .block_size = 4
+};
+SimpleTouch touch(config);
 Patch patch(touch);
 
 void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out,
@@ -20,16 +24,12 @@ void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out,
 }
 
 int main() {
-  hw.Init();
-  hw.SetAudioSampleRate(SaiHandle::Config::SampleRate::SAI_48KHZ);
-  hw.SetAudioBlockSize(4);
-
-  touch.Init(hw);
-  patch.Init(hw);
+  touch.Init();
+  patch.Init(touch.hw());
 
   DaisySeed::StartLog();
 
-  hw.StartAudio(AudioCallback);
+  touch.hw().StartAudio(AudioCallback);
 
   while (true) {
     touch.pads().Process();

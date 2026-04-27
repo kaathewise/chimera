@@ -10,14 +10,14 @@ using daisy::SaiHandle;
 using daisysp::Limiter;
 using simple_touch::SimpleTouch;
 
-static constexpr auto kSampleRate = SaiHandle::Config::SampleRate::SAI_48KHZ;
-static constexpr size_t kBlockSize = 4;
-
-static DaisySeed hw;
-static SimpleTouch touch;
-static audrey::Engine engine;
-static audrey::SimpleTouchControls controls(touch);
-static Limiter limiter[2];
+SimpleTouch::Config config{
+  .daisy_sample_rate = SaiHandle::Config::SampleRate::SAI_48KHZ,
+  .block_size = 4
+};
+SimpleTouch touch(config);
+audrey::Engine engine;
+audrey::SimpleTouchControls controls(touch);
+Limiter limiter[2];
 
 void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out,
                    size_t size) {
@@ -35,12 +35,8 @@ void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out,
 }
 
 int main() {
-  hw.Init();
-  hw.SetAudioSampleRate(kSampleRate);
-  hw.SetAudioBlockSize(kBlockSize);
-
-  touch.Init(hw);
-  engine.Init(hw.AudioSampleRate());
+  touch.Init();
+  engine.Init(config.AudioSampleRate());
   controls.Init();
   controls.Attach();
 
@@ -48,11 +44,11 @@ int main() {
     lim.Init();
   }
 
-  hw.StartAudio(AudioCallback);
+  touch.hw().StartAudio(AudioCallback);
 
   while (true) {
     touch.pads().Process();
     controls.UpdateSlowRate();
-    hw.DelayMs(4);
+    daisy::System::Delay(10);
   }
 }

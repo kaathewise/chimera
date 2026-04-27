@@ -14,10 +14,12 @@ using voice::SimpleTouchControls;
 using voice::Voice;
 
 int trigger_counter = 0;
-int sample_rate = 48000;
 
-DaisySeed hw;
-simple_touch::SimpleTouch touch;
+simple_touch::SimpleTouch::Config config{
+  .daisy_sample_rate = SaiHandle::Config::SampleRate::SAI_48KHZ,
+  .block_size = 4
+};
+simple_touch::SimpleTouch touch(config);
 SimpleTouchControls simple_touch_controls(touch);
 plaits::ParticleEngine pe;
 uint32_t buffer_space[8192];
@@ -31,7 +33,7 @@ void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out,
 
   trigger_counter += size;
   int trigger_state;
-  if (trigger_counter >= sample_rate) {
+  if (trigger_counter >= config.AudioSampleRate()) {
     trigger_state = plaits::TRIGGER_RISING_EDGE;
     trigger_counter = 0;
   } else {
@@ -53,18 +55,14 @@ void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out,
 }
 
 int main() {
-  hw.Init();
-  hw.SetAudioSampleRate(SaiHandle::Config::SampleRate::SAI_48KHZ);
-  hw.SetAudioBlockSize(4);
-
-  touch.Init(hw);
+  touch.Init();
   pe.Init(&allocator);
-  v.Init(sample_rate);
+  v.Init(config.AudioSampleRate());
   simple_touch_controls.Attach();
 
   DaisySeed::StartLog();
 
-  hw.StartAudio(AudioCallback);
+  touch.hw().StartAudio(AudioCallback);
   while (true) {
     System::Delay(100);
   }
