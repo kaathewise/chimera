@@ -33,7 +33,7 @@ struct PersistentSettings {
 };
 
 class SimpleTouchControls {
-public:
+ public:
   explicit SimpleTouchControls(SimpleTouch &touch);
 
   ~SimpleTouchControls() = default;
@@ -49,7 +49,7 @@ public:
 
   EngineParameters GetEngineParameters() const;
 
-private:
+ private:
   SimpleTouch &touch_;
   bool attached_{false};
   int scale_{0};

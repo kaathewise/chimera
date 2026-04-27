@@ -13,9 +13,9 @@ ControlValue::ControlValue(SimpleTouch& touch, float& value, float threshold,
       threshold_(threshold),
       slow_value_(value),
       slow_coeff_(coeff_ * 0.25f),
-      idle_time_threshold_(5 * static_cast<uint32_t>(touch.config().AudioCallbackRate())),
-      blink_when_value_moves_(true) {
-}
+      idle_time_threshold_(
+          5 * static_cast<uint32_t>(touch.config().AudioCallbackRate())),
+      blink_when_value_moves_(true) {}
 
 float ControlValue::Process(float input) {
   switch (state_) {
